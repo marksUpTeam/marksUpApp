@@ -8,6 +8,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -32,7 +36,7 @@ fun BaseButton(
     isSelected: Boolean = false,
     tint: Color = colorResource(id = R.color.white),
     selectedTint: Color = colorResource(id = R.color.purple_500),
-    backgroundColor: Color = colorResource(id = R.color.black),
+    backgroundColor: Color = colorResource(id = R.color.lighter_black),
     onClick: () -> Unit = {},
 ){
     Column(
@@ -60,7 +64,30 @@ fun BaseButton(
 fun selectorTeacher(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
-
+    setCurrentScreen: (Int) -> Unit = {},
+    backgroundColor: Color = colorResource(id = R.color.black),
+    tint: Color = colorResource(id = R.color.white),
+    selectedTint: Color = colorResource(id = R.color.purple_500),
 ){
+    Row(modifier = modifier.fillMaxWidth().background(backgroundColor), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
+        var buttonClicked by rememberSaveable {mutableIntStateOf(1)}
+        BaseButton(
 
+        )
+        BaseButton(
+
+        )
+        BaseButton(
+
+        )
+        BaseButton(
+
+        )
+        BaseButton(
+
+        )
+        BaseButton(
+
+        )
+    }
 }
