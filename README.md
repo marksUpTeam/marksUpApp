@@ -6,5 +6,5 @@
 
 - [Артем Линт](https://github.com/naburnm8)
 - [Эльвира Смирнова](https://github.com/ElviraSmirnovaa)
-- [Артем Сидельников]()
+- [Артем Сидельников](https://github.com/KingLucky13)
 - [Алексей Александров](https://github.com/AleksandrovAleksey)
