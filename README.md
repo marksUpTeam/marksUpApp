@@ -5,6 +5,6 @@
 # Авторы
 
 - [Артем Линт](https://github.com/naburnm8)
-- [Эльвира Смирнова]()
+- [Эльвира Смирнова](https://github.com/ElviraSmirnovaa)
 - [Артем Сидельников]()
 - [Алексей Александров](https://github.com/AleksandrovAleksey)
