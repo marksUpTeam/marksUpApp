@@ -24,6 +24,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImagePainter.State.Empty.painter
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 
 
@@ -55,7 +57,7 @@ fun BaseButton(
                 modifier = Modifier.fillMaxSize()
             )
         }
-        Text(text=contentDescription, textAlign = TextAlign.Center, color = if (isSelected) selectedTint else tint)
+        Text(text=contentDescription, textAlign = TextAlign.Center, color = if (isSelected) selectedTint else tint, fontSize = 10.sp)
     }
 }
 
@@ -72,22 +74,48 @@ fun selectorTeacher(
     Row(modifier = modifier.fillMaxWidth().background(backgroundColor), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
         var buttonClicked by rememberSaveable {mutableIntStateOf(1)}
         BaseButton(
-
+            painter = painterResource(R.drawable.timetable),
+            onClick = {
+                setCurrentScreen(1)
+                buttonClicked = 1
+                      },
+            contentDescription = context.getString(R.string.classes),
+            tint = tint,
+            selectedTint = selectedTint,
+            isSelected = buttonClicked == 1
         )
         BaseButton(
-
+            onClick = {
+                setCurrentScreen(2)
+                buttonClicked = 2
+            },
+            contentDescription = context.getString(R.string.favourites),
+            tint = tint,
+            selectedTint = selectedTint,
+            isSelected = buttonClicked == 2
         )
         BaseButton(
-
+            painter = painterResource(R.drawable.manager),
+            onClick = {
+                setCurrentScreen(3)
+                buttonClicked = 3
+            },
+            contentDescription = context.getString(R.string.classesManager),
+            tint = tint,
+            selectedTint = selectedTint,
+            isSelected = buttonClicked == 3
         )
         BaseButton(
-
+            painter = painterResource(R.drawable.profile),
+            onClick = {
+                setCurrentScreen(4)
+                buttonClicked = 4
+            },
+            contentDescription = context.getString(R.string.profile),
+            tint = tint,
+            selectedTint = selectedTint,
+            isSelected = buttonClicked == 4
         )
-        BaseButton(
 
-        )
-        BaseButton(
-
-        )
     }
 }
