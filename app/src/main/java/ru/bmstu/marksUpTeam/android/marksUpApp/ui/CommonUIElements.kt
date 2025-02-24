@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -64,13 +65,14 @@ fun BaseButton(
 
 @Preview
 @Composable
-fun SelectorTeacher(
+fun Selector(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     setCurrentScreen: (Int) -> Unit = {},
     backgroundColor: Color = colorResource(id = R.color.black),
     tint: Color = colorResource(id = R.color.white),
     selectedTint: Color = colorResource(id = R.color.purple_500),
+    isForTeacher: Boolean = false,
 ){
     Row(modifier = modifier.fillMaxWidth().background(backgroundColor), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
         var buttonClicked by rememberSaveable {mutableIntStateOf(1)}
@@ -95,17 +97,31 @@ fun SelectorTeacher(
             selectedTint = selectedTint,
             isSelected = buttonClicked == 2
         )
-        BaseButton(
-            painter = painterResource(R.drawable.manager),
-            onClick = {
-                setCurrentScreen(3)
-                buttonClicked = 3
-            },
-            contentDescription = context.getString(R.string.classesManager),
-            tint = tint,
-            selectedTint = selectedTint,
-            isSelected = buttonClicked == 3
-        )
+        if (isForTeacher) {
+            BaseButton(
+                painter = painterResource(R.drawable.manager),
+                onClick = {
+                    setCurrentScreen(3)
+                    buttonClicked = 3
+                },
+                contentDescription = context.getString(R.string.classesManager),
+                tint = tint,
+                selectedTint = selectedTint,
+                isSelected = buttonClicked == 3
+            )
+        } else {
+            BaseButton(
+                painter = painterResource(R.drawable.five),
+                onClick = {
+                    setCurrentScreen(3)
+                    buttonClicked = 3
+                },
+                contentDescription = context.getString(R.string.marks),
+                tint = tint,
+                selectedTint = selectedTint,
+                isSelected = buttonClicked == 3
+            )
+        }
         BaseButton(
             painter = painterResource(R.drawable.profile),
             onClick = {
@@ -120,62 +136,32 @@ fun SelectorTeacher(
 
     }
 }
+
 
 @Preview
 @Composable
-fun SelectorStudent(
+fun Loading(
     modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
-    setCurrentScreen: (Int) -> Unit = {},
-    backgroundColor: Color = colorResource(id = R.color.black),
     tint: Color = colorResource(id = R.color.white),
-    selectedTint: Color = colorResource(id = R.color.purple_500),
 ){
-    Row(modifier = modifier.fillMaxWidth().background(backgroundColor), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
-        var buttonClicked by rememberSaveable {mutableIntStateOf(1)}
-        BaseButton(
-            painter = painterResource(R.drawable.timetable),
-            onClick = {
-                setCurrentScreen(1)
-                buttonClicked = 1
-            },
-            contentDescription = context.getString(R.string.classes),
-            tint = tint,
-            selectedTint = selectedTint,
-            isSelected = buttonClicked == 1
-        )
-        BaseButton(
-            onClick = {
-                setCurrentScreen(2)
-                buttonClicked = 2
-            },
-            contentDescription = context.getString(R.string.favourites),
-            tint = tint,
-            selectedTint = selectedTint,
-            isSelected = buttonClicked == 2
-        )
-        BaseButton(
-            painter = painterResource(R.drawable.five),
-            onClick = {
-                setCurrentScreen(3)
-                buttonClicked = 3
-            },
-            contentDescription = context.getString(R.string.marks),
-            tint = tint,
-            selectedTint = selectedTint,
-            isSelected = buttonClicked == 3
-        )
-        BaseButton(
-            painter = painterResource(R.drawable.profile),
-            onClick = {
-                setCurrentScreen(4)
-                buttonClicked = 4
-            },
-            contentDescription = context.getString(R.string.profile),
-            tint = tint,
-            selectedTint = selectedTint,
-            isSelected = buttonClicked == 4
-        )
-
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(color = tint)
     }
 }
+
+
+@Preview
+@Composable
+fun Error(
+    modifier: Modifier = Modifier,
+    onRefresh: () -> Unit = {},
+    context: Context = LocalContext.current,
+    tint: Color = colorResource(id = R.color.white),
+){
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        IconButton(onClick = {onRefresh()}) {
+            Icon(painter = painterResource(R.drawable.error), contentDescription = context.getString(R.string.errorOccurred), modifier = Modifier.fillMaxSize(), tint = tint)
+        }
+    }
+}
+
