@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui
 
 import android.content.Context
@@ -63,7 +65,7 @@ fun BaseButton(
 
 @Preview
 @Composable
-fun selectorTeacher(
+fun SelectorTeacher(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     setCurrentScreen: (Int) -> Unit = {},
@@ -101,6 +103,65 @@ fun selectorTeacher(
                 buttonClicked = 3
             },
             contentDescription = context.getString(R.string.classesManager),
+            tint = tint,
+            selectedTint = selectedTint,
+            isSelected = buttonClicked == 3
+        )
+        BaseButton(
+            painter = painterResource(R.drawable.profile),
+            onClick = {
+                setCurrentScreen(4)
+                buttonClicked = 4
+            },
+            contentDescription = context.getString(R.string.profile),
+            tint = tint,
+            selectedTint = selectedTint,
+            isSelected = buttonClicked == 4
+        )
+
+    }
+}
+
+@Preview
+@Composable
+fun SelectorStudent(
+    modifier: Modifier = Modifier,
+    context: Context = LocalContext.current,
+    setCurrentScreen: (Int) -> Unit = {},
+    backgroundColor: Color = colorResource(id = R.color.black),
+    tint: Color = colorResource(id = R.color.white),
+    selectedTint: Color = colorResource(id = R.color.purple_500),
+){
+    Row(modifier = modifier.fillMaxWidth().background(backgroundColor), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
+        var buttonClicked by rememberSaveable {mutableIntStateOf(1)}
+        BaseButton(
+            painter = painterResource(R.drawable.timetable),
+            onClick = {
+                setCurrentScreen(1)
+                buttonClicked = 1
+            },
+            contentDescription = context.getString(R.string.classes),
+            tint = tint,
+            selectedTint = selectedTint,
+            isSelected = buttonClicked == 1
+        )
+        BaseButton(
+            onClick = {
+                setCurrentScreen(2)
+                buttonClicked = 2
+            },
+            contentDescription = context.getString(R.string.favourites),
+            tint = tint,
+            selectedTint = selectedTint,
+            isSelected = buttonClicked == 2
+        )
+        BaseButton(
+            painter = painterResource(R.drawable.five),
+            onClick = {
+                setCurrentScreen(3)
+                buttonClicked = 3
+            },
+            contentDescription = context.getString(R.string.marks),
             tint = tint,
             selectedTint = selectedTint,
             isSelected = buttonClicked == 3
