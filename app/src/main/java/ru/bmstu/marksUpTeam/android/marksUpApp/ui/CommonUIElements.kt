@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -135,3 +136,32 @@ fun Selector(
 
     }
 }
+
+
+@Preview
+@Composable
+fun Loading(
+    modifier: Modifier = Modifier,
+    tint: Color = colorResource(id = R.color.white),
+){
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(color = tint)
+    }
+}
+
+
+@Preview
+@Composable
+fun Error(
+    modifier: Modifier = Modifier,
+    onRefresh: () -> Unit = {},
+    context: Context = LocalContext.current,
+    tint: Color = colorResource(id = R.color.white),
+){
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        IconButton(onClick = {onRefresh()}) {
+            Icon(painter = painterResource(R.drawable.error), contentDescription = context.getString(R.string.errorOccurred), modifier = Modifier.fillMaxSize(), tint = tint)
+        }
+    }
+}
+

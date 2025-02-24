@@ -6,4 +6,5 @@
     <string name="profile">Profile</string>
     <string name="classesManager">Manager</string>
     <string name="marks">Marks</string>
+    <string name="errorOccurred">An error has occurred.</string>
 </resources>
