@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">MarksUp</string>
+    <string name="app_name" translatable="false">MarksUp</string>
+    <string name="classes">Classes</string>
+    <string name="homework">Homework</string>
+    <string name="favourites">Favourites</string>
+    <string name="profile">Profile</string>
+    <string name="classesManager">Manager</string>
+    <string name="marks">Marks</string>
 </resources>
