@@ -25,7 +25,8 @@ data class Discipline(
 data class Teacher(
     val id: Long,
     val person: Person,
-    val disciplines: List<Discipline>
+    val disciplines: List<Discipline>,
+    val description: String,
 )
 
 @Serializable
