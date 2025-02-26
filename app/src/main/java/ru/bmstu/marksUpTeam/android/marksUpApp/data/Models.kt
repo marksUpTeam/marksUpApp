@@ -23,6 +23,12 @@ data class Class( // занятие
 
 )
 
+@Serializable
+enum class AssignmentStatus(val value: String) {
+    Assigned("ASSIGNED"),
+    Completed("COMPLETED"),
+    Defended("DEFENDED")
+}
 
 @Serializable
 data class Assignment( // домашнее задание
@@ -35,7 +41,7 @@ data class Assignment( // домашнее задание
     @Serializable(with = LocalDateSerializer::class)
     val deadline: LocalDate,
     val description: String,
-    val isCompleted: Boolean,
+    val status: AssignmentStatus,
     val grade: Int?
 )
 
@@ -69,6 +75,6 @@ val baseAssignment = Assignment(
     issuedOn = LocalDate.now(),
     deadline = LocalDate.now(),
     description = "tasks 10 - 15",
-    isCompleted = false,
+    status = AssignmentStatus.Assigned,
     grade = null
 )
