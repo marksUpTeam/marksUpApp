@@ -1,9 +1,12 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data
 
+import kotlinx.datetime.Clock
 import kotlinx.datetime.serializers.LocalDateTimeIso8601Serializer
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @Serializable
 data class Class( // занятие
@@ -46,3 +49,14 @@ data class FavouritesItem(
         }
     }
 }
+
+val baseClass = Class(
+    id = 1,
+    discipline = baseDiscipline,
+    teacher = baseTeacher,
+    students = listOf(baseStudent),
+    datetimeStart = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+    datetimeEnd = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+    assignmentsDue = listOf()
+)
+
