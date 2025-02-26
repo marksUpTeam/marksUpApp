@@ -11,6 +11,7 @@ data class Person(
     val surname: String,
     val email: String,
     val phone: String,
+    val imgUrl: String,
 )
 
 @Serializable
@@ -50,9 +51,10 @@ data class Student(
 
 
 @Serializable
-data class Profile(
+data class Profile( // export model
     val id: Long,
     val username: String,
+    val person: Person,
     val parent: Parent?,
     val student: Student?,
     val teacher: Teacher?,
