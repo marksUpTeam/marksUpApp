@@ -1,5 +1,6 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data
 
+import android.R.attr.description
 import kotlinx.datetime.Clock
 import kotlinx.datetime.serializers.LocalDateTimeIso8601Serializer
 import kotlinx.serialization.Serializable
@@ -60,3 +61,14 @@ val baseClass = Class(
     assignmentsDue = listOf()
 )
 
+val baseAssignment = Assignment(
+    id = 1,
+    students = listOf(baseStudent),
+    teacher = baseTeacher,
+    discipline = baseDiscipline,
+    issuedOn = LocalDate.now(),
+    deadline = LocalDate.now(),
+    description = "tasks 10 - 15",
+    isCompleted = false,
+    grade = null
+)
