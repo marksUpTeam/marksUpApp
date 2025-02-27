@@ -14,7 +14,7 @@ data class Class( // занятие
     val id: Long,
     val discipline: Discipline,
     val teacher: Teacher,
-    val students: List<Student>,
+    val student: Student,
     @Serializable(with = LocalDateTimeIso8601Serializer::class)
     val datetimeStart: LocalDateTime,
     @Serializable(with = LocalDateTimeIso8601Serializer::class)
@@ -47,6 +47,8 @@ data class Assignment( // домашнее задание
 
 @Serializable
 data class FavouritesItem(
+    val id: Long,
+    val profile: Profile,
     val assignment: Assignment?,
     val classObj: Class?
 ) {
@@ -61,7 +63,7 @@ val baseClass = Class(
     id = 1,
     discipline = baseDiscipline,
     teacher = baseTeacher,
-    students = listOf(baseStudent),
+    student = baseStudent,
     datetimeStart = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
     datetimeEnd = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
     assignmentsDue = listOf()
