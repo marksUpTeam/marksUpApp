@@ -33,7 +33,7 @@ enum class AssignmentStatus(val value: String) {
 @Serializable
 data class Assignment( // домашнее задание
     val id: Long,
-    val students: Student,
+    val student: Student,
     val teacher: Teacher,
     val discipline: Discipline,
     @Serializable(with = LocalDateSerializer::class)
@@ -71,7 +71,7 @@ val baseClass = Class(
 
 val baseAssignment = Assignment(
     id = 1,
-    students = baseStudent,
+    student = baseStudent,
     teacher = baseTeacher,
     discipline = baseDiscipline,
     issuedOn = LocalDate.now(),
