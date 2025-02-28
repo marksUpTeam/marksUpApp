@@ -10,6 +10,5 @@ class MarksUpApp : Application() {
         VKID.init(this)
         VKID.logsEnabled = true
         Log.println(Log.INFO, "vkId", "Started VKID")
-
     }
 }
