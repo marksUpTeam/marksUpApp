@@ -9,7 +9,7 @@ class AuthorizationActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Authorization()
+            Authorization(onAuth = {a, b -> {println(a); println(b)}})
         }
     }
 }
