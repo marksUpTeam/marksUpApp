@@ -7,4 +7,7 @@
     <string name="classesManager">Manager</string>
     <string name="marks">Marks</string>
     <string name="errorOccurred">An error has occurred.</string>
+    <string name="privacyPolicy">By authorizing using VK ID you agree to share your VK data with MarksUp</string>
+    <string name="somethingWentWrong">Something went wrong. Please try again later</string>
+
 </resources>

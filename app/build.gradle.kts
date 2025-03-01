@@ -4,7 +4,10 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("kotlin-parcelize")
     id("org.jetbrains.kotlin.plugin.serialization") version "2.1.10"
+    id("vkid.manifest.placeholders")
 }
+
+
 
 android {
     namespace = "ru.bmstu.marksUpTeam.android.marksUpApp"
@@ -29,6 +32,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -74,4 +78,14 @@ dependencies {
 
     //datetime
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
+
+    //vk
+    implementation("com.vk.id:vkid:2.2.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    implementation("com.vk.id:onetap-compose:2.2.2")
+
+    //enc shared prefs
+    implementation ("androidx.security:security-crypto:1.1.0-alpha06")
+
 }
+
