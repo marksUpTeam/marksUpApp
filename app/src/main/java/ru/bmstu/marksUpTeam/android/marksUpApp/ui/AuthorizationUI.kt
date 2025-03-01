@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vk.id.AccessToken
+import com.vk.id.VKIDAuthFail
 import com.vk.id.auth.AuthCodeData
 import com.vk.id.onetap.common.OneTapOAuth
 import com.vk.id.onetap.compose.onetap.OneTap
@@ -44,12 +45,14 @@ fun vkAuthBlock(
     context: Context = LocalContext.current,
     onAuth: (OneTapOAuth?, AccessToken) -> Unit = { _, _ -> },
     onAuthCode: (AuthCodeData, Boolean) -> Unit = {_, _ -> },
+    onFail: (OneTapOAuth?, VKIDAuthFail) -> Unit = { _, _ -> },
     tint: Color = colorResource(R.color.grey),
 ) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
         OneTap(onAuth = onAuth,
             signInAnotherAccountButtonEnabled = true,
-            onAuthCode = onAuthCode)
+            onAuthCode = onAuthCode,
+            onFail = onFail,)
         Text(text = context.getString(R.string.privacyPolicy), modifier = Modifier.fillMaxWidth().padding(10.dp), textAlign = TextAlign.Center, color = tint)
     }
 }
@@ -66,6 +69,8 @@ fun Authorization(
     backgroundColor: Color = colorResource(id = R.color.lighter_black),
     context: Context = LocalContext.current,
     onAuthCode: (AuthCodeData, Boolean) -> Unit = { _, _ -> },
+    onFail: (OneTapOAuth?, VKIDAuthFail) -> Unit = { _, _ -> },
+    didFail: Boolean = false,
 ){
     Column(
         modifier = modifier.fillMaxSize().background(backgroundColor), horizontalAlignment = Alignment.CenterHorizontally,
@@ -75,7 +80,13 @@ fun Authorization(
             Text(text = context.getString(R.string.app_name), modifier = Modifier.padding(5.dp), fontSize = 32.sp, color = iconTint, fontFamily = sigmarFont)
         }
         Column(modifier = Modifier.fillMaxSize().padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            vkAuthBlock(context = context, onAuth = onAuth, onAuthCode = onAuthCode)
+            vkAuthBlock(context = context, onAuth = onAuth, onAuthCode = onAuthCode, onFail = onFail)
+            if (didFail) {
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                    Icon(painter = painterResource(R.drawable.error), contentDescription = null, modifier = Modifier.size(24.dp), tint = colorResource(R.color.red))
+                    Text(text = context.getString(R.string.somethingWentWrong), color = colorResource(id = R.color.red), modifier = Modifier.padding(10.dp))
+                }
+            }
         }
     }
 }

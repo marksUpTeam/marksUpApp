@@ -83,5 +83,9 @@ dependencies {
     implementation("com.vk.id:vkid:2.2.2")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
     implementation("com.vk.id:onetap-compose:2.2.2")
+
+    //enc shared prefs
+    implementation ("androidx.security:security-crypto:1.1.0-alpha06")
+
 }
 
