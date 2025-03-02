@@ -4,9 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getEncryptedSharedPreferences
-import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getJwt
-import ru.bmstu.marksUpTeam.android.marksUpApp.tools.invalidateSession
+
 
 
 fun testProfileCall(

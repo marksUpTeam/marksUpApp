@@ -53,7 +53,6 @@ fun vkAuthBlock(
 ) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
         OneTap(onAuth = onAuth,
-            signInAnotherAccountButtonEnabled = true,
             onAuthCode = onAuthCode,
             onFail = onFail,)
         Text(text = context.getString(R.string.privacyPolicy), modifier = Modifier.fillMaxWidth().padding(10.dp), textAlign = TextAlign.Center, color = tint)

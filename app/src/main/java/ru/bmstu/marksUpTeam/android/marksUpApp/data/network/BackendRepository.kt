@@ -16,7 +16,7 @@ class BackendRepository(api: String) {
     private val backendApi = retrofit.create(BackendApi::class.java)
 
     suspend fun testProfile(jwt: String): Boolean{
-        val response = backendApi.testProfile(jwt)
+        val response = backendApi.testProfile("Bearer $jwt")
         return response.isSuccessful
     }
 }

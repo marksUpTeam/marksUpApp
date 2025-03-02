@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.intellij.lang.annotations.JdkConstants
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 
 
@@ -143,8 +144,9 @@ fun Selector(
 fun LoadingScreen(
     modifier: Modifier = Modifier,
     tint: Color = colorResource(id = R.color.white),
+    backgroundColor: Color = colorResource(id = R.color.lighter_black),
 ){
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(modifier = modifier.background(backgroundColor), contentAlignment = Alignment.Center) {
         CircularProgressIndicator(color = tint)
     }
 }
@@ -157,11 +159,14 @@ fun ErrorScreen(
     onRefresh: () -> Unit = {},
     context: Context = LocalContext.current,
     tint: Color = colorResource(id = R.color.white),
+    backgroundColor: Color = colorResource(id = R.color.lighter_black),
+    errorMessage: String = "",
 ){
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Column(modifier = modifier.background(backgroundColor), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         IconButton(onClick = {onRefresh()}) {
             Icon(painter = painterResource(R.drawable.error), contentDescription = context.getString(R.string.errorOccurred), modifier = Modifier.fillMaxSize(), tint = tint)
         }
+        Text(text = errorMessage, color = tint, fontSize = 18.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(10.dp))
     }
 }
 
