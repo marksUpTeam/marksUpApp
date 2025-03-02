@@ -140,7 +140,7 @@ fun Selector(
 
 @Preview
 @Composable
-fun Loading(
+fun LoadingScreen(
     modifier: Modifier = Modifier,
     tint: Color = colorResource(id = R.color.white),
 ){
@@ -152,7 +152,7 @@ fun Loading(
 
 @Preview
 @Composable
-fun Error(
+fun ErrorScreen(
     modifier: Modifier = Modifier,
     onRefresh: () -> Unit = {},
     context: Context = LocalContext.current,

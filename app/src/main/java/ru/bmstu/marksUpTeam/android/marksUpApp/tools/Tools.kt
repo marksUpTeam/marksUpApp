@@ -10,3 +10,11 @@ fun getEncryptedSharedPreferences(context: Context): EncryptedSharedPreferences 
     return EncryptedSharedPreferences.create(context, "user_data", masterKey, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM) as EncryptedSharedPreferences
 }
+
+fun getJwt(context: Context): String?{
+    val prefs = getEncryptedSharedPreferences(context)
+    val jwt = prefs.getString("jwt", null)
+    return jwt
+}
+
+fun invalidateSession(context: Context){}
