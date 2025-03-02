@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -50,7 +53,6 @@ fun vkAuthBlock(
 ) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
         OneTap(onAuth = onAuth,
-            signInAnotherAccountButtonEnabled = true,
             onAuthCode = onAuthCode,
             onFail = onFail,)
         Text(text = context.getString(R.string.privacyPolicy), modifier = Modifier.fillMaxWidth().padding(10.dp), textAlign = TextAlign.Center, color = tint)
@@ -87,6 +89,30 @@ fun Authorization(
                     Text(text = context.getString(R.string.somethingWentWrong), color = colorResource(id = R.color.red), modifier = Modifier.padding(10.dp))
                 }
             }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun AccountNotFoundScreen(
+    modifier: Modifier = Modifier,
+    onPress: () -> Unit = {},
+    tint: Color = colorResource(id = R.color.white),
+    iconTint: Color = colorResource(id = R.color.red),
+    containerColor: Color = colorResource(id = R.color.black),
+    backgroundColor: Color = colorResource(id = R.color.lighter_black),
+    context: Context = LocalContext.current,
+){
+    Column(modifier = modifier.fillMaxSize().background(backgroundColor), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+        Icon(painter = painterResource(R.drawable.no_acc), contentDescription = null, modifier = Modifier.size(60.dp), tint = iconTint)
+        Text(text = context.getString(R.string.accNotFound), color = tint, textAlign = TextAlign.Center, modifier = Modifier.padding(10.dp), fontSize = 18.sp)
+        Button(onClick = onPress, modifier = Modifier.padding(10.dp), colors = ButtonColors(
+            containerColor = containerColor,
+            disabledContainerColor = containerColor,
+            contentColor = tint,
+            disabledContentColor = tint,)){
+                Text(text = context.getString(R.string.try_again), color = tint)
         }
     }
 }

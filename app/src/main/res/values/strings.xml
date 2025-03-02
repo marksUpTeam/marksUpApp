@@ -9,5 +9,7 @@
     <string name="errorOccurred">An error has occurred.</string>
     <string name="privacyPolicy">By authorizing using VK ID you agree to share your VK data with MarksUp</string>
     <string name="somethingWentWrong">Something went wrong. Please try again later</string>
+    <string name="accNotFound">No profile found linked with that VK ID account. Maybe try another one?</string>
+    <string name="try_again">Try again</string>
 
 </resources>

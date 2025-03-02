@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -6,6 +9,14 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "2.1.10"
     id("vkid.manifest.placeholders")
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
+val apiUrl: String = localProperties.getProperty("apiUrl")
 
 
 
@@ -21,6 +32,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_URL", "\"${apiUrl}\"")
     }
 
     buildTypes {
@@ -39,6 +52,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -70,6 +84,7 @@ dependencies {
 
     //serializer
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    implementation ("com.squareup.retrofit2:converter-kotlinx-serialization:2.11.0")
 
     //retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
