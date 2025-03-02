@@ -20,7 +20,7 @@ vkIntegrationSecret=КЛЮЧ_ПРИЛОЖЕНИЯ_ВК_ДЛЯ_АВТОРИЗАЦ
 # Для отключения авторизации на время разработки выставить false
 vkIntegrationDoAuth=false  
 
-apiUrl=ССЫЛКА_НА_БЭКЭНД
+apiUrl=URL_BACKEND
 ```
 
 # Авторы
