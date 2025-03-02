@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.BackendRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.testProfileCall
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getEncryptedSharedPreferences
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.AccountNotFoundScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.Authorization
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.ErrorScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.LoadingScreen
@@ -32,11 +33,10 @@ class AuthorizationActivity: ComponentActivity() {
             if (profileExists == 1) {
                 finish()
             }
-            else if (profileExists == 2) {
-                // start registration
-                finish()
-            }
             when {
+                profileExists == 2 -> {
+                    AccountNotFoundScreen(onPress = {profileExists = 0; })
+                }
                 error -> {
                     ErrorScreen(onRefresh = {
                         error = false
