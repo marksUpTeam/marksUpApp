@@ -18,7 +18,7 @@ class AuthorizationActivity: ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             var didFail by rememberSaveable { mutableStateOf(false) }
-            Authorization(onAuth = {oauth, token -> run {saveJWT(oauth, token, this)}}, didFail = didFail, onFail = {_, _ -> run {didFail = true}})
+            Authorization(onAuth = {oauth, token -> run {saveJWT(oauth, token, this)}; this.finish()}, didFail = didFail, onFail = {_, _ -> run {didFail = true}})
         }
     }
 }
