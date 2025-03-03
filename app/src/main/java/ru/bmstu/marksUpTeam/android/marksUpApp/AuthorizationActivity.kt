@@ -25,9 +25,10 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.ui.LoadingScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme.MarksUpTheme
 
 class AuthorizationActivity: ComponentActivity() {
-    private val backendRepository by lazy { BackendRepository(BuildConfig.API_URL) }
+    private val backendRepository by lazy { BackendRepository(BuildConfig.API_URL, this) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        println(BuildConfig.API_URL)
         setContent {
             MarksUpTheme(){
             val coroutineScope = rememberCoroutineScope()
