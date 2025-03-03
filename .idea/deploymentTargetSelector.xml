@@ -16,7 +16,7 @@
       <SelectionState runConfigName="Loading">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="AuthorizationActivity (1)">
+      <SelectionState runConfigName="AuthorizationActivity">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
