@@ -1,4 +1,4 @@
-package ru.bmstu.marksUpTeam.android.marksUpApp.ui
+package ru.bmstu.marksUpTeam.android.marksUpApp.ui.profile
 
 import android.content.Context
 import android.util.Log
@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,17 +13,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,10 +34,7 @@ import coil3.compose.LocalAsyncImagePreviewHandler
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Person
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.Teacher
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseParentProfile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudentProfile
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseTeacherProfile
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme.Black
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme.Grey
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme.LighterBlack
@@ -64,7 +57,7 @@ fun ProfileUI(
     backgroundColor: Color = Black,
     onBackgroundColor: Color = LighterBlack,
     mainColor: Color = Purple500,
-    profileData: Profile = baseParentProfile,
+    profileData: Profile = baseStudentProfile,
     context: Context = LocalContext.current,
 ){
     val previewHandler = AsyncImagePreviewHandler{

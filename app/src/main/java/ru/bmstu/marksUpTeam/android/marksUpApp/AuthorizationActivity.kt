@@ -14,8 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.vk.id.AccessToken
 import com.vk.id.onetap.common.OneTapOAuth
-import kotlinx.coroutines.CoroutineScope
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.BackendRepository
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.authorization.AuthorizationRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.testProfileCall
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getEncryptedSharedPreferences
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.AccountNotFoundScreen
@@ -25,7 +24,7 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.ui.LoadingScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme.MarksUpTheme
 
 class AuthorizationActivity: ComponentActivity() {
-    private val backendRepository by lazy { BackendRepository(BuildConfig.API_URL, this) }
+    private val authorizationRepository by lazy { AuthorizationRepository(BuildConfig.API_URL, this) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         println(BuildConfig.API_URL)
@@ -59,7 +58,7 @@ class AuthorizationActivity: ComponentActivity() {
                else -> Authorization(
                     onAuth = { oauth, token -> run {testProfileCall(
                         coroutineScope,
-                        backendRepository,
+                        authorizationRepository,
                         setResult = {if (it) {
                             profileExists = 1
                         } else {

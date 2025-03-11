@@ -1,7 +1,7 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.R
+
 import androidx.compose.ui.res.colorResource
 
 val Purple80 = Color(0xFFD0BCFF)
