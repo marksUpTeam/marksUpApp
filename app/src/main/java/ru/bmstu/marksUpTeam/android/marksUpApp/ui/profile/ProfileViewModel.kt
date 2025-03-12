@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.Parent
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileRepository
 
 
@@ -54,8 +56,35 @@ class ProfileViewModel(api: String, jwt: String, context: Context): ViewModel() 
         }
     }
 
+    fun pushCurrentStudentChange(student: Student, infoDisplay: (String) -> Unit = {}){
+        val newProfile = formNewProfile(student) ?: return
+        pushProfileChanges(newProfile, infoDisplay)
+    }
+
     init {
         updateFlow()
+    }
+
+    private fun formNewProfile(student: Student): Profile? {
+        if (stateFlow.value is ProfileState.ContentParent){
+            val profile = (stateFlow.value as ProfileState.ContentParent).profile
+            val studentList = profile.parent?.children ?: return null
+            if (studentList.contains(student) == false){
+                return null
+            }
+            val newParent = Parent(
+                id = profile.parent.id,
+                person = profile.parent.person,
+                children = profile.parent.children,
+                currentChild = student,
+            )
+            return Profile(
+                id = profile.id,
+                username = profile.username,
+                parent = newParent,
+            )
+        }
+        return null
     }
 
 }

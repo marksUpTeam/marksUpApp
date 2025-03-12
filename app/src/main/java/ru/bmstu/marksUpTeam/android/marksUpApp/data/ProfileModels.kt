@@ -1,5 +1,6 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data
 
+import androidx.compose.runtime.currentComposer
 import kotlinx.serialization.Serializable
 
 // PROFILE MODELS
@@ -39,7 +40,8 @@ data class Teacher(
 data class Parent(
     val id: Long,
     val person: Person,
-    val children: List<Student>
+    val children: List<Student>,
+    val currentChild: Student,
 
 )
 
@@ -74,7 +76,7 @@ val baseDiscipline = Discipline(id = 1, name = "Calculus", complexity = 10)
 
 val baseTeacher = Teacher(id = 1, person = basePersonTeacher, disciplines = listOf(baseDiscipline), description = "Renowned calculus teacher. Teaching for 10 years straight.")
 val baseStudent = Student(id = 1, person = basePersonStudent, description = "I'm smart!")
-val baseParent = Parent(id = 1, person = basePersonParent, children = listOf(baseStudent))
+val baseParent = Parent(id = 1, person = basePersonParent, children = listOf(baseStudent), currentChild = baseStudent)
 
 val baseTeacherProfile = Profile(id = 1, username="elvirasmirnova", teacher = baseTeacher)
 val baseStudentProfile = Profile(id = 2, username="artemlint", student = baseStudent)
