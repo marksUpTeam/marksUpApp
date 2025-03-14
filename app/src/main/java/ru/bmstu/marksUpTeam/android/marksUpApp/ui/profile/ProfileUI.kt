@@ -3,6 +3,7 @@ package ru.bmstu.marksUpTeam.android.marksUpApp.ui.profile
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,8 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -26,6 +30,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,6 +47,9 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseParentProfile
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudent
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudent2
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudent3
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudentProfile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseTeacherProfile
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.ErrorScreen
@@ -87,7 +95,7 @@ val previewHandler = AsyncImagePreviewHandler{
 @OptIn(ExperimentalCoilApi::class, ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-private fun ContentTeacherScreen( // TODO: Fill out composable
+private fun ContentTeacherScreen(
     onRefresh: () -> Unit = {},
     teacher: Profile = baseTeacherProfile,
     context: Context = LocalContext.current,
@@ -99,7 +107,7 @@ private fun ContentTeacherScreen( // TODO: Fill out composable
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
             ) {
-                CommonContentView("${teacher.teacher?.person?.surname}\n${teacher.teacher?.person?.name}\n${teacher.teacher?.person?.patronymic}", context.getString(R.string.student),
+                CommonContentView("${teacher.teacher?.person?.surname}\n${teacher.teacher?.person?.name}\n${teacher.teacher?.person?.patronymic}", context.getString(R.string.teacher),
                     teacher.teacher?.person?.imgUrl ?: ""
                 )
                 Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -122,7 +130,7 @@ private fun ContentTeacherScreen( // TODO: Fill out composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
 @Preview
 @Composable
-private fun ContentStudentScreen( // TODO: Fill out composable
+private fun ContentStudentScreen(
     onRefresh: () -> Unit = {},
     student: Profile = baseStudentProfile,
     context: Context = LocalContext.current,
@@ -146,7 +154,7 @@ private fun ContentStudentScreen( // TODO: Fill out composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
 @Preview
 @Composable
-private fun ContentParentScreen( // TODO: Fill out composable
+private fun ContentParentScreen(
     onRefresh: () -> Unit = {},
     parent: Profile = baseParentProfile,
     onCurrentStudentChange: (Student) -> Unit = {},
@@ -163,7 +171,13 @@ private fun ContentParentScreen( // TODO: Fill out composable
                     "${parent.parent?.person?.surname}\n${parent.parent?.person?.name}\n${parent.parent?.person?.patronymic}",
                     context.getString(R.string.parent),
                     parent.parent?.person?.imgUrl ?: "",)
+                StudentSelector(
+                    modifier = Modifier.padding(10.dp),
+                    chosenStudent = parent.parent?.currentChild ?: throw NullPointerException("Current chosent student can not be null"),
+                    students = parent.parent.children,
+                    onCurrentStudentChange)
             }
+
         }
     }
 }
@@ -177,7 +191,6 @@ private fun CommonContentView(
     textName: String = "Lint\nArtem\nDmitrievich",
     textRole: String = "Student",
     imgUrl: String = "",
-    description: String = ""
 ) {
     Row(
         modifier = Modifier.padding(10.dp).height(50.dp),
@@ -248,5 +261,59 @@ private fun AboutMeSection(
     }
 }
 
+@Preview
+@Composable
+private fun StudentItem(
+    modifier: Modifier = Modifier,
+    student: Student = baseStudent,
+    isChosen: Boolean = false,
+    onClick: (Student) -> Unit = {},
+){
+    Row(modifier = modifier.fillMaxWidth().clickable(enabled = !isChosen){onClick(student)}, verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            painter = painterResource(R.drawable.child_face),
+            contentDescription = "",
+            tint = if (!isChosen) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
+            modifier = Modifier.width(48.dp).height(48.dp)
+        )
+        Text(
+            text = "${student.person.surname} ${student.person.name} ${student.person.patronymic}",
+            color = if (!isChosen) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
+            fontSize = 24.sp,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+        )
+    }
+}
 
 
+@Preview
+@Composable
+private fun StudentSelector(
+    modifier: Modifier = Modifier,
+    chosenStudent: Student = baseStudent,
+    students: List<Student> = listOf(baseStudent, baseStudent2, baseStudent3),
+    onChosenStudentChange: (Student) -> Unit = {},
+    context: Context = LocalContext.current,
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = context.getString(R.string.currentlyViewing),
+            )
+        }
+        LazyColumn(
+            modifier = modifier.fillMaxWidth().shadow(20.dp, spotColor = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(10.dp), clip = false).clip(RoundedCornerShape(10.dp))
+                .background(MaterialTheme.colorScheme.onBackground)
+        ) {
+            items(students) { student ->
+                StudentItem(
+                    student = student,
+                    onClick = { onChosenStudentChange(it) },
+                    isChosen = student == chosenStudent,
+                    modifier = Modifier.padding(10.dp)
+                )
+           }
+        }
+    }
+}

@@ -19,4 +19,4 @@ val LighterBlack = Color(0xFF1D1D1D)
 val Grey = Color(0xFF7A7A7A)
 val Red = Color(0xFFB60000)
 
-val darkerWhite = Color(0xFFC7C7C7)
+val darkerWhite = Color(0xFFF3DDD4)

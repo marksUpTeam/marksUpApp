@@ -76,7 +76,9 @@ val baseDiscipline = Discipline(id = 1, name = "Calculus", complexity = 10)
 
 val baseTeacher = Teacher(id = 1, person = basePersonTeacher, disciplines = listOf(baseDiscipline), description = "Renowned calculus teacher. Teaching for 10 years straight.")
 val baseStudent = Student(id = 1, person = basePersonStudent, description = "I'm smart!")
-val baseParent = Parent(id = 1, person = basePersonParent, children = listOf(baseStudent), currentChild = baseStudent)
+val baseStudent2 = Student(id = 2, person = basePersonStudent, description = "I'm smart!")
+val baseStudent3 = Student(id = 3, person = basePersonStudent, description = "I'm smart!")
+val baseParent = Parent(id = 1, person = basePersonParent, children = listOf(baseStudent, baseStudent2, baseStudent3), currentChild = baseStudent)
 
 val baseTeacherProfile = Profile(id = 1, username="elvirasmirnova", teacher = baseTeacher)
 val baseStudentProfile = Profile(id = 2, username="artemlint", student = baseStudent)

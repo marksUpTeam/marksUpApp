@@ -53,6 +53,7 @@ class ProfileViewModel(api: String, jwt: String, context: Context): ViewModel() 
             } catch (e: Exception){
                 infoDisplay(e.message ?: "")
             }
+            updateFlow()
         }
     }
 
