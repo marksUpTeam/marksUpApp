@@ -46,7 +46,7 @@ enum class ProfileType{
 }
 
 
-
+@Deprecated("")
 @OptIn(ExperimentalCoilApi::class)
 @Preview
 @Composable

@@ -1,8 +1,8 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.profile
 
 import android.content.Context
-import androidx.activity.contextaware.ContextAware
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,12 +21,14 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +37,7 @@ import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePreviewHandler
 import coil3.compose.LocalAsyncImagePreviewHandler
+import com.vk.id.onetap.common.button.style.OneTapButtonCornersStyle
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
@@ -44,6 +47,7 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseTeacherProfile
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.ErrorScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.LoadingScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme.MarksUpTheme
+import java.time.Month
 
 @Composable
 fun ProfileScreen(
@@ -98,10 +102,21 @@ private fun ContentTeacherScreen( // TODO: Fill out composable
                 CommonContentView("${teacher.teacher?.person?.surname}\n${teacher.teacher?.person?.name}\n${teacher.teacher?.person?.patronymic}", context.getString(R.string.student),
                     teacher.teacher?.person?.imgUrl ?: ""
                 )
+                Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    Text(
+                        text = "${context.getString(R.string.disciplines)} ${teacher.teacher?.disciplines?.joinToString(", ") ?: ""}",
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                    )
+                }
+                AboutMeSection(description = teacher.teacher?.description ?: "", modifier = Modifier.padding(10.dp))
             }
         }
     }
 }
+
+
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
@@ -122,6 +137,7 @@ private fun ContentStudentScreen( // TODO: Fill out composable
                 CommonContentView("${student.student?.person?.surname}\n${student.student?.person?.name}\n${student.student?.person?.patronymic}", context.getString(R.string.student),
                     student.student?.person?.imgUrl ?: ""
                 )
+                AboutMeSection(description = student.student?.description ?: "", modifier = Modifier.padding(10.dp))
             }
         }
     }
@@ -143,7 +159,10 @@ private fun ContentParentScreen( // TODO: Fill out composable
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
             ) {
-                CommonContentView("${parent.parent?.person?.surname}\n${parent.parent?.person?.name}\n${parent.parent?.person?.patronymic}", context.getString(R.string.parent), parent.parent?.person?.imgUrl ?: "")
+                CommonContentView(
+                    "${parent.parent?.person?.surname}\n${parent.parent?.person?.name}\n${parent.parent?.person?.patronymic}",
+                    context.getString(R.string.parent),
+                    parent.parent?.person?.imgUrl ?: "",)
             }
         }
     }
@@ -158,6 +177,7 @@ private fun CommonContentView(
     textName: String = "Lint\nArtem\nDmitrievich",
     textRole: String = "Student",
     imgUrl: String = "",
+    description: String = ""
 ) {
     Row(
         modifier = Modifier.padding(10.dp).height(50.dp),
@@ -172,7 +192,7 @@ private fun CommonContentView(
                 model = imgUrl,
                 contentDescription = "",
                 modifier = Modifier.width(128.dp).height(128.dp).shadow(
-                    elevation = 50.dp,
+                    elevation = 10.dp,
                     clip = true,
                     shape = RoundedCornerShape(30.dp),
                     spotColor = MaterialTheme.colorScheme.primary,
@@ -195,5 +215,38 @@ private fun CommonContentView(
             }
         }
     }
+
 }
+
+@Preview
+@Composable
+private fun AboutMeSection(
+    description: String = "Example description",
+    context: Context = LocalContext.current,
+    modifier: Modifier = Modifier,
+){
+    if (description.isBlank()) {
+        return
+    }
+    Column(
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Row (modifier = Modifier.fillMaxWidth()) {
+            Text(text = context.getString(R.string.aboutMe),
+                fontStyle = FontStyle.Italic,
+                fontSize = 18.sp,
+                color = MaterialTheme.colorScheme.secondary,)
+        }
+        Row (modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.onBackground),) {
+            Text(modifier = Modifier.fillMaxWidth().padding(5.dp),
+                textAlign = TextAlign.Center,
+                text = description,
+                fontSize = 22.sp,
+                color = MaterialTheme.colorScheme.secondary,
+            )
+        }
+    }
+}
+
+
 

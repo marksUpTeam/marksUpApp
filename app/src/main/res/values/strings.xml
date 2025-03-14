@@ -14,5 +14,7 @@
     <string name="teacher">Teacher</string>
     <string name="student">Student</string>
     <string name="parent">Parent</string>
+    <string name="disciplines">Disciplines:</string>
+    <string name="aboutMe">About me:</string>
 
 </resources>
