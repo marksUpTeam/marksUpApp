@@ -95,46 +95,14 @@ private fun ContentTeacherScreen( // TODO: Fill out composable
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
             ) {
-                Row(
-                    modifier = Modifier.padding(10.dp).height(50.dp),
-                ) {}
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(10.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    CompositionLocalProvider(LocalAsyncImagePreviewHandler provides previewHandler) {
-                        AsyncImage(
-                            model = teacher.teacher?.person?.imgUrl,
-                            contentDescription = "",
-                            modifier = Modifier.width(128.dp).height(128.dp).shadow(
-                                elevation = 50.dp,
-                                clip = true,
-                                shape = RoundedCornerShape(30.dp),
-                                spotColor = MaterialTheme.colorScheme.primary,
-                                ambientColor = MaterialTheme.colorScheme.primary
-                            ),
-                        )
-                        Column(modifier = Modifier.width(45.dp)) {}
-                        Column {
-                            Text(
-                                text = "${teacher.teacher?.person?.surname}\n${teacher.teacher?.person?.name}\n${teacher.teacher?.person?.patronymic}",
-                                color = MaterialTheme.colorScheme.secondary,
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold,
-                            )
-                            Text(
-                                text = context.getString(R.string.teacher),
-                                color = MaterialTheme.colorScheme.tertiary,
-                                fontStyle = FontStyle.Italic,
-                            )
-                        }
-                    }
-                }
+                CommonContentView("${teacher.teacher?.person?.surname}\n${teacher.teacher?.person?.name}\n${teacher.teacher?.person?.patronymic}", context.getString(R.string.student),
+                    teacher.teacher?.person?.imgUrl ?: ""
+                )
             }
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
 @Preview
@@ -151,42 +119,9 @@ private fun ContentStudentScreen( // TODO: Fill out composable
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
             ) {
-                Row(
-                    modifier = Modifier.padding(10.dp).height(50.dp),
-                ) {}
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(10.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    CompositionLocalProvider(LocalAsyncImagePreviewHandler provides previewHandler) {
-                        AsyncImage(
-                            model = student.student?.person?.imgUrl,
-                            contentDescription = "",
-                            modifier = Modifier.width(128.dp).height(128.dp).shadow(
-                                elevation = 50.dp,
-                                clip = true,
-                                shape = RoundedCornerShape(30.dp),
-                                spotColor = MaterialTheme.colorScheme.primary,
-                                ambientColor = MaterialTheme.colorScheme.primary
-                            ),
-                        )
-                        Column(modifier = Modifier.width(45.dp)) {}
-                        Column {
-                            Text(
-                                text = "${student.student?.person?.surname}\n${student.student?.person?.name}\n${student.student?.person?.patronymic}",
-                                color = MaterialTheme.colorScheme.secondary,
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold,
-                            )
-                            Text(
-                                text = context.getString(R.string.student),
-                                color = MaterialTheme.colorScheme.tertiary,
-                                fontStyle = FontStyle.Italic,
-                            )
-                        }
-                    }
-                }
+                CommonContentView("${student.student?.person?.surname}\n${student.student?.person?.name}\n${student.student?.person?.patronymic}", context.getString(R.string.student),
+                    student.student?.person?.imgUrl ?: ""
+                )
             }
         }
     }
@@ -208,42 +143,55 @@ private fun ContentParentScreen( // TODO: Fill out composable
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
             ) {
-                Row(
-                    modifier = Modifier.padding(10.dp).height(50.dp),
-                ) {}
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(10.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    CompositionLocalProvider(LocalAsyncImagePreviewHandler provides previewHandler) {
-                        AsyncImage(
-                            model = parent.parent?.person?.imgUrl,
-                            contentDescription = "",
-                            modifier = Modifier.width(128.dp).height(128.dp).shadow(
-                                elevation = 50.dp,
-                                clip = true,
-                                shape = RoundedCornerShape(30.dp),
-                                spotColor = MaterialTheme.colorScheme.primary,
-                                ambientColor = MaterialTheme.colorScheme.primary
-                            ),
-                        )
-                        Column(modifier = Modifier.width(45.dp)) {}
-                        Column {
-                            Text(
-                                text = "${parent.parent?.person?.surname}\n${parent.parent?.person?.name}\n${parent.parent?.person?.patronymic}",
-                                color = MaterialTheme.colorScheme.secondary,
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold,
-                            )
-                            Text(
-                                text = context.getString(R.string.parent),
-                                color = MaterialTheme.colorScheme.tertiary,
-                                fontStyle = FontStyle.Italic,
-                            )
-                        }
-                    }
-                }
+                CommonContentView("${parent.parent?.person?.surname}\n${parent.parent?.person?.name}\n${parent.parent?.person?.patronymic}", context.getString(R.string.parent), parent.parent?.person?.imgUrl ?: "")
+            }
+        }
+    }
+}
+
+
+
+@Preview
+@OptIn(ExperimentalCoilApi::class)
+@Composable
+private fun CommonContentView(
+    textName: String = "Lint\nArtem\nDmitrievich",
+    textRole: String = "Student",
+    imgUrl: String = "",
+) {
+    Row(
+        modifier = Modifier.padding(10.dp).height(50.dp),
+    ) {}
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(10.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        CompositionLocalProvider(LocalAsyncImagePreviewHandler provides previewHandler) {
+            AsyncImage(
+                model = imgUrl,
+                contentDescription = "",
+                modifier = Modifier.width(128.dp).height(128.dp).shadow(
+                    elevation = 50.dp,
+                    clip = true,
+                    shape = RoundedCornerShape(30.dp),
+                    spotColor = MaterialTheme.colorScheme.primary,
+                    ambientColor = MaterialTheme.colorScheme.primary
+                ),
+            )
+            Column(modifier = Modifier.width(45.dp)) {}
+            Column {
+                Text(
+                    text = textName,
+                    color = MaterialTheme.colorScheme.secondary,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = textRole,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    fontStyle = FontStyle.Italic,
+                )
             }
         }
     }

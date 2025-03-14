@@ -69,7 +69,7 @@ class AuthorizationActivity: ComponentActivity() {
                         context = this,
                         jwt = token.idToken ?: "") }; processJWT(oauth, token, this) },
                     didFail = didFail,
-                    onFail = { _, _ -> run { didFail = true } }, backgroundColor = MaterialTheme.colorScheme.background, iconTint = MaterialTheme.colorScheme.primary,)
+                    onFail = { _, authFail -> run { didFail = true; println(authFail) } }, backgroundColor = MaterialTheme.colorScheme.background, iconTint = MaterialTheme.colorScheme.primary,)
             }
         }
         }
