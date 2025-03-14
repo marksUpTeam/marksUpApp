@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,8 +16,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -99,9 +104,11 @@ private fun ContentTeacherScreen(
     onRefresh: () -> Unit = {},
     teacher: Profile = baseTeacherProfile,
     context: Context = LocalContext.current,
+    onEditClick: () -> Unit = {}
 ) {
     MarksUpTheme {
         PullToRefreshBox(isRefreshing = false, onRefresh = onRefresh) {
+            Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -120,6 +127,10 @@ private fun ContentTeacherScreen(
                 }
                 AboutMeSection(description = teacher.teacher?.description ?: "", modifier = Modifier.padding(10.dp))
             }
+                IconButton(onClick = onEditClick, modifier = Modifier.align(Alignment.BottomEnd).height(80.dp).width(80.dp)) {
+                    Icon(Icons.Filled.Edit, contentDescription = context.getString(R.string.edit), modifier=Modifier.width(48.dp).height(48.dp), tint = MaterialTheme.colorScheme.secondary)
+                }
+        }
         }
     }
 }
@@ -134,8 +145,10 @@ private fun ContentStudentScreen(
     onRefresh: () -> Unit = {},
     student: Profile = baseStudentProfile,
     context: Context = LocalContext.current,
+    onEditClick: () -> Unit = {}
 ){
     MarksUpTheme {
+        Box(modifier = Modifier.fillMaxSize()) {
         PullToRefreshBox(isRefreshing = false, onRefresh = onRefresh) {
             Column(
                 modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
@@ -146,6 +159,10 @@ private fun ContentStudentScreen(
                     student.student?.person?.imgUrl ?: ""
                 )
                 AboutMeSection(description = student.student?.description ?: "", modifier = Modifier.padding(10.dp))
+            }
+        }
+            IconButton(onClick = onEditClick, modifier = Modifier.align(Alignment.BottomEnd).height(80.dp).width(80.dp)) {
+                Icon(Icons.Filled.Edit, contentDescription = context.getString(R.string.edit), modifier=Modifier.width(48.dp).height(48.dp), tint = MaterialTheme.colorScheme.secondary)
             }
         }
     }
@@ -159,9 +176,11 @@ private fun ContentParentScreen(
     parent: Profile = baseParentProfile,
     onCurrentStudentChange: (Student) -> Unit = {},
     context: Context = LocalContext.current,
+    onEditClick: () -> Unit = {},
 ){
     MarksUpTheme {
         PullToRefreshBox(isRefreshing = false, onRefresh = onRefresh) {
+            Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -176,8 +195,11 @@ private fun ContentParentScreen(
                     chosenStudent = parent.parent?.currentChild ?: throw NullPointerException("Current chosent student can not be null"),
                     students = parent.parent.children,
                     onCurrentStudentChange)
+                }
+                IconButton(onClick = onEditClick, modifier = Modifier.align(Alignment.BottomEnd).height(80.dp).width(80.dp)) {
+                    Icon(Icons.Filled.Edit, contentDescription = context.getString(R.string.edit), modifier=Modifier.width(48.dp).height(48.dp), tint = MaterialTheme.colorScheme.secondary)
+                }
             }
-
         }
     }
 }
@@ -250,7 +272,7 @@ private fun AboutMeSection(
                 fontSize = 18.sp,
                 color = MaterialTheme.colorScheme.secondary,)
         }
-        Row (modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.onBackground),) {
+        Row (modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(MaterialTheme.colorScheme.secondaryContainer).shadow(20.dp, spotColor = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(20.dp), clip = false),) {
             Text(modifier = Modifier.fillMaxWidth().padding(5.dp),
                 textAlign = TextAlign.Center,
                 text = description,
@@ -304,7 +326,7 @@ private fun StudentSelector(
         }
         LazyColumn(
             modifier = modifier.fillMaxWidth().shadow(20.dp, spotColor = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(10.dp), clip = false).clip(RoundedCornerShape(10.dp))
-                .background(MaterialTheme.colorScheme.onBackground)
+                .background(MaterialTheme.colorScheme.secondaryContainer)
         ) {
             items(students) { student ->
                 StudentItem(

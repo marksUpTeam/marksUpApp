@@ -17,5 +17,6 @@
     <string name="disciplines">Disciplines:</string>
     <string name="aboutMe">About me:</string>
     <string name="currentlyViewing">Currently viewing: </string>
+    <string name="edit">Edit</string>
 
 </resources>
