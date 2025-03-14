@@ -84,9 +84,9 @@ private fun ProfileContent(
             is ProfileState.Error -> {
                 ErrorScreen(onRefresh = onRefresh, modifier = Modifier.fillMaxSize(), backgroundColor = MaterialTheme.colorScheme.background, errorMessage = state.errorMessage)
             }
-            is ProfileState.ContentStudent -> {ContentStudentScreen(onRefresh = onRefresh, state.profile)}
-            is ProfileState.ContentTeacher -> {ContentTeacherScreen(onRefresh = onRefresh, state.profile)}
-            is ProfileState.ContentParent -> {ContentParentScreen(onRefresh = onRefresh, state.profile, onCurrentStudentChange = onCurrentStudentChange)}
+            is ProfileState.ContentStudent -> {ContentStudentScreen(onRefresh = onRefresh, state.profile, onEditClick = {startEditingActivity()})}
+            is ProfileState.ContentTeacher -> {ContentTeacherScreen(onRefresh = onRefresh, state.profile, onEditClick = {startEditingActivity()})}
+            is ProfileState.ContentParent -> {ContentParentScreen(onRefresh = onRefresh, state.profile, onCurrentStudentChange = onCurrentStudentChange, onEditClick = {startEditingActivity()})}
         }
     }
 }
@@ -338,4 +338,8 @@ private fun StudentSelector(
            }
         }
     }
+}
+
+private fun startEditingActivity(){
+    // TODO: Implement function
 }
