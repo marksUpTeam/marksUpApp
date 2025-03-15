@@ -24,6 +24,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Class
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme.MarksUpTheme
@@ -48,14 +50,20 @@ fun LessonScreen(baseClass:Class) {
             Text(stringResource(R.string.pupil))
 
             TextField(
-                baseClass.student.person.surname + " " + baseClass.student.person.name, onValueChange = {}, readOnly = true, modifier = outLineTextFieldModifier.fillMaxWidth()
+                "$baseClass.student.person.surname} ${baseClass.student.person.name}",
+                onValueChange = {},
+                readOnly = true,
+                modifier = outLineTextFieldModifier.fillMaxWidth()
             )
 
 
             Text(stringResource(R.string.subject))
 
             TextField(
-                baseClass.discipline.name,onValueChange = {}, readOnly = true, modifier = outLineTextFieldModifier.fillMaxWidth()
+                baseClass.discipline.name,
+                onValueChange = {},
+                readOnly = true,
+                modifier = outLineTextFieldModifier.fillMaxWidth()
             )
 
             Text(stringResource(R.string.timeAndDate))
@@ -63,13 +71,16 @@ fun LessonScreen(baseClass:Class) {
             Row(modifier = Modifier.fillMaxWidth()) {
 
                 TextField(
-                   baseClass.datetimeStart.time.toString(),onValueChange = {}, readOnly = true, modifier = outLineTextFieldModifier.weight(1f)
+                   "${formatTime(baseClass.datetimeStart.time)}-${formatTime(baseClass.datetimeEnd.time)}",
+                    onValueChange = {},
+                    readOnly = true,
+                    modifier = outLineTextFieldModifier.weight(1f)
                 )
 
                 Spacer(modifier = Modifier.weight(0.5f))
 
                 TextField(
-                    baseClass.datetimeStart.date.toString(),
+                   formatDate(baseClass.datetimeStart.date),
                     onValueChange = {}, readOnly = true, modifier = outLineTextFieldModifier.weight(1f)
                 )
 
@@ -113,15 +124,23 @@ fun LessonScreen(baseClass:Class) {
             )
         }
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth().align(Alignment.BottomCenter)
-        ){
+        Column(modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)){
             Selector()
         }
     }
 }
 }
+
+fun formatTime(time: LocalTime):String{
+    return time.hour.toString().padStart(2, '0') + ":" + time.minute.toString().padStart(2, '0')
+}
+
+
+
+fun formatDate(date: LocalDate):String{
+    return date.dayOfMonth.toString().padStart(2, '0') + "." + date.monthNumber.toString().padStart(2, '0') + "." + date.year
+}
+
 
 
 
