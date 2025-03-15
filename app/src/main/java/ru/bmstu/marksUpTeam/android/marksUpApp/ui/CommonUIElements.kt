@@ -185,22 +185,22 @@ fun ErrorScreen(
 }
 
 @Composable
-fun DropDownList(curentItem:String, listItems: List<String>, textFieldModifier: Modifier) {
-    var searchText by remember { mutableStateOf(curentItem) }
+fun DropDownList(currentItem:String, listItems: List<String>, textFieldModifier: Modifier) {
+    var fieldText by remember { mutableStateOf(currentItem) }
     var expanded by remember { mutableStateOf(false) }
-    val filteredItems = listItems.filter { it.contains(searchText, ignoreCase = true) }
     Column {
-        TextField(value = searchText, onValueChange = {
-            searchText = it
+        TextField(value = fieldText, onValueChange = {
+            fieldText = it
             expanded = true
-        }, modifier = textFieldModifier.onFocusChanged { focusState -> // Открываем список при фокусе
-            if (focusState.isFocused) expanded = true
+        },
+            modifier = textFieldModifier.onFocusChanged {
+                focusState -> if (focusState.isFocused) expanded = true
         })
 
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            filteredItems.forEach { item ->
+            listItems.forEach { item ->
                 DropdownMenuItem(text = { Text(item) }, onClick = {
-                    searchText = item
+                    fieldText = item
                     expanded = false
                 })
             }

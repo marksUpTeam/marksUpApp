@@ -22,26 +22,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.Class
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseClass
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme.MarksUpTheme
 
-
+@Preview
 @Composable
-fun LessonScreen(baseClass:Class) {
+fun LessonScreen() {
     val outLineTextFieldModifier = Modifier.padding(6.dp).clip(RoundedCornerShape(16.dp))
-    val marksList = listOf("5","4","3","2","1")
+    val marksList = listOf("","5","4","3","2","1")
 
     MarksUpTheme {
         Box(Modifier.fillMaxSize()){
         Column {
 
-            var homework by remember { mutableStateOf("") }
-            var comment by remember { mutableStateOf("") }
+            var homeworkComment by remember { mutableStateOf(baseClass.assignmentDue.description) }
+            var teacherComment by remember { mutableStateOf(baseClass.teacherComment) }
 
             Spacer(modifier = Modifier.height(40.dp))
 
@@ -50,7 +51,7 @@ fun LessonScreen(baseClass:Class) {
             Text(stringResource(R.string.pupil))
 
             TextField(
-                "$baseClass.student.person.surname} ${baseClass.student.person.name}",
+                "${baseClass.student.person.surname} ${baseClass.student.person.name}",
                 onValueChange = {},
                 readOnly = true,
                 modifier = outLineTextFieldModifier.fillMaxWidth()
@@ -94,21 +95,21 @@ fun LessonScreen(baseClass:Class) {
 
             Row(modifier = Modifier.fillMaxWidth()) {
                 Box( modifier = Modifier.weight(1f)) {
-                    DropDownList("", marksList, textFieldModifier = outLineTextFieldModifier)
+                    DropDownList(baseClass.grade.toString(), marksList, textFieldModifier = outLineTextFieldModifier)
                 }
 
                 Spacer(modifier = Modifier.weight(0.5f))
 
                 Box( modifier = Modifier.weight(1f)) {
-                    DropDownList("", marksList, textFieldModifier = outLineTextFieldModifier)
+                    DropDownList(baseClass.assignmentDue.grade.toString(), marksList, textFieldModifier = outLineTextFieldModifier)
                 }
             }
 
             Text(stringResource(R.string.homework))
 
             TextField(
-                value = homework,
-                onValueChange = { homework = it },
+                value = homeworkComment,
+                onValueChange = { homeworkComment = it },
                 modifier = outLineTextFieldModifier.fillMaxWidth()
             )
             Text(stringResource(R.string.addMaterials))
@@ -118,8 +119,8 @@ fun LessonScreen(baseClass:Class) {
             Text(stringResource(R.string.teacherComment))
 
             TextField(
-                value = comment,
-                onValueChange = { comment = it },
+                value = teacherComment,
+                onValueChange = { teacherComment = it },
                 modifier = outLineTextFieldModifier.fillMaxWidth()
             )
         }
