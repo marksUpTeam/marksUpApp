@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -33,7 +35,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
@@ -191,11 +192,14 @@ fun DropDownList(currentItem:String, listItems: List<String>, textFieldModifier:
     Column {
         TextField(value = fieldText, onValueChange = {
             fieldText = it
-            expanded = true
         },
-            modifier = textFieldModifier.onFocusChanged {
-                focusState -> if (focusState.isFocused) expanded = true
-        })
+            modifier = textFieldModifier,
+            readOnly = true,
+            trailingIcon = { IconButton(onClick = { expanded = !expanded}){
+                Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
+            }
+            }
+            )
 
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             listItems.forEach { item ->

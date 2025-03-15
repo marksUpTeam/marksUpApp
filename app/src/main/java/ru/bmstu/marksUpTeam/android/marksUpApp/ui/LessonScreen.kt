@@ -95,13 +95,13 @@ fun LessonScreen() {
 
             Row(modifier = Modifier.fillMaxWidth()) {
                 Box( modifier = Modifier.weight(1f)) {
-                    DropDownList(baseClass.grade.toString(), marksList, textFieldModifier = outLineTextFieldModifier)
+                    DropDownList(baseClass.grade?.toString().orEmpty(), marksList, textFieldModifier = outLineTextFieldModifier)
                 }
 
                 Spacer(modifier = Modifier.weight(0.5f))
 
                 Box( modifier = Modifier.weight(1f)) {
-                    DropDownList(baseClass.assignmentDue.grade.toString(), marksList, textFieldModifier = outLineTextFieldModifier)
+                    DropDownList(baseClass.assignmentDue.grade?.toString().orEmpty(), marksList, textFieldModifier = outLineTextFieldModifier)
                 }
             }
 
