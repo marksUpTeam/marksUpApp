@@ -8,7 +8,8 @@ import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Class( // занятие
+data class Class(
+    // занятие
     val id: Long,
     val discipline: Discipline,
     val teacher: Teacher,
@@ -18,9 +19,9 @@ data class Class( // занятие
     @Serializable(with = LocalDateTimeIso8601Serializer::class)
     val datetimeEnd: LocalDateTime,
     val grade: Int?,
-    val assignmentDue: Assignment,
+    val assignmentDue: Assignment?,
     val teacherComment: String,
-    )
+)
 
 val baseClass = Class(
     id = 1,
@@ -33,4 +34,4 @@ val baseClass = Class(
     assignmentDue = baseAssignment,
     teacherComment = "",
 
-)
+    )

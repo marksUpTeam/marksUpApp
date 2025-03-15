@@ -58,15 +58,27 @@ fun BaseButton(
     selectedTint: Color = colorResource(id = R.color.purple_500),
     backgroundColor: Color = colorResource(id = R.color.lighter_black),
     onClick: () -> Unit = {},
-){
+) {
     Column(
-        modifier = modifier.padding(4.dp)
-            .shadow(elevation = if (isSelected) 20.dp else 10.dp, clip = false,
-                shape = RoundedCornerShape(10.dp), spotColor = if (isSelected) selectedTint else tint,
-                ambientColor = if (isSelected) selectedTint else tint).background(backgroundColor).height(64.dp).width(72.dp),
+        modifier = modifier
+            .padding(4.dp)
+            .shadow(
+                elevation = if (isSelected) 20.dp else 10.dp,
+                clip = false,
+                shape = RoundedCornerShape(10.dp),
+                spotColor = if (isSelected) selectedTint else tint,
+                ambientColor = if (isSelected) selectedTint else tint
+            )
+            .background(backgroundColor)
+            .height(64.dp)
+            .width(72.dp),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        IconButton(onClick = {onClick()}, modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally).wrapContentHeight(Alignment.CenterVertically)
+    ) {
+        IconButton(
+            onClick = { onClick() },
+            modifier = Modifier
+                .wrapContentWidth(Alignment.CenterHorizontally)
+                .wrapContentHeight(Alignment.CenterVertically)
         ) {
             Icon(
                 painter = painter,
@@ -75,7 +87,12 @@ fun BaseButton(
                 modifier = Modifier.fillMaxSize()
             )
         }
-        Text(text=contentDescription, textAlign = TextAlign.Center, color = if (isSelected) selectedTint else tint, fontSize = 10.sp)
+        Text(
+            text = contentDescription,
+            textAlign = TextAlign.Center,
+            color = if (isSelected) selectedTint else tint,
+            fontSize = 10.sp
+        )
     }
 }
 
@@ -89,15 +106,21 @@ fun Selector(
     tint: Color = colorResource(id = R.color.white),
     selectedTint: Color = colorResource(id = R.color.purple_500),
     isForTeacher: Boolean = false,
-){
-    Row(modifier = modifier.fillMaxWidth().background(backgroundColor), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
-        var buttonClicked by rememberSaveable {mutableIntStateOf(1)}
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(backgroundColor),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        var buttonClicked by rememberSaveable { mutableIntStateOf(1) }
         BaseButton(
             painter = painterResource(R.drawable.timetable),
             onClick = {
                 setCurrentScreen(1)
                 buttonClicked = 1
-                      },
+            },
             contentDescription = context.getString(R.string.classes),
             tint = tint,
             selectedTint = selectedTint,
@@ -160,7 +183,7 @@ fun LoadingScreen(
     modifier: Modifier = Modifier,
     tint: Color = colorResource(id = R.color.white),
     backgroundColor: Color = colorResource(id = R.color.lighter_black),
-){
+) {
     Box(modifier = modifier.background(backgroundColor), contentAlignment = Alignment.Center) {
         CircularProgressIndicator(color = tint)
     }
@@ -176,30 +199,48 @@ fun ErrorScreen(
     tint: Color = colorResource(id = R.color.white),
     backgroundColor: Color = colorResource(id = R.color.lighter_black),
     errorMessage: String = "",
-){
-    Column(modifier = modifier.background(backgroundColor), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        IconButton(onClick = {onRefresh()}) {
-            Icon(painter = painterResource(R.drawable.error), contentDescription = context.getString(R.string.errorOccurred), modifier = Modifier.fillMaxSize(), tint = tint)
+) {
+    Column(
+        modifier = modifier.background(backgroundColor),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        IconButton(onClick = { onRefresh() }) {
+            Icon(
+                painter = painterResource(R.drawable.error),
+                contentDescription = context.getString(R.string.errorOccurred),
+                modifier = Modifier.fillMaxSize(),
+                tint = tint
+            )
         }
-        Text(text = errorMessage, color = tint, fontSize = 18.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(10.dp))
+        Text(
+            text = errorMessage,
+            color = tint,
+            fontSize = 18.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(10.dp)
+        )
     }
 }
 
 @Composable
-fun DropDownList(currentItem:String, listItems: List<String>, textFieldModifier: Modifier) {
+fun DropDownList(currentItem: String, listItems: List<String>, modifier: Modifier) {
     var fieldText by remember { mutableStateOf(currentItem) }
     var expanded by remember { mutableStateOf(false) }
+
     Column {
-        TextField(value = fieldText, onValueChange = {
-            fieldText = it
-        },
-            modifier = textFieldModifier,
+        TextField(
+            value = fieldText, onValueChange = {
+                fieldText = it
+            },
+            modifier = modifier,
             readOnly = true,
-            trailingIcon = { IconButton(onClick = { expanded = !expanded}){
-                Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
+            trailingIcon = {
+                IconButton(onClick = { expanded = !expanded }) {
+                    Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
+                }
             }
-            }
-            )
+        )
 
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             listItems.forEach { item ->

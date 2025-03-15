@@ -12,7 +12,8 @@ enum class AssignmentStatus(val value: String) {
 }
 
 @Serializable
-data class Assignment( // домашнее задание
+data class Assignment(
+    // домашнее задание
     val id: Long,
     val student: Student,
     val teacher: Teacher,
