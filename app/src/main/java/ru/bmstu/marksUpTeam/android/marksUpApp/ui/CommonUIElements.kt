@@ -224,7 +224,7 @@ fun ErrorScreen(
 }
 
 @Composable
-fun DropDownList(currentItem: String, listItems: List<String>, modifier: Modifier) {
+fun DropDownList(currentItem: String, listItems: List<String>, modifier: Modifier,readonly:Boolean) {
     var fieldText by remember { mutableStateOf(currentItem) }
     var expanded by remember { mutableStateOf(false) }
 
@@ -236,8 +236,10 @@ fun DropDownList(currentItem: String, listItems: List<String>, modifier: Modifie
             modifier = modifier,
             readOnly = true,
             trailingIcon = {
-                IconButton(onClick = { expanded = !expanded }) {
-                    Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
+                if (!readonly) {
+                    IconButton(onClick = { expanded = !expanded }) {
+                        Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
+                    }
                 }
             }
         )

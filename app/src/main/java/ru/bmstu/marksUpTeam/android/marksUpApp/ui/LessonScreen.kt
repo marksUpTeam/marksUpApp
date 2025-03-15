@@ -32,6 +32,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseClass
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseTeacherProfile
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme.MarksUpTheme
 
 @Preview
@@ -43,6 +44,7 @@ fun LessonScreen() {
             .padding(end = 24.dp)
             .clip(RoundedCornerShape(24.dp))
     val marksList = listOf("", "5", "4", "3", "2", "1")
+    val isTeacher = baseTeacherProfile.teacher != null
 
     MarksUpTheme {
         Box(Modifier.fillMaxSize()) {
@@ -58,14 +60,23 @@ fun LessonScreen() {
                     modifier = Modifier.padding(start = 16.dp, top = 60.dp)
                 )
 
-                Text(stringResource(R.string.pupil), modifier = textModifier)
-
-                TextField(
-                    "${baseClass.student.person.surname} ${baseClass.student.person.name}",
-                    onValueChange = {},
-                    readOnly = true,
-                    modifier = outLineTextFieldModifier.fillMaxWidth(),
-                )
+                if (isTeacher) {
+                    Text(stringResource(R.string.pupil), modifier = textModifier)
+                    TextField(
+                        "${baseClass.student.person.surname} ${baseClass.student.person.name}",
+                        onValueChange = {},
+                        readOnly = true,
+                        modifier = outLineTextFieldModifier.fillMaxWidth(),
+                    )
+                } else {
+                    Text(stringResource(R.string.teacher), modifier = textModifier)
+                    TextField(
+                        "${baseClass.teacher.person.surname} ${baseClass.teacher.person.name}",
+                        onValueChange = {},
+                        readOnly = true,
+                        modifier = outLineTextFieldModifier.fillMaxWidth(),
+                    )
+                }
 
 
                 Text(stringResource(R.string.subject), modifier = textModifier)
@@ -107,17 +118,19 @@ fun LessonScreen() {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Box(modifier = Modifier.weight(1f)) {
                         DropDownList(
-                            baseClass.grade?.toString().orEmpty(),
-                            marksList,
-                            modifier = outLineTextFieldModifier
+                            currentItem = baseClass.grade?.toString().orEmpty(),
+                            listItems = marksList,
+                            modifier = outLineTextFieldModifier,
+                            readonly = !isTeacher
                         )
                     }
 
                     Box(modifier = Modifier.weight(1f)) {
                         DropDownList(
-                            baseClass.assignmentDue?.grade?.toString().orEmpty(),
-                            marksList,
-                            modifier = outLineTextFieldModifier
+                            currentItem = baseClass.assignmentDue?.grade?.toString().orEmpty(),
+                            listItems = marksList,
+                            modifier = outLineTextFieldModifier,
+                            readonly = !isTeacher
                         )
                     }
                 }
@@ -128,17 +141,21 @@ fun LessonScreen() {
                     value = homeworkComment,
                     onValueChange = { homeworkComment = it },
                     maxLines = 3,
+                    readOnly = !isTeacher,
                     modifier = outLineTextFieldModifier.fillMaxWidth()
                 )
-                Text(stringResource(R.string.addMaterials), modifier = textModifier)
 
-                IconButton(onClick = { }, modifier = textModifier) {
-                    Icon(
-                        painter = painterResource(R.drawable.file_attach),
-                        contentDescription = "FileAttach",
-                        modifier = Modifier.size(30.dp),
-                        tint = colorResource(R.color.light_red)
-                    )
+                if (isTeacher) {
+                    Text(stringResource(R.string.addMaterials), modifier = textModifier)
+
+                    IconButton(onClick = { }, modifier = textModifier) {
+                        Icon(
+                            painter = painterResource(R.drawable.file_attach),
+                            contentDescription = "FileAttach",
+                            modifier = Modifier.size(30.dp),
+                            tint = colorResource(R.color.light_red)
+                        )
+                    }
                 }
 
                 Text(stringResource(R.string.teacherComment), modifier = textModifier)
@@ -147,6 +164,7 @@ fun LessonScreen() {
                     value = teacherComment,
                     onValueChange = { teacherComment = it },
                     maxLines = 5,
+                    readOnly = !isTeacher,
                     modifier = outLineTextFieldModifier.fillMaxWidth()
                 )
             }
@@ -156,7 +174,7 @@ fun LessonScreen() {
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
             ) {
-                Selector()
+                Selector(isForTeacher = isTeacher)
             }
         }
     }
