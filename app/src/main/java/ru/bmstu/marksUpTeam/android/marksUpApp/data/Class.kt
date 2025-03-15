@@ -32,6 +32,6 @@ val baseClass = Class(
     datetimeEnd = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
     grade = null,
     assignmentDue = baseAssignment,
-    teacherComment = "",
+    teacherComment = "teacher comment",
 
     )

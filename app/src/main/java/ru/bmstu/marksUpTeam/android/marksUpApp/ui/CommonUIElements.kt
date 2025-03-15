@@ -19,10 +19,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -223,28 +225,39 @@ fun ErrorScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DropDownList(currentItem: String, listItems: List<String>, modifier: Modifier,readonly:Boolean) {
     var fieldText by remember { mutableStateOf(currentItem) }
     var expanded by remember { mutableStateOf(false) }
 
-    Column {
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {
+            if (!readonly){
+                expanded = !expanded
+            }
+                           },
+
+    ) {
         TextField(
-            value = fieldText, onValueChange = {
-                fieldText = it
-            },
-            modifier = modifier,
+            value = fieldText,
+            onValueChange = { fieldText = it },
+            modifier = modifier.menuAnchor(type = MenuAnchorType.PrimaryNotEditable),
             readOnly = true,
             trailingIcon = {
                 if (!readonly) {
-                    IconButton(onClick = { expanded = !expanded }) {
+                    IconButton(onClick = {  }) {
                         Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
                     }
                 }
             }
         )
 
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
             listItems.forEach { item ->
                 DropdownMenuItem(text = { Text(item) }, onClick = {
                     fieldText = item
@@ -252,9 +265,11 @@ fun DropDownList(currentItem: String, listItems: List<String>, modifier: Modifie
                 })
             }
         }
-
     }
 }
+
+
+
 
 
 

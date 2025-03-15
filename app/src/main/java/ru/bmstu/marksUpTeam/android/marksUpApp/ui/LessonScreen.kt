@@ -25,26 +25,25 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseClass
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseTeacherProfile
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.Class
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme.MarksUpTheme
 
-@Preview
+
 @Composable
-fun LessonScreen() {
+fun LessonScreen(baseClass:Class, baseProfile:Profile) {
     val textModifier = Modifier.padding(start = 24.dp, bottom = 8.dp)
     val outLineTextFieldModifier =
         textModifier
             .padding(end = 24.dp)
             .clip(RoundedCornerShape(24.dp))
     val marksList = listOf("", "5", "4", "3", "2", "1")
-    val isTeacher = baseTeacherProfile.teacher != null
+    val isTeacher = baseProfile.teacher != null
 
     MarksUpTheme {
         Box(Modifier.fillMaxSize()) {
@@ -111,7 +110,6 @@ fun LessonScreen() {
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.classMark), modifier = textModifier.weight(1f))
-
                     Text(stringResource(R.string.homeworkMark), modifier = textModifier.weight(1f))
                 }
 
