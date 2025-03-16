@@ -21,7 +21,7 @@ class ProfileViewModel(api: String, jwt: String, context: Context): ViewModel() 
 
     fun updateFlow(){
         viewModelScope.launch {
-            try {
+            runCatching {
                 _stateFlow.value = ProfileState.Loading
                 val profileResponse = profileRepository.getProfile()
                 if (!profileResponse.isSuccessful) {
@@ -30,22 +30,19 @@ class ProfileViewModel(api: String, jwt: String, context: Context): ViewModel() 
                 else {
                     val profile = profileResponse.body() ?: throw Exception("Bad response")
                     val profileDomain = ProfileMapper().map(profile)
-                    when {
-                        profileDomain.personType is PersonType.TeacherType -> _stateFlow.value = ProfileState.ContentTeacher(profileDomain)
-                        profileDomain.personType is PersonType.StudentType -> _stateFlow.value = ProfileState.ContentStudent(profileDomain)
-                        profileDomain.personType is PersonType.ParentType -> _stateFlow.value = ProfileState.ContentParent(profileDomain)
-                        else -> throw Exception("Malformed profile")
+                    when (profileDomain.personType) {
+                        is PersonType.TeacherType -> _stateFlow.value = ProfileState.ContentTeacher(profileDomain)
+                        is PersonType.StudentType -> _stateFlow.value = ProfileState.ContentStudent(profileDomain)
+                        is PersonType.ParentType -> _stateFlow.value = ProfileState.ContentParent(profileDomain)
                     }
                 }
-            } catch (e: Exception){
-                _stateFlow.value = ProfileState.Error(e.message ?: "")
-            }
+            }.onFailure {error -> _stateFlow.value = ProfileState.Error(error.message.orEmpty())}
         }
     }
 
     fun pushProfileChanges(profile: Profile, infoDisplay: (String) -> Unit){
         viewModelScope.launch {
-            try {
+            runCatching {
                 val stringResponse = profileRepository.modifyProfile(profile)
                 if (stringResponse.isSuccessful){
                     infoDisplay(stringResponse.body() ?: throw Exception("Bad response"))
@@ -53,9 +50,7 @@ class ProfileViewModel(api: String, jwt: String, context: Context): ViewModel() 
                 else {
                     infoDisplay(stringResponse.errorBody()!!.string())
                 }
-            } catch (e: Exception){
-                infoDisplay(e.message ?: "")
-            }
+            }.onFailure {error -> infoDisplay(error.message.orEmpty())}
             updateFlow()
         }
     }
