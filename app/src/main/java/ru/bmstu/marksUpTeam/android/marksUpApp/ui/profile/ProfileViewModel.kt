@@ -9,6 +9,8 @@ import kotlinx.coroutines.launch
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Parent
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.PersonType
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileMapper
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileRepository
 
 
@@ -27,10 +29,11 @@ class ProfileViewModel(api: String, jwt: String, context: Context): ViewModel() 
                 }
                 else {
                     val profile = profileResponse.body() ?: throw Exception("Bad response")
+                    val profileDomain = ProfileMapper().map(profile)
                     when {
-                        profile.teacher != null -> _stateFlow.value = ProfileState.ContentTeacher(profile)
-                        profile.student != null -> _stateFlow.value = ProfileState.ContentParent(profile)
-                        profile.parent != null -> _stateFlow.value = ProfileState.ContentParent(profile)
+                        profileDomain.personType is PersonType.TeacherType -> _stateFlow.value = ProfileState.ContentTeacher(profileDomain)
+                        profileDomain.personType is PersonType.StudentType -> _stateFlow.value = ProfileState.ContentStudent(profileDomain)
+                        profileDomain.personType is PersonType.ParentType -> _stateFlow.value = ProfileState.ContentParent(profileDomain)
                         else -> throw Exception("Malformed profile")
                     }
                 }
@@ -67,8 +70,9 @@ class ProfileViewModel(api: String, jwt: String, context: Context): ViewModel() 
     }
 
     private fun formNewProfile(student: Student): Profile? {
+
         if (stateFlow.value is ProfileState.ContentParent){
-            val profile = (stateFlow.value as ProfileState.ContentParent).profile
+            val profile = ProfileMapper().demap((stateFlow.value as ProfileState.ContentParent).profile)
             val studentList = profile.parent?.children ?: return null
             if (studentList.contains(student) == false){
                 return null

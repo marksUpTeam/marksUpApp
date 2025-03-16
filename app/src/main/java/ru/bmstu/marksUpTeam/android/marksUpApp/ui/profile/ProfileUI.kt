@@ -1,3 +1,4 @@
+@file:Suppress("FunctionName")
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.profile
 
 import android.content.Context
@@ -54,6 +55,9 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudent2
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudent3
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudentProfile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseTeacherProfile
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.PersonType
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.ProfileDomain
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileMapper
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.ErrorScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.LoadingScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme.MarksUpTheme
@@ -98,10 +102,11 @@ val previewHandler = AsyncImagePreviewHandler{
 @Composable
 private fun ContentTeacherScreen(
     onRefresh: () -> Unit = {},
-    teacher: Profile = baseTeacherProfile,
+    profile: ProfileDomain = ProfileMapper().map(baseTeacherProfile),
     context: Context = LocalContext.current,
     onEditClick: () -> Unit = {}
 ) {
+    val teacher = profile.personType as PersonType.TeacherType
     MarksUpTheme {
         PullToRefreshBox(isRefreshing = false, onRefresh = onRefresh) {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -110,18 +115,18 @@ private fun ContentTeacherScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
             ) {
-                CommonContentView("${teacher.teacher?.person?.surname}\n${teacher.teacher?.person?.name}\n${teacher.teacher?.person?.patronymic}", context.getString(R.string.teacher),
-                    teacher.teacher?.person?.imgUrl ?: ""
+                CommonContentView("${teacher.teacher.person.surname}\n${teacher.teacher.person.name}\n${teacher.teacher.person.patronymic}", context.getString(R.string.teacher),
+                    teacher.teacher.person.imgUrl
                 )
                 Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                     Text(
-                        text = "${context.getString(R.string.disciplines)} ${teacher.teacher?.disciplines?.joinToString(", ") ?: ""}",
+                        text = "${context.getString(R.string.disciplines)} ${teacher.teacher.disciplines.joinToString(", ")}",
                         color = MaterialTheme.colorScheme.secondary,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                     )
                 }
-                AboutMeSection(description = teacher.teacher?.description ?: "", modifier = Modifier.padding(10.dp))
+                AboutMeSection(description = teacher.teacher.description, modifier = Modifier.padding(10.dp))
             }
                 IconButton(onClick = onEditClick, modifier = Modifier.align(Alignment.BottomEnd).height(80.dp).width(80.dp)) {
                     Icon(Icons.Filled.Edit, contentDescription = context.getString(R.string.edit), modifier=Modifier.width(48.dp).height(48.dp), tint = MaterialTheme.colorScheme.secondary)
@@ -139,10 +144,11 @@ private fun ContentTeacherScreen(
 @Composable
 private fun ContentStudentScreen(
     onRefresh: () -> Unit = {},
-    student: Profile = baseStudentProfile,
+    profile: ProfileDomain = ProfileMapper().map(baseStudentProfile),
     context: Context = LocalContext.current,
     onEditClick: () -> Unit = {}
 ){
+    val student = profile.personType as PersonType.StudentType
     MarksUpTheme {
         Box(modifier = Modifier.fillMaxSize()) {
         PullToRefreshBox(isRefreshing = false, onRefresh = onRefresh) {
@@ -151,10 +157,10 @@ private fun ContentStudentScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
             ) {
-                CommonContentView("${student.student?.person?.surname}\n${student.student?.person?.name}\n${student.student?.person?.patronymic}", context.getString(R.string.student),
-                    student.student?.person?.imgUrl ?: ""
+                CommonContentView("${student.student.person.surname}\n${student.student.person.name}\n${student.student.person.patronymic}", context.getString(R.string.student),
+                    student.student.person.imgUrl
                 )
-                AboutMeSection(description = student.student?.description ?: "", modifier = Modifier.padding(10.dp))
+                AboutMeSection(description = student.student.description, modifier = Modifier.padding(10.dp))
             }
         }
             IconButton(onClick = onEditClick, modifier = Modifier.align(Alignment.BottomEnd).height(80.dp).width(80.dp)) {
@@ -169,11 +175,12 @@ private fun ContentStudentScreen(
 @Composable
 private fun ContentParentScreen(
     onRefresh: () -> Unit = {},
-    parent: Profile = baseParentProfile,
+    profile: ProfileDomain = ProfileMapper().map(baseParentProfile),
     onCurrentStudentChange: (Student) -> Unit = {},
     context: Context = LocalContext.current,
     onEditClick: () -> Unit = {},
 ){
+    val parent = profile.personType as PersonType.ParentType
     MarksUpTheme {
         PullToRefreshBox(isRefreshing = false, onRefresh = onRefresh) {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -183,12 +190,12 @@ private fun ContentParentScreen(
                 verticalArrangement = Arrangement.Top,
             ) {
                 CommonContentView(
-                    "${parent.parent?.person?.surname}\n${parent.parent?.person?.name}\n${parent.parent?.person?.patronymic}",
+                    "${parent.parent.person.surname}\n${parent.parent.person.name}\n${parent.parent.person.patronymic}",
                     context.getString(R.string.parent),
-                    parent.parent?.person?.imgUrl ?: "",)
+                    parent.parent.person.imgUrl,)
                 StudentSelector(
                     modifier = Modifier.padding(10.dp),
-                    chosenStudent = parent.parent?.currentChild ?: throw NullPointerException("Current chosen student can not be null"),
+                    chosenStudent = parent.parent.currentChild,
                     students = parent.parent.children,
                     onCurrentStudentChange)
                 }
