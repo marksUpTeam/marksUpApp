@@ -41,8 +41,7 @@ data class Parent(
     val id: Long,
     val person: Person,
     val children: List<Student>,
-    val currentChild: Student,
-
+    var currentChild: Student,
 )
 
 @Serializable

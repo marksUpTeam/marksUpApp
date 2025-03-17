@@ -10,6 +10,7 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.Parent
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.PersonType
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.ProfileDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileMapper
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileRepository
 
@@ -23,13 +24,12 @@ class ProfileViewModel(api: String, jwt: String, context: Context): ViewModel() 
         viewModelScope.launch {
             runCatching {
                 _stateFlow.value = ProfileState.Loading
-                val profileResponse = profileRepository.getProfile()
-                if (!profileResponse.isSuccessful) {
-                    _stateFlow.value = ProfileState.Error(profileResponse.errorBody()!!.string())
+                val profileResponse = profileRepository.getProfileDomain()
+                if (profileResponse.isFailure) {
+                    _stateFlow.value = ProfileState.Error(profileResponse.exceptionOrNull()?.message ?: "Something went wrong")
                 }
                 else {
-                    val profile = profileResponse.body() ?: throw Exception("Bad response")
-                    val profileDomain = ProfileMapper().map(profile)
+                    val profileDomain = profileResponse.getOrNull() ?: throw Exception("Bad response")
                     when (profileDomain.personType) {
                         is PersonType.TeacherType -> _stateFlow.value = ProfileState.ContentTeacher(profileDomain)
                         is PersonType.StudentType -> _stateFlow.value = ProfileState.ContentStudent(profileDomain)
@@ -40,15 +40,15 @@ class ProfileViewModel(api: String, jwt: String, context: Context): ViewModel() 
         }
     }
 
-    fun pushProfileChanges(profile: Profile, infoDisplay: (String) -> Unit){
+    fun pushProfileChanges(profileDomain: ProfileDomain, infoDisplay: (String) -> Unit){
         viewModelScope.launch {
             runCatching {
-                val stringResponse = profileRepository.modifyProfile(profile)
-                if (stringResponse.isSuccessful){
-                    infoDisplay(stringResponse.body() ?: throw Exception("Bad response"))
+                val stringResponse = profileRepository.modifyProfileDomain(profileDomain)
+                if (stringResponse.isSuccess){
+                    infoDisplay(stringResponse.getOrNull() ?: throw Exception("Bad response"))
                 }
                 else {
-                    infoDisplay(stringResponse.errorBody()!!.string())
+                    infoDisplay(stringResponse.exceptionOrNull()?.message ?: "Something went wrong")
                 }
             }.onFailure {error -> infoDisplay(error.message.orEmpty())}
             updateFlow()
@@ -56,7 +56,7 @@ class ProfileViewModel(api: String, jwt: String, context: Context): ViewModel() 
     }
 
     fun pushCurrentStudentChange(student: Student, infoDisplay: (String) -> Unit = {}){
-        val newProfile = formNewProfile(student) ?: return
+        val newProfile = formNewParentProfileDomain(student) ?: return
         pushProfileChanges(newProfile, infoDisplay)
     }
 
@@ -64,10 +64,32 @@ class ProfileViewModel(api: String, jwt: String, context: Context): ViewModel() 
         updateFlow()
     }
 
-    private fun formNewProfile(student: Student): Profile? {
+    private fun formNewParentProfileDomain(student: Student): ProfileDomain? {
+        if (stateFlow.value is ProfileState.ContentParent) {
+            val profileDomain = (stateFlow.value as ProfileState.ContentParent).profile
+            val personType = ((stateFlow.value as ProfileState.ContentParent).profile.personType as PersonType.ParentType)
+            val studentList = personType.parent.children
+            if (studentList.contains(student) == false) {
+                return null
+            }
+            else {
+                personType.parent.currentChild = student
+                return ProfileDomain(
+                    id = profileDomain.id,
+                    username = profileDomain.username,
+                    personType = personType,
+                )
+            }
+        } else {
+            return null
+        }
+    }
+
+    @Deprecated("Data layer models usage")
+    private fun formNewParentProfile(student: Student): Profile? {
 
         if (stateFlow.value is ProfileState.ContentParent){
-            val profile = ProfileMapper().demap((stateFlow.value as ProfileState.ContentParent).profile)
+            val profile = ProfileMapper().toDto((stateFlow.value as ProfileState.ContentParent).profile)
             val studentList = profile.parent?.children ?: return null
             if (studentList.contains(student) == false){
                 return null

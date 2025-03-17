@@ -19,7 +19,7 @@ class ProfileMapper() {
         )
     }
 
-    fun demap(profileDomain: ProfileDomain): Profile {
+    fun toDto(profileDomain: ProfileDomain): Profile {
         return Profile(
             id = profileDomain.id,
             username = profileDomain.username,
