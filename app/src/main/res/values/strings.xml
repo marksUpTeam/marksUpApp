@@ -11,5 +11,12 @@
     <string name="somethingWentWrong">Something went wrong. Please try again later</string>
     <string name="accNotFound">No profile found linked with that VK ID account. Maybe try another one?</string>
     <string name="try_again">Try again</string>
+    <string name="teacher">Teacher</string>
+    <string name="student">Student</string>
+    <string name="parent">Parent</string>
+    <string name="disciplines">Disciplines:</string>
+    <string name="aboutMe">About me:</string>
+    <string name="currentlyViewing">Currently viewing: </string>
+    <string name="edit">Edit</string>
 
 </resources>
