@@ -24,6 +24,13 @@ data class Class( // занятие
 )
 
 @Serializable
+data class Schedule(
+    val id: Long,
+    val date: LocalDate,
+    val classes: List<Class>
+)
+
+@Serializable
 enum class AssignmentStatus(val value: String) {
     Assigned("ASSIGNED"),
     Completed("COMPLETED"),
