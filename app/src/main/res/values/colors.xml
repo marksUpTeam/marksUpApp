@@ -10,4 +10,5 @@
     <color name="lighter_black">#1D1D1D</color>
     <color name="grey">#7A7A7A</color>
     <color name="red">#B60000</color>
+    <color name="light_red">#FF9595</color>
 </resources>

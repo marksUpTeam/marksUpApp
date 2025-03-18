@@ -1,6 +1,5 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data
 
-import androidx.compose.runtime.currentComposer
 import kotlinx.serialization.Serializable
 
 // PROFILE MODELS
@@ -66,6 +65,7 @@ data class Profile( // export model
         }
     }
 }
+
 
 val basePersonTeacher = Person(id = 1, name = "Elvira", surname = "Smirnova", email = "es@gmail.com", phone = "555-555-5555", imgUrl = "https://sun9-29.userapi.com/impg/q7YyQN6Q9xtBseww-nF4G-0GxUsjMJ_ZqRxn_Q/E3dvKUTEOm4.jpg?size=1442x2160&quality=95&sign=fa533b03fedcfabd0227f369c2a2f360&type=album", patronymic = "Alekseevna")
 val basePersonStudent = Person(id = 2, name = "Artem", surname = "Lint", email = "al@gmail.com", phone = "555-555-5554", imgUrl = "https://sun9-75.userapi.com/s/v1/ig2/_MFHNpJBwOTPfyeAjcKVkRFvKqUQZ759TWRZLxdEecSF6FDS68SX0zgSWpakmY0nqq-t6LKqumXmnMgivmCHR2E2.jpg?quality=96&as=32x33,48x49,72x73,108x110,160x163,240x244,360x367,480x489,540x550,640x652,720x733,758x772&from=bu&u=v_3HBf9g1yq-1zSD-H7CWked0mA2SD3Cdb_1uAzfdFY&cs=758x772", patronymic = "Dmitrievich")
