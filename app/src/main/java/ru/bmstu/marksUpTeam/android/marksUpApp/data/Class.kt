@@ -23,6 +23,8 @@ data class Class(
     val teacherComment: String,
 )
 
+
+
 val baseClass = Class(
     id = 1,
     discipline = baseDiscipline,
