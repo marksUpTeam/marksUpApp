@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">MarksUp</string>
     <string name="classes">Classes</string>
-    <string name="homework">Домашнее задание</string>
+    <string name="homework">Homework</string>
     <string name="favourites">Favourites</string>
     <string name="profile">Profile</string>
     <string name="classesManager">Manager</string>
@@ -11,6 +11,14 @@
     <string name="somethingWentWrong">Something went wrong. Please try again later</string>
     <string name="accNotFound">No profile found linked with that VK ID account. Maybe try another one?</string>
     <string name="try_again">Try again</string>
+    <string name="teacher">Teacher</string>
+    <string name="student">Student</string>
+    <string name="parent">Parent</string>
+    <string name="disciplines">Disciplines:</string>
+    <string name="aboutMe">About me:</string>
+    <string name="currentlyViewing">Currently viewing: </string>
+    <string name="edit">Edit</string>
+
     <string name="teachClasss">Провести занятие</string>
     <string name="pupil">Ученик</string>
     <string name="subject">Предмет</string>
@@ -19,5 +27,4 @@
     <string name="homeworkMark">Оценка за ДЗ</string>
     <string name="addMaterials">Прикрепить материалы</string>
     <string name="teacherComment">Комментарий преподавателя</string>
-    <string name="teacher">Учитель</string>
 </resources>

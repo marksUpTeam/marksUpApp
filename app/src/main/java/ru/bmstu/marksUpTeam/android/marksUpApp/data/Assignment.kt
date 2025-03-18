@@ -6,9 +6,9 @@ import java.time.LocalDate
 
 @Serializable
 enum class AssignmentStatus(val value: String) {
-    Assigned("ASSIGNED"),
-    Completed("COMPLETED"),
-    Defended("DEFENDED")
+    Assigned("Assigned"),
+    Completed("Completed"),
+    Defended("Defended"),
 }
 
 @Serializable

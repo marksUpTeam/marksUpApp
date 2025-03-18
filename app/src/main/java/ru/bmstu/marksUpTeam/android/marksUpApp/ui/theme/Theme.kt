@@ -1,12 +1,9 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -16,13 +13,15 @@ private val DarkColorScheme = darkColorScheme(
     secondary = White,
     background = LighterBlack,
     onBackground = Black,
+    tertiary = Grey
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
+    primary = Purple500,
     secondary = Black,
     background = White,
     onBackground = darkerWhite,
+    tertiary = Grey
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
