@@ -6,13 +6,24 @@ import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,15 +54,27 @@ fun BaseButton(
     selectedTint: Color = colorResource(id = R.color.purple_500),
     backgroundColor: Color = colorResource(id = R.color.lighter_black),
     onClick: () -> Unit = {},
-){
+) {
     Column(
-        modifier = modifier.padding(4.dp)
-            .shadow(elevation = if (isSelected) 20.dp else 10.dp, clip = false,
-                shape = RoundedCornerShape(10.dp), spotColor = if (isSelected) selectedTint else tint,
-                ambientColor = if (isSelected) selectedTint else tint).background(backgroundColor).height(64.dp).width(72.dp),
+        modifier = modifier
+            .padding(4.dp)
+            .shadow(
+                elevation = if (isSelected) 20.dp else 10.dp,
+                clip = false,
+                shape = RoundedCornerShape(10.dp),
+                spotColor = if (isSelected) selectedTint else tint,
+                ambientColor = if (isSelected) selectedTint else tint
+            )
+            .background(backgroundColor)
+            .height(64.dp)
+            .width(72.dp),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        IconButton(onClick = {onClick()}, modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally).wrapContentHeight(Alignment.CenterVertically)
+    ) {
+        IconButton(
+            onClick = { onClick() },
+            modifier = Modifier
+                .wrapContentWidth(Alignment.CenterHorizontally)
+                .wrapContentHeight(Alignment.CenterVertically)
         ) {
             Icon(
                 painter = painter,
@@ -60,7 +83,12 @@ fun BaseButton(
                 modifier = Modifier.fillMaxSize()
             )
         }
-        Text(text=contentDescription, textAlign = TextAlign.Center, color = if (isSelected) selectedTint else tint, fontSize = 10.sp)
+        Text(
+            text = contentDescription,
+            textAlign = TextAlign.Center,
+            color = if (isSelected) selectedTint else tint,
+            fontSize = 10.sp
+        )
     }
 }
 
@@ -74,15 +102,21 @@ fun Selector(
     tint: Color = colorResource(id = R.color.white),
     selectedTint: Color = colorResource(id = R.color.purple_500),
     isForTeacher: Boolean = false,
-){
-    Row(modifier = modifier.fillMaxWidth().background(backgroundColor), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
-        var buttonClicked by rememberSaveable {mutableIntStateOf(1)}
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(backgroundColor),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        var buttonClicked by rememberSaveable { mutableIntStateOf(1) }
         BaseButton(
             painter = painterResource(R.drawable.timetable),
             onClick = {
                 setCurrentScreen(1)
                 buttonClicked = 1
-                      },
+            },
             contentDescription = context.getString(R.string.classes),
             tint = tint,
             selectedTint = selectedTint,
@@ -145,7 +179,7 @@ fun LoadingScreen(
     modifier: Modifier = Modifier,
     tint: Color = colorResource(id = R.color.white),
     backgroundColor: Color = colorResource(id = R.color.lighter_black),
-){
+) {
     Box(modifier = modifier.background(backgroundColor), contentAlignment = Alignment.Center) {
         CircularProgressIndicator(color = tint)
     }
@@ -161,12 +195,71 @@ fun ErrorScreen(
     tint: Color = colorResource(id = R.color.white),
     backgroundColor: Color = colorResource(id = R.color.lighter_black),
     errorMessage: String = "",
-){
-    Column(modifier = modifier.background(backgroundColor), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        IconButton(onClick = {onRefresh()}) {
-            Icon(painter = painterResource(R.drawable.error), contentDescription = context.getString(R.string.errorOccurred), modifier = Modifier.fillMaxSize(), tint = tint)
+) {
+    Column(
+        modifier = modifier.background(backgroundColor),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        IconButton(onClick = { onRefresh() }) {
+            Icon(
+                painter = painterResource(R.drawable.error),
+                contentDescription = context.getString(R.string.errorOccurred),
+                modifier = Modifier.fillMaxSize(),
+                tint = tint
+            )
         }
         Text(text = errorMessage, color = tint, fontSize = 18.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(10.dp))
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DropDownList(currentItem: String, listItems: List<String>, modifier: Modifier,readonly:Boolean) {
+    var fieldText by remember { mutableStateOf(currentItem) }
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {
+            if (!readonly){
+                expanded = !expanded
+            }
+                           },
+
+    ) {
+        TextField(
+            value = fieldText,
+            onValueChange = { fieldText = it },
+            modifier = modifier.menuAnchor(type = MenuAnchorType.PrimaryNotEditable),
+            readOnly = true,
+            trailingIcon = {
+                if (!readonly) {
+                    IconButton(onClick = {  }) {
+                        Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
+                    }
+                }
+            }
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            listItems.forEach { item ->
+                DropdownMenuItem(text = { Text(item) }, onClick = {
+                    fieldText = item
+                    expanded = false
+                })
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
 

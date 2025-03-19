@@ -9,6 +9,7 @@ data class Person(
     val id: Long,
     val name: String,
     val surname: String,
+    val patronymic: String,
     val email: String,
     val phone: String,
     val imgUrl: String,
@@ -19,7 +20,11 @@ data class Discipline(
     val id: Long,
     val name: String,
     val complexity: Int
-)
+) {
+    override fun toString(): String {
+        return name
+    }
+}
 
 @Serializable
 data class Teacher(
@@ -34,8 +39,8 @@ data class Teacher(
 data class Parent(
     val id: Long,
     val person: Person,
-    val children: List<Student>
-
+    val children: List<Student>,
+    var currentChild: Student,
 )
 
 @Serializable
@@ -61,16 +66,19 @@ data class Profile( // export model
     }
 }
 
-val basePersonTeacher = Person(id = 1, name = "Elvira", surname = "Smirnova", email = "es@gmail.com", phone = "555-555-5555", imgUrl = "https://sun9-29.userapi.com/impg/q7YyQN6Q9xtBseww-nF4G-0GxUsjMJ_ZqRxn_Q/E3dvKUTEOm4.jpg?size=1442x2160&quality=95&sign=fa533b03fedcfabd0227f369c2a2f360&type=album")
-val basePersonStudent = Person(id = 2, name = "Artem", surname = "Lint", email = "al@gmail.com", phone = "555-555-5554", imgUrl = "https://sun9-75.userapi.com/s/v1/ig2/_MFHNpJBwOTPfyeAjcKVkRFvKqUQZ759TWRZLxdEecSF6FDS68SX0zgSWpakmY0nqq-t6LKqumXmnMgivmCHR2E2.jpg?quality=96&as=32x33,48x49,72x73,108x110,160x163,240x244,360x367,480x489,540x550,640x652,720x733,758x772&from=bu&u=v_3HBf9g1yq-1zSD-H7CWked0mA2SD3Cdb_1uAzfdFY&cs=758x772")
-val basePersonParent = Person(id = 3, name = "Semen", surname = "Shlyantyaev", email = "ss@gmail.com", phone = "555-555-5553", imgUrl = "https://sun9-34.userapi.com/s/v1/ig2/SszLI_0uI02l_DLkfXz_nsqh8aSYRIKyrGfmKYbUIDPqybs_lEjLR6aqMU-hFn2zo9psDl2wFLypbqrVWHFLjAdf.jpg?quality=96&as=32x33,48x49,72x73,108x110,160x163,240x244,360x367,480x489,540x550,640x652,720x733,758x772&from=bu&u=K0gXoW1rLyUiRTOoiG7kYHKhDs5HrRpuEDTTFuD9YtQ&cs=758x772")
+
+val basePersonTeacher = Person(id = 1, name = "Elvira", surname = "Smirnova", email = "es@gmail.com", phone = "555-555-5555", imgUrl = "https://sun9-29.userapi.com/impg/q7YyQN6Q9xtBseww-nF4G-0GxUsjMJ_ZqRxn_Q/E3dvKUTEOm4.jpg?size=1442x2160&quality=95&sign=fa533b03fedcfabd0227f369c2a2f360&type=album", patronymic = "Alekseevna")
+val basePersonStudent = Person(id = 2, name = "Artem", surname = "Lint", email = "al@gmail.com", phone = "555-555-5554", imgUrl = "https://sun9-75.userapi.com/s/v1/ig2/_MFHNpJBwOTPfyeAjcKVkRFvKqUQZ759TWRZLxdEecSF6FDS68SX0zgSWpakmY0nqq-t6LKqumXmnMgivmCHR2E2.jpg?quality=96&as=32x33,48x49,72x73,108x110,160x163,240x244,360x367,480x489,540x550,640x652,720x733,758x772&from=bu&u=v_3HBf9g1yq-1zSD-H7CWked0mA2SD3Cdb_1uAzfdFY&cs=758x772", patronymic = "Dmitrievich")
+val basePersonParent = Person(id = 3, name = "Semen", surname = "Shlyantyaev", email = "ss@gmail.com", phone = "555-555-5553", imgUrl = "https://sun9-34.userapi.com/s/v1/ig2/SszLI_0uI02l_DLkfXz_nsqh8aSYRIKyrGfmKYbUIDPqybs_lEjLR6aqMU-hFn2zo9psDl2wFLypbqrVWHFLjAdf.jpg?quality=96&as=32x33,48x49,72x73,108x110,160x163,240x244,360x367,480x489,540x550,640x652,720x733,758x772&from=bu&u=K0gXoW1rLyUiRTOoiG7kYHKhDs5HrRpuEDTTFuD9YtQ&cs=758x772", patronymic = "Vladimirovich")
 
 val baseDiscipline = Discipline(id = 1, name = "Calculus", complexity = 10)
 
 val baseTeacher = Teacher(id = 1, person = basePersonTeacher, disciplines = listOf(baseDiscipline), description = "Renowned calculus teacher. Teaching for 10 years straight.")
 val baseStudent = Student(id = 1, person = basePersonStudent, description = "I'm smart!")
-val baseParent = Parent(id = 1, person = basePersonParent, children = listOf(baseStudent))
+val baseStudent2 = Student(id = 2, person = basePersonStudent, description = "I'm smart!")
+val baseStudent3 = Student(id = 3, person = basePersonStudent, description = "I'm smart!")
+val baseParent = Parent(id = 1, person = basePersonParent, children = listOf(baseStudent, baseStudent2, baseStudent3), currentChild = baseStudent)
 
 val baseTeacherProfile = Profile(id = 1, username="elvirasmirnova", teacher = baseTeacher)
 val baseStudentProfile = Profile(id = 2, username="artemlint", student = baseStudent)
-val baseParentProfile = Profile(id = 3, username = "semen", teacher = baseTeacher)
+val baseParentProfile = Profile(id = 3, username = "semen", parent = baseParent)
