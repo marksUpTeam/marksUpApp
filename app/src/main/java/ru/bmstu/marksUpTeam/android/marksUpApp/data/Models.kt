@@ -1,6 +1,5 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data
 
-import android.R.attr.description
 import kotlinx.datetime.Clock
 import kotlinx.datetime.serializers.LocalDateTimeIso8601Serializer
 import kotlinx.serialization.Serializable
@@ -26,7 +25,7 @@ data class Class( // занятие
 @Serializable
 data class Schedule(
     val id: Long,
-    val date: LocalDate,
+    @Serializable(with = LocalDateSerializer::class)
     val classes: List<Class>
 )
 
