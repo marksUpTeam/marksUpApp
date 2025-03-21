@@ -24,10 +24,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.datetime.*
+import kotlinx.datetime.TimeZone
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.LocalTime
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -37,7 +36,7 @@ fun ScheduleScreen(
     tint: Color = colorResource(id = R.color.black),
     backgroundColor: Color = colorResource(id = R.color.white)
 ) {
-    val currentDate = LocalDate.now()
+    val currentDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     val pagerState = rememberPagerState(initialPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE }
     var selectedDate by remember { mutableStateOf(currentDate) }
 
@@ -101,17 +100,16 @@ fun ScheduleScreen(
             modifier = Modifier.fillMaxHeight(0.8f)
         )
     }
-
 }
 
 fun calculateStartOfWeek(page: Int): LocalDate {
-    val today = LocalDate.now()
+    val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     var monday = today
     while (monday.dayOfWeek != DayOfWeek.MONDAY) {
-        monday = monday.minusDays(1)
+        monday = monday.minus(1, DateTimeUnit.DAY)
     }
     val daysOffset = (page - Int.MAX_VALUE / 2) * 7
-    return monday.plusDays(daysOffset.toLong())
+    return monday.plus(daysOffset, DateTimeUnit.DAY)
 }
 
 @Composable
@@ -132,7 +130,7 @@ fun WeekTable(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             for (i in 0 until 7) {
-                val currentDay = startOfWeek.plusDays(i.toLong())
+                val currentDay = startOfWeek.plus(i, DateTimeUnit.DAY)
                 DayItem(
                     currentDay = currentDay,
                     currentDate = currentDate,
@@ -148,7 +146,7 @@ fun WeekTable(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             for (i in 7 until 14) {
-                val currentDay = startOfWeek.plusDays(i.toLong())
+                val currentDay = startOfWeek.plus(i, DateTimeUnit.DAY)
                 DayItem(
                     currentDay = currentDay,
                     currentDate = currentDate,
@@ -170,7 +168,8 @@ fun DayItem(
     tint: Color
 ) {
     val date = currentDay.dayOfMonth
-    val dayOfWeek = currentDay.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale("ru")).capitalize()
+    val dayOfWeek = currentDay.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale("ru"))
+        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
     val isSelected = currentDay == selectedDate
 
@@ -208,7 +207,6 @@ fun DayItem(
             )
         }
     }
-
 }
 
 @Composable
@@ -219,7 +217,7 @@ fun ScheduleForSelectedDay(
 ) {
     val hours = (0..23).toList()
     val listState = rememberLazyListState()
-    val currentTime = LocalTime.now()
+    val currentTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time
     val currentHour = currentTime.hour
 
     Column(
@@ -249,7 +247,6 @@ fun ScheduleForSelectedDay(
             listState.scrollToItem(targetIndex)
         }
     }
-
 }
 
 @Composable
@@ -279,11 +276,10 @@ fun HourRow(hour: Int, tint: Color) {
     }
 }
 
-
 fun getMonthName(date: LocalDate): String {
     val monthNames = arrayOf(
         "января", "февраля", "марта", "апреля", "мая", "июня",
         "июля", "августа", "сентября", "октября", "ноября", "декабря"
     )
-    return monthNames[date.monthValue - 1]
+    return monthNames[date.monthNumber - 1]
 }
