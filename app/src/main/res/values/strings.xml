@@ -27,4 +27,7 @@
     <string name="homeworkMark">Оценка за ДЗ</string>
     <string name="addMaterials">Прикрепить материалы</string>
     <string name="teacherComment">Комментарий преподавателя</string>
+
+    <string name="progress">Успеваемость</string>
+    <string name="meanGrade">средний балл</string>
 </resources>
