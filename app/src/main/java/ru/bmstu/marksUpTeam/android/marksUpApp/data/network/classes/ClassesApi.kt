@@ -11,6 +11,6 @@ interface ClassesApi {
     @GET("api/classes")
     suspend fun getClasses(@Header("Authorization") jwt: String): Response<List<Class>>
 
-    @POST
+    @POST("api/classes")
     suspend fun addClass(@Header("Authorization") jwt: String, @Body clazz: Class): Response<Class>
 }
