@@ -4,18 +4,26 @@ package ru.bmstu.marksUpTeam.android.marksUpApp.ui
 
 import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -32,14 +40,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.intellij.lang.annotations.JdkConstants
+import androidx.navigation.NavController
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 
 
@@ -92,9 +99,9 @@ fun BaseButton(
     }
 }
 
-@Preview
 @Composable
 fun Selector(
+    navController: NavController,
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     setCurrentScreen: (Int) -> Unit = {},
@@ -114,6 +121,7 @@ fun Selector(
         BaseButton(
             painter = painterResource(R.drawable.timetable),
             onClick = {
+                navController.navigate("schedule")
                 setCurrentScreen(1)
                 buttonClicked = 1
             },
@@ -124,6 +132,7 @@ fun Selector(
         )
         BaseButton(
             onClick = {
+                navController.navigate("favourites")
                 setCurrentScreen(2)
                 buttonClicked = 2
             },
@@ -148,6 +157,7 @@ fun Selector(
             BaseButton(
                 painter = painterResource(R.drawable.five),
                 onClick = {
+                    navController.navigate("grade")
                     setCurrentScreen(3)
                     buttonClicked = 3
                 },
@@ -160,6 +170,7 @@ fun Selector(
         BaseButton(
             painter = painterResource(R.drawable.profile),
             onClick = {
+                navController.navigate("profile")
                 setCurrentScreen(4)
                 buttonClicked = 4
             },
@@ -209,25 +220,36 @@ fun ErrorScreen(
                 tint = tint
             )
         }
-        Text(text = errorMessage, color = tint, fontSize = 18.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(10.dp))
+        Text(
+            text = errorMessage,
+            color = tint,
+            fontSize = 18.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(10.dp)
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropDownList(currentItem: String, listItems: List<String>, modifier: Modifier,readonly:Boolean) {
+fun DropDownList(
+    currentItem: String,
+    listItems: List<String>,
+    modifier: Modifier,
+    readonly: Boolean
+) {
     var fieldText by remember { mutableStateOf(currentItem) }
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = {
-            if (!readonly){
+            if (!readonly) {
                 expanded = !expanded
             }
-                           },
+        },
 
-    ) {
+        ) {
         TextField(
             value = fieldText,
             onValueChange = { fieldText = it },
@@ -235,7 +257,7 @@ fun DropDownList(currentItem: String, listItems: List<String>, modifier: Modifie
             readOnly = true,
             trailingIcon = {
                 if (!readonly) {
-                    IconButton(onClick = {  }) {
+                    IconButton(onClick = { }) {
                         Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
                     }
                 }

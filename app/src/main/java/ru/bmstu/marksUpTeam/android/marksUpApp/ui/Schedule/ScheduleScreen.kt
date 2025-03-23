@@ -2,7 +2,17 @@ package ru.bmstu.marksUpTeam.android.marksUpApp.ui.Schedule
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -14,7 +24,13 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,18 +40,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.datetime.*
+import androidx.navigation.NavController
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
 fun ScheduleScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
     tint: Color = colorResource(id = R.color.black),
     backgroundColor: Color = colorResource(id = R.color.white)
 ) {
+    val viewModel = ScheduleViewModel()
+    val state by viewModel.stateFlow.collectAsState()
+    val isTeacher = state.profile.teacher != null
     val currentDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     val pagerState = rememberPagerState(initialPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE }
     var selectedDate by remember { mutableStateOf(currentDate) }
@@ -95,11 +122,15 @@ fun ScheduleScreen(
         }
 
         ScheduleForSelectedDay(
+            navController = navController,
             selectedDate = selectedDate,
+            isTeacher = isTeacher,
             tint = tint,
             modifier = Modifier.fillMaxHeight(0.8f)
         )
     }
+
+
 }
 
 fun calculateStartOfWeek(page: Int): LocalDate {
@@ -211,7 +242,9 @@ fun DayItem(
 
 @Composable
 fun ScheduleForSelectedDay(
+    navController: NavController,
     selectedDate: LocalDate,
+    isTeacher: Boolean,
     tint: Color,
     modifier: Modifier = Modifier
 ) {
@@ -235,7 +268,12 @@ fun ScheduleForSelectedDay(
 
         LazyColumn(state = listState) {
             items(hours) { hour ->
-                HourRow(hour = hour, tint = tint)
+                HourRow(
+                    navController = navController,
+                    hour = hour,
+                    tint = tint,
+                    isTeacher = isTeacher
+                )
                 if (hour < 23) {
                     HorizontalDivider(thickness = 1.dp, color = colorResource(id = R.color.coral))
                 }
@@ -250,12 +288,15 @@ fun ScheduleForSelectedDay(
 }
 
 @Composable
-fun HourRow(hour: Int, tint: Color) {
+fun HourRow(navController: NavController, hour: Int, isTeacher: Boolean, tint: Color) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clickable {
+                if (isTeacher) {
+                    navController.navigate("addLesson")
+                }
                 // Реализовать добавление занятия по клику
             },
         verticalAlignment = Alignment.CenterVertically

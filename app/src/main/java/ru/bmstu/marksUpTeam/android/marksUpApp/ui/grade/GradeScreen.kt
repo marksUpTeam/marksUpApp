@@ -2,8 +2,6 @@ package ru.bmstu.marksUpTeam.android.marksUpApp.ui.grade
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,55 +16,47 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.DisciplineGrade
-import ru.bmstu.marksUpTeam.android.marksUpApp.ui.Selector
 
-@Preview
 @Composable
-fun GradeScreen() {
+fun GradeScreen(tint: Color = colorResource(id = R.color.black)) {
     val viewModel = GradeViewModel()
     val state by viewModel.stateFlow.collectAsState()
 
-    Box(Modifier.fillMaxSize()) {
-        Text(
-            text = stringResource(R.string.progress),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 50.dp)
-        )
+    Text(
+        text = stringResource(R.string.progress),
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(top = 50.dp),
+        color = tint
+    )
 
-        LazyColumn(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 100.dp)
-        ) {
-            items(state.student.disciplineGrades) { disciplineGrade ->
-                SubjectGradeCard(
-                    disciplineGrade
-                )
-            }
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-        ) {
-            Selector(isForTeacher = false)
+    LazyColumn(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 100.dp)
+    ) {
+        items(state.student.disciplineGrades) { disciplineGrade ->
+            SubjectGradeCard(
+                disciplineGrade
+            )
         }
     }
 }
 
 @Composable
-fun SubjectGradeCard(disciplineGrade: DisciplineGrade) {
+fun SubjectGradeCard(
+    disciplineGrade: DisciplineGrade,
+    tint: Color = colorResource(id = R.color.black)
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth(0.84f)
@@ -80,7 +70,8 @@ fun SubjectGradeCard(disciplineGrade: DisciplineGrade) {
             "${disciplineGrade.discipline.name}, ${stringResource(R.string.meanGrade)} ${disciplineGrade.grade}",
             maxLines = 2,
             fontSize = 16.sp,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = tint
         )
     }
 }
