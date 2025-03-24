@@ -6,8 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseTeacherProfile
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.Authorization
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.Schedule.ScheduleScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.Selector
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.favourites.FavouritesScreen
@@ -20,18 +22,25 @@ fun AppNavigation() {
     val profile = baseTeacherProfile
     val isTeacher = profile.teacher != null
     val navController = rememberNavController()
-
-    Scaffold(bottomBar = { Selector(navController, isForTeacher = isTeacher) }) { innerPadding ->
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+    //val profileViewModel = ProfileViewModel(api = BuildConfig.API_URL,jwt = getJwt(LocalContext.current).orEmpty(), context = LocalContext.current)
+    Scaffold(bottomBar = {
+        if (currentRoute != "login") {
+            Selector(navController, isForTeacher = isTeacher)
+        }
+    }) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = "schedule",
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable("login") { Authorization(navController) }
             composable("schedule") { ScheduleScreen(navController) }
             composable("addLesson") { AddLessonScreen() }
             composable("lesson") { LessonScreen() }
             composable("favourites") { FavouritesScreen() }
             composable("grade") { GradeScreen() }
+            //composable("profile") { ProfileScreen(viewModel =  profileViewModel)}
         }
     }
 }

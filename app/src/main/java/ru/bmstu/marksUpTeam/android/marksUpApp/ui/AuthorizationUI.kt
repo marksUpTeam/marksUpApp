@@ -3,7 +3,6 @@ package ru.bmstu.marksUpTeam.android.marksUpApp.ui
 
 import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -23,15 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.fontResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.vk.id.AccessToken
 import com.vk.id.VKIDAuthFail
 import com.vk.id.auth.AuthCodeData
@@ -61,7 +58,6 @@ fun vkAuthBlock(
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun Authorization(
     modifier: Modifier = Modifier,
@@ -73,6 +69,7 @@ fun Authorization(
     onAuthCode: (AuthCodeData, Boolean) -> Unit = { _, _ -> },
     onFail: (OneTapOAuth?, VKIDAuthFail) -> Unit = { _, _ -> },
     didFail: Boolean = false,
+    navController: NavController
 ){
     Column(
         modifier = modifier.fillMaxSize().background(backgroundColor), horizontalAlignment = Alignment.CenterHorizontally,
