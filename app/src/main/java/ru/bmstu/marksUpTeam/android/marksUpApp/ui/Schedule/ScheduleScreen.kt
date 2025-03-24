@@ -1,5 +1,6 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.Schedule
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,23 +51,32 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
-import ru.bmstu.marksUpTeam.android.marksUpApp.Route
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.PersonType
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity.Route
 import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
 fun ScheduleScreen(
+    viewModel: ScheduleViewModel,
     navController: NavController,
     modifier: Modifier = Modifier,
     tint: Color = colorResource(id = R.color.black),
     backgroundColor: Color = colorResource(id = R.color.white)
 ) {
-    val viewModel = ScheduleViewModel()
     val state by viewModel.stateFlow.collectAsState()
-    val isTeacher = state.profile.teacher != null
+    val isTeacher = state.profile.personType is PersonType.TeacherType
     val currentDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     val pagerState = rememberPagerState(initialPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE }
     var selectedDate by remember { mutableStateOf(currentDate) }
+
+    LaunchedEffect(state) {
+        Log.d("effect",state.route.orEmpty())
+        state.route?.let { route ->
+            navController.navigate(route)
+            viewModel.resetRoute()
+        }
+    }
 
     Column(
         modifier = modifier
@@ -123,7 +133,7 @@ fun ScheduleScreen(
         }
 
         ScheduleForSelectedDay(
-            navController = navController,
+            viewModel = viewModel,
             selectedDate = selectedDate,
             isTeacher = isTeacher,
             tint = tint,
@@ -243,7 +253,7 @@ fun DayItem(
 
 @Composable
 fun ScheduleForSelectedDay(
-    navController: NavController,
+    viewModel: ScheduleViewModel,
     selectedDate: LocalDate,
     isTeacher: Boolean,
     tint: Color,
@@ -270,7 +280,7 @@ fun ScheduleForSelectedDay(
         LazyColumn(state = listState) {
             items(hours) { hour ->
                 HourRow(
-                    navController = navController,
+                    viewModel = viewModel,
                     hour = hour,
                     tint = tint,
                     isTeacher = isTeacher
@@ -289,14 +299,14 @@ fun ScheduleForSelectedDay(
 }
 
 @Composable
-fun HourRow(navController: NavController, hour: Int, isTeacher: Boolean, tint: Color) {
+fun HourRow(viewModel: ScheduleViewModel, hour: Int, isTeacher: Boolean, tint: Color) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clickable {
                 if (isTeacher) {
-                    navController.navigate(Route.Lesson.name)
+                    viewModel.changeScreenTo(Route.Lesson.name)
                 }
                 // Реализовать добавление занятия по клику
             },

@@ -1,4 +1,4 @@
-package ru.bmstu.marksUpTeam.android.marksUpApp
+package ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MarksUpTheme {
-                    AppNavigation()
+                    AppNavigation(MainActivityViewModel())
                 }
         }
     }

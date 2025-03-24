@@ -1,20 +1,24 @@
-package ru.bmstu.marksUpTeam.android.marksUpApp.ui.Schedule
+package ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class ScheduleViewModel : ViewModel() {
-    private val _stateFlow: MutableStateFlow<ScheduleState> = MutableStateFlow(baseSchedule)
+class MainActivityViewModel: ViewModel() {
+    private val _stateFlow = MutableStateFlow(MainState(route = null))
     val stateFlow = _stateFlow.asStateFlow()
 
     fun changeScreenTo(route: String) {
-        Log.d("viewModel",route)
         _stateFlow.value = _stateFlow.value.copy(route = route)
     }
 
-    fun resetRoute() {
+    fun resetRoute(){
         _stateFlow.value = _stateFlow.value.copy(route = null)
     }
+}
+
+
+
+enum class Route {
+    Login, Schedule, AddLesson, Lesson, Favourites, Grade, Profile
 }
