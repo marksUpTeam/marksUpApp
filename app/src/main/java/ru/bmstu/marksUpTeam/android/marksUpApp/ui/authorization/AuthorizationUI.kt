@@ -183,7 +183,6 @@ fun vkAuthBlock(
     onAuthCode: (AuthCodeData, Boolean) -> Unit = {_, _ -> },
     onFail: (OneTapOAuth?, VKIDAuthFail) -> Unit = { _, _ -> },
     tint: Color = colorResource(R.color.grey),
-    containerColor: Color = MaterialTheme.colorScheme.onBackground,
 ) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
         OneTap(onAuth = onAuth,
