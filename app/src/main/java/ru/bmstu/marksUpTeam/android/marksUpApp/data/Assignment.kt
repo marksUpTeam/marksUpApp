@@ -1,7 +1,11 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data
 
+import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
-import java.time.LocalDate
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayIn
 
 
 @Serializable
@@ -46,8 +50,8 @@ val baseAssignment = Assignment(
     student = baseStudent,
     teacher = baseTeacher,
     discipline = baseDiscipline,
-    issuedOn = LocalDate.now(),
-    deadline = LocalDate.now(),
+    issuedOn = Clock.System.todayIn(TimeZone.currentSystemDefault()),
+    deadline = Clock.System.todayIn(TimeZone.currentSystemDefault()),
     description = "tasks 10 - 15",
     status = AssignmentStatus.Assigned,
     grade = null,
