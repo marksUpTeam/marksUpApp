@@ -1,4 +1,4 @@
-package ru.bmstu.marksUpTeam.android.marksUpApp.data.domain
+package ru.bmstu.marksUpTeam.android.marksUpApp.domain
 
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Class

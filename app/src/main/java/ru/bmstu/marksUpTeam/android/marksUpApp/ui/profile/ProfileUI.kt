@@ -47,7 +47,6 @@ import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePreviewHandler
 import coil3.compose.LocalAsyncImagePreviewHandler
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseParentProfile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudent
@@ -55,8 +54,8 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudent2
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudent3
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudentProfile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseTeacherProfile
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.PersonType
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.ProfileDomain
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileMapper
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.ErrorScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.LoadingScreen

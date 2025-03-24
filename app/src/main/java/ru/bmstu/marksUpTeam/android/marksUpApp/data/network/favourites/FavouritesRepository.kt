@@ -3,7 +3,7 @@ package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.favourites
 import android.content.Context
 import retrofit2.Response
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.FavouritesItem
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.FavouritesItemDomain
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.FavouritesItemDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicRetrofit
 import java.io.IOException
 

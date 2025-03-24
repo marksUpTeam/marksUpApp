@@ -1,6 +1,6 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.profile
 
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.ProfileDomain
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
 
 sealed class ProfileState {
     data object Loading : ProfileState()
