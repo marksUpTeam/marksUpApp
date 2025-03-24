@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.Header
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.ProfileDomain
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicRetrofit
 import java.io.IOException
 import kotlin.Result

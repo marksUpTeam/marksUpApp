@@ -1,4 +1,4 @@
-package ru.bmstu.marksUpTeam.android.marksUpApp.data.domain
+package ru.bmstu.marksUpTeam.android.marksUpApp.domain
 
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Parent
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
@@ -21,6 +21,8 @@ data class ProfileDomain (
 )
 
 val baseTeacherProfileDomain = ProfileDomain(id = 1, username = "Artyom", personType = PersonType.TeacherType(
-    baseTeacher))
+    baseTeacher)
+)
 val baseStudentProfileDomain = ProfileDomain(id = 2, username = "Artyom", personType = PersonType.StudentType(
-    baseStudent))
+    baseStudent)
+)

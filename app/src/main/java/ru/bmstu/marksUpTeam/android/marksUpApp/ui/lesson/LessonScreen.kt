@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.PersonType
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.DropDownList
 
 @Composable

@@ -1,8 +1,8 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile
 
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.PersonType
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.ProfileDomain
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.profile.ProfileState
 
 class ProfileMapper() {

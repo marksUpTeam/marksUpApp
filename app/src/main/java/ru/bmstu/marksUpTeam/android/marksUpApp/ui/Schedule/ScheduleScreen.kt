@@ -51,7 +51,7 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.PersonType
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity.Route
 import java.time.format.TextStyle
 import java.util.Locale

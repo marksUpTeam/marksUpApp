@@ -9,8 +9,8 @@ import kotlinx.coroutines.launch
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Parent
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.PersonType
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.ProfileDomain
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileMapper
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileRepository
 
