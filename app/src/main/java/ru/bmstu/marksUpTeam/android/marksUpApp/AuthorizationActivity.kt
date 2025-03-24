@@ -17,8 +17,8 @@ import com.vk.id.onetap.common.OneTapOAuth
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.authorization.AuthorizationRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.authorization.testProfileCall
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getEncryptedSharedPreferences
-import ru.bmstu.marksUpTeam.android.marksUpApp.ui.AccountNotFoundScreen
-import ru.bmstu.marksUpTeam.android.marksUpApp.ui.Authorization
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization.AccountNotFoundScreen
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization.Authorization
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.ErrorScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.LoadingScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme.MarksUpTheme

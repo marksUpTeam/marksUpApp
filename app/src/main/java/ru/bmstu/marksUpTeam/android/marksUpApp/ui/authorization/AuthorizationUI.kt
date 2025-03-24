@@ -1,5 +1,6 @@
 @file:Suppress("FunctionName")
-package ru.bmstu.marksUpTeam.android.marksUpApp.ui
+
+package ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization
 
 import android.content.Context
 import androidx.compose.foundation.background

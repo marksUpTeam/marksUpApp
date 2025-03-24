@@ -27,7 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.baseStudentProfileDomain
-import ru.bmstu.marksUpTeam.android.marksUpApp.ui.Authorization
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization.Authorization
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.BaseButton
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.Schedule.ScheduleScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.Schedule.ScheduleViewModel
