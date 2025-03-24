@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
+import ru.bmstu.marksUpTeam.android.marksUpApp.Route
 
 
 @Preview()
@@ -121,7 +122,7 @@ fun Selector(
         BaseButton(
             painter = painterResource(R.drawable.timetable),
             onClick = {
-                navController.navigate("schedule")
+                navController.navigate(Route.Schedule.name)
                 setCurrentScreen(1)
                 buttonClicked = 1
             },
@@ -132,7 +133,7 @@ fun Selector(
         )
         BaseButton(
             onClick = {
-                navController.navigate("favourites")
+                navController.navigate(Route.Favourites.name)
                 setCurrentScreen(2)
                 buttonClicked = 2
             },
@@ -157,7 +158,7 @@ fun Selector(
             BaseButton(
                 painter = painterResource(R.drawable.five),
                 onClick = {
-                    navController.navigate("grade")
+                    navController.navigate(Route.Grade.name)
                     setCurrentScreen(3)
                     buttonClicked = 3
                 },
@@ -170,7 +171,7 @@ fun Selector(
         BaseButton(
             painter = painterResource(R.drawable.profile),
             onClick = {
-                navController.navigate("profile")
+                //navController.navigate(Route.Profile.name)
                 setCurrentScreen(4)
                 buttonClicked = 4
             },

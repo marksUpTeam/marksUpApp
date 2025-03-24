@@ -50,6 +50,7 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
+import ru.bmstu.marksUpTeam.android.marksUpApp.Route
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -295,7 +296,7 @@ fun HourRow(navController: NavController, hour: Int, isTeacher: Boolean, tint: C
             .padding(vertical = 8.dp)
             .clickable {
                 if (isTeacher) {
-                    navController.navigate("addLesson")
+                    navController.navigate(Route.Lesson.name)
                 }
                 // Реализовать добавление занятия по клику
             },

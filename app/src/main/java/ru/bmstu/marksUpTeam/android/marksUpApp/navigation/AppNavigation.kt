@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import ru.bmstu.marksUpTeam.android.marksUpApp.Route
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.PersonType
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.baseStudentProfileDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.Authorization
@@ -35,13 +36,13 @@ fun AppNavigation() {
             startDestination = "schedule",
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("login") { Authorization() }
-            composable("schedule") { ScheduleScreen(navController) }
-            composable("addLesson") { AddLessonScreen() }
-            composable("lesson") { LessonScreen() }
-            composable("favourites") { FavouritesScreen() }
-            composable("grade") { GradeScreen() }
-            //composable("profile") { ProfileScreen(viewModel =  profileViewModel)}
+            composable(Route.Login.name) { Authorization() }
+            composable(Route.Schedule.name) { ScheduleScreen(navController) }
+            composable(Route.AddLesson.name) { AddLessonScreen() }
+            composable(Route.Lesson.name) { LessonScreen() }
+            composable(Route.Favourites.name) { FavouritesScreen() }
+            composable(Route.Grade.name) { GradeScreen() }
+            //composable(Route.Profile.name) { ProfileScreen(viewModel =  profileViewModel)}
         }
     }
 }
