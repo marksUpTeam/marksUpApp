@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.domain.PersonType
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.DropDownList
 
 @Composable
@@ -42,7 +43,7 @@ fun LessonScreen(tint: Color = colorResource(id = R.color.black)) {
             .padding(end = 24.dp)
             .clip(RoundedCornerShape(24.dp))
     val marksList = listOf("", "5", "4", "3", "2", "1")
-    val isTeacher = state.profile.teacher != null
+    val isTeacher = state.profile.personType is PersonType.TeacherType
 
     Column {
 

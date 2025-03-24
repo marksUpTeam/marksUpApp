@@ -28,7 +28,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.vk.id.AccessToken
 import com.vk.id.VKIDAuthFail
 import com.vk.id.auth.AuthCodeData
@@ -68,8 +67,7 @@ fun Authorization(
     context: Context = LocalContext.current,
     onAuthCode: (AuthCodeData, Boolean) -> Unit = { _, _ -> },
     onFail: (OneTapOAuth?, VKIDAuthFail) -> Unit = { _, _ -> },
-    didFail: Boolean = false,
-    navController: NavController
+    didFail: Boolean = false
 ){
     Column(
         modifier = modifier.fillMaxSize().background(backgroundColor), horizontalAlignment = Alignment.CenterHorizontally,
