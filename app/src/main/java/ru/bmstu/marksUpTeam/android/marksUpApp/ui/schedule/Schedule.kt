@@ -1,4 +1,4 @@
-package ru.bmstu.marksUpTeam.android.marksUpApp.ui.Schedule
+package ru.bmstu.marksUpTeam.android.marksUpApp.ui.schedule
 
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Class
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseClass
