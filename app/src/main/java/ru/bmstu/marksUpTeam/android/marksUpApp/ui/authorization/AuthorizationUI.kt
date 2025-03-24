@@ -4,6 +4,7 @@ package ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization
 
 import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.content.contentReceiver
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -87,6 +89,8 @@ private fun AuthorizationContent(
                             onAuthorizationFinish = { onAuthorizationFinish(state.jwt) },
                             backgroundColor = MaterialTheme.colorScheme.background,
                             tint = MaterialTheme.colorScheme.primary,
+                            textColor = MaterialTheme.colorScheme.secondary,
+                            containerColor = MaterialTheme.colorScheme.onBackground,
                         )
                     }
                     is AuthorizationState.Content.Idle -> {
@@ -132,6 +136,8 @@ private fun AccountFound(
     onAuthorizationFinish: () -> Unit = {},
     backgroundColor: Color = MaterialTheme.colorScheme.background,
     tint: Color = MaterialTheme.colorScheme.primary,
+    textColor: Color = MaterialTheme.colorScheme.secondary,
+    containerColor: Color = MaterialTheme.colorScheme.onBackground,
 ){
     Column(modifier = modifier.fillMaxSize().background(backgroundColor), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         Icon(
@@ -147,12 +153,19 @@ private fun AccountFound(
             text = stringResource(R.string.accFound),
             textAlign = TextAlign.Center,
             fontSize = 18.sp,
+            color = textColor,
         )
         Row(
             modifier = Modifier.fillMaxWidth().height(10.dp),
         ) {}
         Button(
             onClick = onAuthorizationFinish,
+            colors = ButtonColors(
+                contentColor = textColor,
+                containerColor = containerColor,
+                disabledContainerColor = containerColor,
+                disabledContentColor = textColor,
+            )
         ) {
             Text(text = stringResource(R.string.continueAuth))
         }
@@ -170,6 +183,7 @@ fun vkAuthBlock(
     onAuthCode: (AuthCodeData, Boolean) -> Unit = {_, _ -> },
     onFail: (OneTapOAuth?, VKIDAuthFail) -> Unit = { _, _ -> },
     tint: Color = colorResource(R.color.grey),
+    containerColor: Color = MaterialTheme.colorScheme.onBackground,
 ) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
         OneTap(onAuth = onAuth,
