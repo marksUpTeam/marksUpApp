@@ -7,6 +7,7 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudent
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseTeacher
 
 
+
 sealed class PersonType {
     data class StudentType(val student: Student) : PersonType()
     data class TeacherType(val teacher: Teacher) : PersonType()
@@ -17,7 +18,7 @@ sealed class PersonType {
 data class ProfileDomain (
     val id: Long,
     val username: String,
-    val personType: PersonType,
+    val personType: PersonType
 )
 
 val baseTeacherProfileDomain = ProfileDomain(id = 1, username = "Artyom", personType = PersonType.TeacherType(
@@ -25,4 +26,3 @@ val baseTeacherProfileDomain = ProfileDomain(id = 1, username = "Artyom", person
 )
 val baseStudentProfileDomain = ProfileDomain(id = 2, username = "Artyom", personType = PersonType.StudentType(
     baseStudent)
-)

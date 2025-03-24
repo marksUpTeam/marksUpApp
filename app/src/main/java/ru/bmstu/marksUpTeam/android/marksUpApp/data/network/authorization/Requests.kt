@@ -1,10 +1,9 @@
-package ru.bmstu.marksUpTeam.android.marksUpApp.data.network
+package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.authorization
 
 import android.content.Context
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.authorization.AuthorizationRepository
 
 
 fun testProfileCall(

@@ -3,8 +3,6 @@ package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile
 import android.content.Context
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.http.Body
-import retrofit2.http.Header
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicRetrofit
