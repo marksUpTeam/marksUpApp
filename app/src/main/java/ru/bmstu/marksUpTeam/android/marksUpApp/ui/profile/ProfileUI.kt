@@ -1,4 +1,5 @@
 @file:Suppress("FunctionName")
+
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.profile
 
 import android.content.Context
@@ -66,7 +67,10 @@ fun ProfileScreen(
     viewModel: ProfileViewModel
 ) {
     val state = viewModel.stateFlow.collectAsState()
-    ProfileContent(state.value, onRefresh = {viewModel.updateFlow()}, onCurrentStudentChange = {viewModel.pushCurrentStudentChange(it)})
+    ProfileContent(
+        state.value,
+        onRefresh = { viewModel.updateFlow() },
+        onCurrentStudentChange = { viewModel.pushCurrentStudentChange(it) })
 }
 
 @Composable
@@ -78,20 +82,48 @@ private fun ProfileContent(
     MarksUpTheme {
         when (state) {
             is ProfileState.Loading -> {
-                LoadingScreen(modifier = Modifier.fillMaxSize(), backgroundColor = MaterialTheme.colorScheme.background)
+                LoadingScreen(
+                    modifier = Modifier.fillMaxSize(),
+                    backgroundColor = MaterialTheme.colorScheme.background
+                )
             }
+
             is ProfileState.Error -> {
-                ErrorScreen(onRefresh = onRefresh, modifier = Modifier.fillMaxSize(), backgroundColor = MaterialTheme.colorScheme.background, errorMessage = state.errorMessage)
+                ErrorScreen(
+                    onRefresh = onRefresh,
+                    modifier = Modifier.fillMaxSize(),
+                    backgroundColor = MaterialTheme.colorScheme.background,
+                    errorMessage = state.errorMessage
+                )
             }
-            is ProfileState.ContentStudent -> {ContentStudentScreen(onRefresh = onRefresh, state.profile, onEditClick = {startEditingActivity()})}
-            is ProfileState.ContentTeacher -> {ContentTeacherScreen(onRefresh = onRefresh, state.profile, onEditClick = {startEditingActivity()})}
-            is ProfileState.ContentParent -> {ContentParentScreen(onRefresh = onRefresh, state.profile, onCurrentStudentChange = onCurrentStudentChange, onEditClick = {startEditingActivity()})}
+
+            is ProfileState.ContentStudent -> {
+                ContentStudentScreen(
+                    onRefresh = onRefresh,
+                    state.profile,
+                    onEditClick = { startEditingActivity() })
+            }
+
+            is ProfileState.ContentTeacher -> {
+                ContentTeacherScreen(
+                    onRefresh = onRefresh,
+                    state.profile,
+                    onEditClick = { startEditingActivity() })
+            }
+
+            is ProfileState.ContentParent -> {
+                ContentParentScreen(
+                    onRefresh = onRefresh,
+                    state.profile,
+                    onCurrentStudentChange = onCurrentStudentChange,
+                    onEditClick = { startEditingActivity() })
+            }
         }
     }
 }
 
 @OptIn(ExperimentalCoilApi::class)
-val previewHandler = AsyncImagePreviewHandler{
+val previewHandler = AsyncImagePreviewHandler {
     ColorImage(Color.Red.toArgb())
 }
 
@@ -109,33 +141,58 @@ private fun ContentTeacherScreen(
     MarksUpTheme {
         PullToRefreshBox(isRefreshing = false, onRefresh = onRefresh) {
             Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top,
-            ) {
-                CommonContentView("${teacher.teacher.person.surname}\n${teacher.teacher.person.name}\n${teacher.teacher.person.patronymic}", context.getString(R.string.teacher),
-                    teacher.teacher.person.imgUrl
-                )
-                Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    Text(
-                        text = "${context.getString(R.string.disciplines)} ${teacher.teacher.disciplines.joinToString(", ")}",
-                        color = MaterialTheme.colorScheme.secondary,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top,
+                ) {
+                    CommonContentView(
+                        "${teacher.teacher.person.surname}\n${teacher.teacher.person.name}\n${teacher.teacher.person.patronymic}",
+                        context.getString(R.string.teacher),
+                        teacher.teacher.person.imgUrl
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "${context.getString(R.string.disciplines)} ${
+                                teacher.teacher.disciplines.joinToString(
+                                    ", "
+                                )
+                            }",
+                            color = MaterialTheme.colorScheme.secondary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                        )
+                    }
+                    AboutMeSection(
+                        description = teacher.teacher.description,
+                        modifier = Modifier.padding(10.dp)
                     )
                 }
-                AboutMeSection(description = teacher.teacher.description, modifier = Modifier.padding(10.dp))
-            }
-                IconButton(onClick = onEditClick, modifier = Modifier.align(Alignment.BottomEnd).height(80.dp).width(80.dp)) {
-                    Icon(Icons.Filled.Edit, contentDescription = context.getString(R.string.edit), modifier=Modifier.width(48.dp).height(48.dp), tint = MaterialTheme.colorScheme.secondary)
+                IconButton(
+                    onClick = onEditClick,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .height(80.dp)
+                        .width(80.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.Edit,
+                        contentDescription = context.getString(R.string.edit),
+                        modifier = Modifier
+                            .width(48.dp)
+                            .height(48.dp),
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
                 }
-        }
+            }
         }
     }
 }
-
-
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
@@ -146,24 +203,44 @@ private fun ContentStudentScreen(
     profile: ProfileDomain = ProfileMapper().map(baseStudentProfile),
     context: Context = LocalContext.current,
     onEditClick: () -> Unit = {}
-){
+) {
     val student = profile.personType as PersonType.StudentType
     MarksUpTheme {
         Box(modifier = Modifier.fillMaxSize()) {
-        PullToRefreshBox(isRefreshing = false, onRefresh = onRefresh) {
-            Column(
-                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top,
-            ) {
-                CommonContentView("${student.student.person.surname}\n${student.student.person.name}\n${student.student.person.patronymic}", context.getString(R.string.student),
-                    student.student.person.imgUrl
-                )
-                AboutMeSection(description = student.student.description, modifier = Modifier.padding(10.dp))
+            PullToRefreshBox(isRefreshing = false, onRefresh = onRefresh) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top,
+                ) {
+                    CommonContentView(
+                        "${student.student.person.surname}\n${student.student.person.name}\n${student.student.person.patronymic}",
+                        context.getString(R.string.student),
+                        student.student.person.imgUrl
+                    )
+                    AboutMeSection(
+                        description = student.student.description,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
             }
-        }
-            IconButton(onClick = onEditClick, modifier = Modifier.align(Alignment.BottomEnd).height(80.dp).width(80.dp)) {
-                Icon(Icons.Filled.Edit, contentDescription = context.getString(R.string.edit), modifier=Modifier.width(48.dp).height(48.dp), tint = MaterialTheme.colorScheme.secondary)
+            IconButton(
+                onClick = onEditClick,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .height(80.dp)
+                    .width(80.dp)
+            ) {
+                Icon(
+                    Icons.Filled.Edit,
+                    contentDescription = context.getString(R.string.edit),
+                    modifier = Modifier
+                        .width(48.dp)
+                        .height(48.dp),
+                    tint = MaterialTheme.colorScheme.secondary
+                )
             }
         }
     }
@@ -178,34 +255,50 @@ private fun ContentParentScreen(
     onCurrentStudentChange: (Student) -> Unit = {},
     context: Context = LocalContext.current,
     onEditClick: () -> Unit = {},
-){
+) {
     val parent = profile.personType as PersonType.ParentType
     MarksUpTheme {
         PullToRefreshBox(isRefreshing = false, onRefresh = onRefresh) {
             Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top,
-            ) {
-                CommonContentView(
-                    "${parent.parent.person.surname}\n${parent.parent.person.name}\n${parent.parent.person.patronymic}",
-                    context.getString(R.string.parent),
-                    parent.parent.person.imgUrl,)
-                StudentSelector(
-                    modifier = Modifier.padding(10.dp),
-                    chosenStudent = parent.parent.currentChild,
-                    students = parent.parent.children,
-                    onCurrentStudentChange)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top,
+                ) {
+                    CommonContentView(
+                        "${parent.parent.person.surname}\n${parent.parent.person.name}\n${parent.parent.person.patronymic}",
+                        context.getString(R.string.parent),
+                        parent.parent.person.imgUrl,
+                    )
+                    StudentSelector(
+                        modifier = Modifier.padding(10.dp),
+                        chosenStudent = parent.parent.currentChild,
+                        students = parent.parent.children,
+                        onCurrentStudentChange
+                    )
                 }
-                IconButton(onClick = onEditClick, modifier = Modifier.align(Alignment.BottomEnd).height(80.dp).width(80.dp)) {
-                    Icon(Icons.Filled.Edit, contentDescription = context.getString(R.string.edit), modifier=Modifier.width(48.dp).height(48.dp), tint = MaterialTheme.colorScheme.secondary)
+                IconButton(
+                    onClick = onEditClick,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .height(80.dp)
+                        .width(80.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.Edit,
+                        contentDescription = context.getString(R.string.edit),
+                        modifier = Modifier
+                            .width(48.dp)
+                            .height(48.dp),
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
                 }
             }
         }
     }
 }
-
 
 
 @Preview
@@ -217,10 +310,14 @@ private fun CommonContentView(
     imgUrl: String = "",
 ) {
     Row(
-        modifier = Modifier.padding(10.dp).height(50.dp),
+        modifier = Modifier
+            .padding(10.dp)
+            .height(50.dp),
     ) {}
     Row(
-        modifier = Modifier.fillMaxWidth().padding(10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -228,13 +325,16 @@ private fun CommonContentView(
             AsyncImage(
                 model = imgUrl,
                 contentDescription = "",
-                modifier = Modifier.width(128.dp).height(128.dp).shadow(
-                    elevation = 10.dp,
-                    clip = true,
-                    shape = RoundedCornerShape(30.dp),
-                    spotColor = MaterialTheme.colorScheme.primary,
-                    ambientColor = MaterialTheme.colorScheme.primary
-                ),
+                modifier = Modifier
+                    .width(128.dp)
+                    .height(128.dp)
+                    .shadow(
+                        elevation = 10.dp,
+                        clip = true,
+                        shape = RoundedCornerShape(30.dp),
+                        spotColor = MaterialTheme.colorScheme.primary,
+                        ambientColor = MaterialTheme.colorScheme.primary
+                    ),
             )
             Column(modifier = Modifier.width(45.dp)) {}
             Column {
@@ -261,21 +361,37 @@ private fun AboutMeSection(
     description: String = "Example description",
     context: Context = LocalContext.current,
     modifier: Modifier = Modifier,
-){
+) {
     if (description.isBlank()) {
         return
     }
     Column(
         modifier = modifier.fillMaxWidth(),
     ) {
-        Row (modifier = Modifier.fillMaxWidth()) {
-            Text(text = context.getString(R.string.aboutMe),
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = context.getString(R.string.aboutMe),
                 fontStyle = FontStyle.Italic,
                 fontSize = 18.sp,
-                color = MaterialTheme.colorScheme.secondary,)
+                color = MaterialTheme.colorScheme.secondary,
+            )
         }
-        Row (modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(MaterialTheme.colorScheme.secondaryContainer).shadow(20.dp, spotColor = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(20.dp), clip = false)) {
-            Text(modifier = Modifier.fillMaxWidth().padding(5.dp),
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .shadow(
+                    20.dp,
+                    spotColor = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(20.dp),
+                    clip = false
+                )
+        ) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp),
                 textAlign = TextAlign.Center,
                 text = description,
                 fontSize = 22.sp,
@@ -292,13 +408,20 @@ private fun StudentItem(
     student: Student = baseStudent,
     isChosen: Boolean = false,
     onClick: (Student) -> Unit = {},
-){
-    Row(modifier = modifier.fillMaxWidth().clickable(enabled = !isChosen){onClick(student)}, verticalAlignment = Alignment.CenterVertically) {
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(enabled = !isChosen) { onClick(student) },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Icon(
             painter = painterResource(R.drawable.child_face),
             contentDescription = "",
             tint = if (!isChosen) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
-            modifier = Modifier.width(48.dp).height(48.dp)
+            modifier = Modifier
+                .width(48.dp)
+                .height(48.dp)
         )
         Text(
             text = "${student.person.surname} ${student.person.name} ${student.person.patronymic}",
@@ -327,7 +450,15 @@ private fun StudentSelector(
             )
         }
         LazyColumn(
-            modifier = modifier.fillMaxWidth().shadow(20.dp, spotColor = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(10.dp), clip = false).clip(RoundedCornerShape(10.dp))
+            modifier = modifier
+                .fillMaxWidth()
+                .shadow(
+                    20.dp,
+                    spotColor = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(10.dp),
+                    clip = false
+                )
+                .clip(RoundedCornerShape(10.dp))
                 .background(MaterialTheme.colorScheme.secondaryContainer)
         ) {
             items(students) { student ->
@@ -337,11 +468,11 @@ private fun StudentSelector(
                     isChosen = student == chosenStudent,
                     modifier = Modifier.padding(10.dp)
                 )
-           }
+            }
         }
     }
 }
 
-private fun startEditingActivity(){
+private fun startEditingActivity() {
     // TODO: Implement function
 }
