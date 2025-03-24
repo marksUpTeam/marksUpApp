@@ -17,6 +17,7 @@ import com.vk.id.onetap.common.OneTapOAuth
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.authorization.AuthorizationRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.authorization.testProfileCall
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getEncryptedSharedPreferences
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.processJWT
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization.AccountNotFoundScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization.Authorization
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.ErrorScreen
@@ -66,8 +67,7 @@ class AuthorizationActivity: ComponentActivity() {
                         } },
                         setError = {errorMsgThis, stat -> run {error = stat; errorMsg = errorMsgThis}},
                         setLoading = {loading = it},
-                        context = this,
-                        jwt = token.idToken ?: "") }; processJWT(oauth, token, this) },
+                        jwt = token.idToken ?: "") }; processJWT(token.idToken ?: "", this) },
                     didFail = didFail,
                     onFail = { _, authFail -> run { didFail = true; println(authFail) } }, backgroundColor = MaterialTheme.colorScheme.background, iconTint = MaterialTheme.colorScheme.primary)
             }
@@ -76,10 +76,5 @@ class AuthorizationActivity: ComponentActivity() {
     }
 }
 
-fun processJWT(oauth: OneTapOAuth?, token: AccessToken, context: Context) {
-    val jwtString = token.idToken
-    val prefs = getEncryptedSharedPreferences(context)
-    println(jwtString)
-    prefs.edit().putString("jwt", jwtString).apply()
-}
+
 

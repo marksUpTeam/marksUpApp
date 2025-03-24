@@ -13,6 +13,11 @@ class AuthorizationRepository(api: String, context: Context) {
 
     suspend fun testProfile(jwt: String): Boolean{
         val response = authorizationApi.testProfile("Bearer $jwt")
-        return response.isSuccessful
+        if (response.isSuccessful && response.body() != null){
+            return response.body()!! == "exists"
+        }
+        else {
+            return false
+        }
     }
 }
