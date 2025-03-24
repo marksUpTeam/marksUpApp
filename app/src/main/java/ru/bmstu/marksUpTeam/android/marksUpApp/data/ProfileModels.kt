@@ -38,6 +38,7 @@ data class Teacher(
     val person: Person,
     val disciplines: List<Discipline>,
     val description: String,
+    val assignedStudents: List<Student>
 )
 
 
@@ -54,7 +55,8 @@ data class Student(
     val id: Long,
     val person: Person,
     val description: String,
-    val disciplineGrades: List<DisciplineGrade>
+    val disciplineGrades: List<DisciplineGrade>,
+    val assignedTeachers: List<Teacher>,
 )
 
 
@@ -106,31 +108,37 @@ val basePersonParent = Person(
 val baseDiscipline = Discipline(id = 1, name = "Calculus", complexity = 10)
 val baseDisciplineGrade = DisciplineGrade(baseDiscipline,4.53f)
 
-val baseTeacher = Teacher(
-    id = 1,
-    person = basePersonTeacher,
-    disciplines = listOf(baseDiscipline),
-    description = "Renowned calculus teacher. Teaching for 10 years straight."
-)
 val baseStudent = Student(
     id = 1, person = basePersonStudent, description = "I'm smart!", disciplineGrades = listOf(
         baseDisciplineGrade, baseDisciplineGrade
-    )
+    ),
+    assignedTeachers = listOf(),
 )
+
+
 val baseStudent2 =
     Student(
         id = 2,
         person = basePersonStudent,
         description = "I'm smart!",
-        disciplineGrades = listOf()
+        disciplineGrades = listOf(),
+        assignedTeachers = listOf(),
     )
 val baseStudent3 =
     Student(
         id = 3,
         person = basePersonStudent,
         description = "I'm smart!",
-        disciplineGrades = listOf()
+        disciplineGrades = listOf(),
+        assignedTeachers = listOf(),
     )
+var baseTeacher = Teacher(
+    id = 1,
+    person = basePersonTeacher,
+    disciplines = listOf(baseDiscipline),
+    description = "Renowned calculus teacher. Teaching for 10 years straight.",
+    assignedStudents = listOf(baseStudent, baseStudent2, baseStudent3),
+)
 val baseParent = Parent(
     id = 1,
     person = basePersonParent,
