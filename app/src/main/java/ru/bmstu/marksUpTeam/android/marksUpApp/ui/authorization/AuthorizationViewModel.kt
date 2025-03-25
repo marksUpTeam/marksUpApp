@@ -17,7 +17,7 @@ class AuthorizationViewModel(api: String, context: Context): ViewModel() {
 
     fun profileCall(jwt: String){
         if (jwt.isEmpty()) {
-            _stateFlow.value = AuthorizationState.Error("")
+            _stateFlow.value = AuthorizationState.Error.DefaultError("")
         }
         viewModelScope.launch {
             runCatching {
@@ -26,16 +26,16 @@ class AuthorizationViewModel(api: String, context: Context): ViewModel() {
                 if (response) {
                     _stateFlow.value = AuthorizationState.Content.Authorized(jwt)
                 } else {
-                    _stateFlow.value = AuthorizationState.Content.AccountNotFound
+                    _stateFlow.value = AuthorizationState.Error.AccountNotFound
                 }
             }.onFailure {
-                _stateFlow.value = AuthorizationState.Error(it.message.toString())
+                _stateFlow.value = AuthorizationState.Error.DefaultError(it.message.toString())
             }
         }
     }
 
     fun vkIdFail(){
-        _stateFlow.value = AuthorizationState.Content.VKIDFailed
+        _stateFlow.value = AuthorizationState.Error.VKIDFailed
     }
 
     fun finishAuthorization(jwt: String, context: Context){
