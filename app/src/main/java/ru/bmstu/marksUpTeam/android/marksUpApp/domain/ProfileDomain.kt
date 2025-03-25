@@ -26,3 +26,4 @@ val baseTeacherProfileDomain = ProfileDomain(id = 1, username = "Artyom", person
 )
 val baseStudentProfileDomain = ProfileDomain(id = 2, username = "Artyom", personType = PersonType.StudentType(
     baseStudent)
+)

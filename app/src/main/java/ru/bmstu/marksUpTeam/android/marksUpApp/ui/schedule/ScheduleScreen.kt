@@ -1,4 +1,4 @@
-package ru.bmstu.marksUpTeam.android.marksUpApp.ui.Schedule
+package ru.bmstu.marksUpTeam.android.marksUpApp.ui.schedule
 
 import android.util.Log
 import androidx.compose.foundation.background

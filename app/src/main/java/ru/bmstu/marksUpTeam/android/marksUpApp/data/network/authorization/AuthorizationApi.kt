@@ -7,5 +7,5 @@ import retrofit2.http.Header
 interface AuthorizationApi {
 
     @GET("api")
-    suspend fun testProfile(@Header("Authorization") jwt: String): Response<Boolean>
+    suspend fun testProfile(@Header("Authorization") jwt: String): Response<String>
 }

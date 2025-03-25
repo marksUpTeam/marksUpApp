@@ -62,7 +62,7 @@ fun BaseButton(
             .padding(4.dp)
             .shadow(
                 elevation = if (isSelected) 20.dp else 10.dp,
-                clip = false,
+                clip = true,
                 shape = RoundedCornerShape(10.dp),
                 spotColor = if (isSelected) selectedTint else tint,
                 ambientColor = if (isSelected) selectedTint else tint
