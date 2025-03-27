@@ -15,8 +15,8 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileMappe
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileRepository
 
 
-class ProfileViewModel(api: String, jwt: String, context: Context): ViewModel() {
-    private val profileRepository = ProfileRepository(api = api, context = context, jwt)
+class ProfileViewModel(api: String, context: Context): ViewModel() {
+    private val profileRepository = ProfileRepository(api = api, context = context)
     private val _stateFlow: MutableStateFlow<ProfileState> = MutableStateFlow(ProfileState.Loading)
     val stateFlow = _stateFlow.asStateFlow()
 

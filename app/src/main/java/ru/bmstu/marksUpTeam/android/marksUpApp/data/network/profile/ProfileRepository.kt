@@ -9,13 +9,12 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicRetrofit
 import java.io.IOException
 import kotlin.Result
 
-class ProfileRepository(api: String, context: Context, jwtUnformatted: String) {
+class ProfileRepository(api: String, context: Context) {
     private val retrofit: Retrofit = getBasicRetrofit(context, api)
     private val profileApi = retrofit.create(ProfileApi::class.java)
-    private val jwt = "Bearer $jwtUnformatted"
 
     private suspend fun getProfile(): Response<Profile>{
-        return profileApi.getProfile(jwt)
+        return profileApi.getProfile()
     }
 
     suspend fun getProfileDomain(): Result<ProfileDomain> {
@@ -27,7 +26,7 @@ class ProfileRepository(api: String, context: Context, jwtUnformatted: String) {
         else return Result.failure(IOException(profileResponse.errorBody()?.string() ?: "Something went wrong"))
     }
     private suspend fun modifyProfile(profile: Profile): Response<String> {
-        return profileApi.modifyProfile(jwt, profile)
+        return profileApi.modifyProfile(profile)
     }
 
     suspend fun modifyProfileDomain(profileDomain: ProfileDomain): Result<String> {

@@ -8,6 +8,11 @@ class AuthorizationRepository(api: String, context: Context) {
 
     private val retrofit: Retrofit = getBasicRetrofit(context, api)
 
+    /*
+        Тут оставляем старый (без перехватчика) клиент, так как во время вызова метода этого репозитория JWT ещё не сохранен,
+        его попросту брать неоткуда. По сути, метод testProfile - проверка подлинности JWT, только после неё его можно сохранять.
+     */
+
     private val authorizationApi = retrofit.create(AuthorizationApi::class.java)
 
 

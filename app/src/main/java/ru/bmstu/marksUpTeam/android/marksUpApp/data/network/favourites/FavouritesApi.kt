@@ -9,8 +9,8 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.FavouritesItem
 
 interface FavouritesApi {
     @GET("api/user/favourites")
-    suspend fun getFavourites(@Header("Authorization") jwt: String): Response<List<FavouritesItem>>
+    suspend fun getFavourites(): Response<List<FavouritesItem>>
 
     @POST("api/user/favourites")
-    suspend fun addFavourite(@Header("Authorization") jwt: String, @Body favouritesItem: FavouritesItem): Response<FavouritesItem>
+    suspend fun addFavourite(@Body favouritesItem: FavouritesItem): Response<FavouritesItem>
 }
