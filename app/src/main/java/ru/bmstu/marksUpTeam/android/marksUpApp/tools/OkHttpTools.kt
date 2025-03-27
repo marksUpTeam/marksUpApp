@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.AuthorizationInterceptor
 import java.io.InputStream
 import java.security.KeyStore
 import java.security.cert.CertificateFactory
@@ -15,7 +16,8 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
 
-fun getUnsafeClient(context: Context): OkHttpClient {
+
+private fun getUnsafeClientBuilder(context: Context): OkHttpClient.Builder {
     val certInputStream: InputStream = context.resources.openRawResource(R.raw.naburnm8)
 
     val keyStore = KeyStore.getInstance(KeyStore.getDefaultType())
@@ -33,13 +35,28 @@ fun getUnsafeClient(context: Context): OkHttpClient {
 
     val unsafeHostnameVerifier = HostnameVerifier { _, _ -> true }
 
-    return OkHttpClient.Builder().hostnameVerifier(unsafeHostnameVerifier).sslSocketFactory(sslContext.socketFactory, trustManager).build()
+    return OkHttpClient.Builder().hostnameVerifier(unsafeHostnameVerifier).sslSocketFactory(sslContext.socketFactory, trustManager)
+}
+
+
+private fun getUnsafeClient(context: Context): OkHttpClient {
+   return getUnsafeClientBuilder(context).build()
+}
+
+private fun getUnsafeInterceptedClient(context: Context): OkHttpClient {
+    val jwtUnformatted = getJwt(context)
+    return getUnsafeClientBuilder(context).addInterceptor(AuthorizationInterceptor(jwtUnformatted ?: "")).build()
+}
+
+private fun getBasicRetrofitBuilder(api: String): Retrofit.Builder {
+    return Retrofit.Builder().baseUrl("https://$api").addConverterFactory(Json {ignoreUnknownKeys = true}
+        .asConverterFactory("application/json; charset=UTF-8".toMediaType()))
+}
+
+fun getBasicInterceptedRetrofit(context: Context, api: String): Retrofit {
+    return getBasicRetrofitBuilder(api).client(getUnsafeInterceptedClient(context)).build()
 }
 
 fun getBasicRetrofit(context: Context, api: String): Retrofit {
-    return Retrofit.Builder()
-        .baseUrl("https://$api").client(getUnsafeClient(context))
-        .addConverterFactory(Json {ignoreUnknownKeys = true}
-            .asConverterFactory("application/json; charset=UTF-8".toMediaType()))
-        .build()
+    return getBasicRetrofitBuilder(api).client(getUnsafeClient(context)).build()
 }
