@@ -6,10 +6,11 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.FavouritesItem
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.FavouritesItemDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicInterceptedRetrofit
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicRetrofit
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getJwt
 import java.io.IOException
 
-class FavouritesRepository(api: String, context: Context) {
-    private val retrofit = getBasicInterceptedRetrofit(context, api)
+class FavouritesRepository(api: String, context: Context, jwtUnformatted: String = "") {
+    private val retrofit = getBasicInterceptedRetrofit(context, api, if(jwtUnformatted.isNotEmpty()) jwtUnformatted else getJwt(context) ?: "")
     private val favouritesApi = retrofit.create(FavouritesApi::class.java)
 
     private suspend fun getFavourites(): Response<List<FavouritesItem>> {

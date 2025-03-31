@@ -5,14 +5,15 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicInterceptedRetrofit
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicRetrofit
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getJwt
 import java.io.IOException
 import kotlin.Result
 
-class ProfileRepository(api: String, context: Context) {
-    private val retrofit: Retrofit = getBasicRetrofit(context, api)
+class ProfileRepository(api: String, context: Context, jwtUnformatted: String = "") {
+    private val retrofit: Retrofit = getBasicInterceptedRetrofit(context, api, if(jwtUnformatted.isNotEmpty()) jwtUnformatted else getJwt(context) ?: "")
     private val profileApi = retrofit.create(ProfileApi::class.java)
-
     private suspend fun getProfile(): Response<Profile>{
         return profileApi.getProfile()
     }

@@ -5,10 +5,11 @@ import retrofit2.Retrofit
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Class
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicInterceptedRetrofit
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicRetrofit
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getJwt
 import java.io.IOException
 
-class ClassesRepository(api: String, context: Context) {
-    private val retrofit: Retrofit = getBasicInterceptedRetrofit(context, api)
+class ClassesRepository(api: String, context: Context, jwtUnformatted: String = "") {
+    private val retrofit: Retrofit = getBasicInterceptedRetrofit(context, api, if(jwtUnformatted.isNotEmpty()) jwtUnformatted else getJwt(context) ?: "")
     private val classesApi = retrofit.create(ClassesApi::class.java)
 
     suspend fun getClasses(): Result<List<Class>>{

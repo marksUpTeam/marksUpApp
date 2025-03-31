@@ -43,8 +43,7 @@ private fun getUnsafeClient(context: Context): OkHttpClient {
    return getUnsafeClientBuilder(context).build()
 }
 
-private fun getUnsafeInterceptedClient(context: Context): OkHttpClient {
-    val jwtUnformatted = getJwt(context)
+private fun getUnsafeInterceptedClient(context: Context, jwtUnformatted: String): OkHttpClient {
     return getUnsafeClientBuilder(context).addInterceptor(AuthorizationInterceptor(jwtUnformatted ?: "")).build()
 }
 
@@ -53,8 +52,8 @@ private fun getBasicRetrofitBuilder(api: String): Retrofit.Builder {
         .asConverterFactory("application/json; charset=UTF-8".toMediaType()))
 }
 
-fun getBasicInterceptedRetrofit(context: Context, api: String): Retrofit {
-    return getBasicRetrofitBuilder(api).client(getUnsafeInterceptedClient(context)).build()
+fun getBasicInterceptedRetrofit(context: Context, api: String, jwtUnformatted: String): Retrofit {
+    return getBasicRetrofitBuilder(api).client(getUnsafeInterceptedClient(context, jwtUnformatted)).build()
 }
 
 fun getBasicRetrofit(context: Context, api: String): Retrofit {
