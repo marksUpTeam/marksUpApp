@@ -33,4 +33,18 @@
 
     <string name="accFound">Ваш успешно вошли в аккаунт</string>
     <string name="continueAuth">Продолжить</string>
+
+    <string name="newLesson">Добавить новое занятие</string>
+    <string name="chooseDay">Выберите день недели</string>
+    <string name="choosePeriod">Выберите период обучения</string>
+    <string name="chooseTime">Выберите время занятия</string>
+    <string name="chooseStudent">Выберите ученика</string>
+    <string name="chooseSubject">Выберите предмет</string>
+    <string name="startDay">С какого числа</string>
+    <string name="endDay">По какое число</string>
+    <string name="chooseStartDate">Выбрать дату начала обучения</string>
+    <string name="chooseEndDate">Выбрать дату конца обучения</string>
+    <string name="chooseStartTime">Выбрать время</string>
+    <string name="errorTime"> Ошибка: время окончания занятия не может быть позже его начала </string>
+
 </resources>
