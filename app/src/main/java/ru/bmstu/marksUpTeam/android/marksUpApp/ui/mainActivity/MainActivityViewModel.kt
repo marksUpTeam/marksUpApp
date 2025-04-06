@@ -1,5 +1,6 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,9 +11,11 @@ class MainActivityViewModel: ViewModel() {
 
     fun changeScreenTo(route: String) {
         _stateFlow.value = _stateFlow.value.copy(route = route)
+        Log.d("",_stateFlow.value.toString())
     }
 
     fun resetRoute(){
+        Log.d("",_stateFlow.value.toString())
         _stateFlow.value = _stateFlow.value.copy(route = null)
     }
 }

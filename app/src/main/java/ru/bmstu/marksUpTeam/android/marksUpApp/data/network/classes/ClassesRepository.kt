@@ -1,13 +1,10 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.classes
 
-import android.content.Context
 import retrofit2.Retrofit
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Class
-import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicRetrofit
 import java.io.IOException
 
-class ClassesRepository(api: String, context: Context, jwtUnformatted: String) {
-    private val retrofit: Retrofit = getBasicRetrofit(context, api)
+class ClassesRepository(retrofit: Retrofit, jwtUnformatted: String) {
     private val classesApi = retrofit.create(ClassesApi::class.java)
     private val jwt = "Bearer $jwtUnformatted"
 

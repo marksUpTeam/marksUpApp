@@ -1,6 +1,5 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.schedule
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,6 +49,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
+import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity.Route
@@ -58,8 +58,8 @@ import java.util.Locale
 
 @Composable
 fun ScheduleScreen(
-    viewModel: ScheduleViewModel,
     navController: NavController,
+    viewModel: ScheduleViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
     tint: Color = colorResource(id = R.color.black),
     backgroundColor: Color = colorResource(id = R.color.white)
@@ -71,7 +71,6 @@ fun ScheduleScreen(
     var selectedDate by remember { mutableStateOf(currentDate) }
 
     LaunchedEffect(state) {
-        Log.d("effect",state.route.orEmpty())
         state.route?.let { route ->
             navController.navigate(route)
             viewModel.resetRoute()

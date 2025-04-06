@@ -1,6 +1,5 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.profile
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,14 +8,13 @@ import kotlinx.coroutines.launch
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Parent
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
-import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
-import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileMapper
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileRepository
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
 
 
-class ProfileViewModel(api: String, jwt: String, context: Context): ViewModel() {
-    private val profileRepository = ProfileRepository(api = api, context = context, jwt)
+class ProfileViewModel(private val profileRepository: ProfileRepository): ViewModel() {
     private val _stateFlow: MutableStateFlow<ProfileState> = MutableStateFlow(ProfileState.Loading)
     val stateFlow = _stateFlow.asStateFlow()
 

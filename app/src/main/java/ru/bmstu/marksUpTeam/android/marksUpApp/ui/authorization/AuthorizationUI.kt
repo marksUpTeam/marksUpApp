@@ -4,7 +4,6 @@ package ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization
 
 import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.content.contentReceiver
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +38,7 @@ import com.vk.id.VKIDAuthFail
 import com.vk.id.auth.AuthCodeData
 import com.vk.id.onetap.common.OneTapOAuth
 import com.vk.id.onetap.compose.onetap.OneTap
+import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.ErrorScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.LoadingScreen
@@ -51,7 +50,7 @@ val sigmarFont = FontFamily(Font(R.font.sigmar))
 
 @Composable
 fun AuthorizationScreen(
-    viewModel: AuthorizationViewModel,
+    viewModel: AuthorizationViewModel = koinViewModel(),
     context: Context,
 ) {
     val state = viewModel.stateFlow.collectAsState()
