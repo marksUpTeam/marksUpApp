@@ -1,6 +1,5 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization
 
-import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -39,9 +38,6 @@ class AuthorizationViewModel(private val authorizationRepository: AuthorizationR
 
     fun finishAuthorization(jwt: String, context: Context){
         processJWT(jwt, context)
-        if (context is Activity) {
-            context.finish()
-        }
     }
 
     fun retry(){

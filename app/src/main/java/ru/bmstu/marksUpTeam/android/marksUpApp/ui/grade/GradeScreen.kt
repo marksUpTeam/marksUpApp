@@ -44,7 +44,7 @@ fun GradeScreen(viewModel: GradeViewModel = koinViewModel()) {
             .fillMaxWidth()
             .padding(top = 100.dp)
     ) {
-        items(state.student.disciplineGrades) { disciplineGrade ->
+        items(state.grades) { disciplineGrade ->
             SubjectGradeCard(
                 disciplineGrade
             )

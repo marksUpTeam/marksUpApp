@@ -9,7 +9,6 @@ import java.io.IOException
 class ProfileRepository(private val retrofit: Retrofit, jwtUnformatted: String) {
     private val profileApi = retrofit.create(ProfileApi::class.java)
     private val jwt = "Bearer $jwtUnformatted"
-
     private suspend fun getProfile(): Response<Profile>{
         return profileApi.getProfile(jwt)
     }

@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.vk.id.AccessToken
 import com.vk.id.VKIDAuthFail
 import com.vk.id.auth.AuthCodeData
@@ -42,24 +43,28 @@ import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.ErrorScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.LoadingScreen
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity.Route
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme.MarksUpTheme
 
 val sigmarFont = FontFamily(Font(R.font.sigmar))
 
 
-
 @Composable
 fun AuthorizationScreen(
     viewModel: AuthorizationViewModel = koinViewModel(),
-    context: Context,
+    navController: NavController,
+    context: Context = LocalContext.current,
 ) {
     val state = viewModel.stateFlow.collectAsState()
     AuthorizationContent(
         state = state.value,
-        onRefresh = {viewModel.retry()},
-        onSuccessfulAuth = {viewModel.profileCall(it)},
-        onFailedAuth = {viewModel.vkIdFail()},
-        onAuthorizationFinish = {viewModel.finishAuthorization(it, context)},
+        onRefresh = { viewModel.retry() },
+        onSuccessfulAuth = { viewModel.profileCall(it) },
+        onFailedAuth = { viewModel.vkIdFail() },
+        onAuthorizationFinish = {
+            viewModel.finishAuthorization(it, context)
+            navController.navigate(Route.Profile.name)
+        },
     )
 }
 
@@ -74,7 +79,7 @@ private fun AuthorizationContent(
     MarksUpTheme {
         when (state) {
             is AuthorizationState.Content -> {
-                when(state) {
+                when (state) {
                     is AuthorizationState.Content.Authorized -> {
                         AccountFound(
                             onAuthorizationFinish = { onAuthorizationFinish(state.jwt) },
@@ -84,18 +89,20 @@ private fun AuthorizationContent(
                             containerColor = MaterialTheme.colorScheme.onBackground,
                         )
                     }
+
                     is AuthorizationState.Content.Idle -> {
                         Authorization(
-                            onAuth = {_, token -> run {onSuccessfulAuth(token.idToken ?: "")} },
+                            onAuth = { _, token -> run { onSuccessfulAuth(token.idToken ?: "") } },
                             didFail = false,
-                            onFail = {_, _ -> run {onFailedAuth()}},
+                            onFail = { _, _ -> run { onFailedAuth() } },
                         )
                     }
                 }
 
             }
+
             is AuthorizationState.Error -> {
-                when(state) {
+                when (state) {
                     is AuthorizationState.Error.DefaultError -> {
                         ErrorScreen(
                             onRefresh = onRefresh,
@@ -104,13 +111,15 @@ private fun AuthorizationContent(
                             errorMessage = state.message,
                         )
                     }
+
                     is AuthorizationState.Error.VKIDFailed -> {
                         Authorization(
-                            onAuth = {_, token -> run {onSuccessfulAuth(token.idToken ?: "")} },
+                            onAuth = { _, token -> run { onSuccessfulAuth(token.idToken ?: "") } },
                             didFail = true,
-                            onFail = {_, _ -> run {onFailedAuth()}},
+                            onFail = { _, _ -> run { onFailedAuth() } },
                         )
                     }
+
                     is AuthorizationState.Error.AccountNotFound -> {
                         AccountNotFoundScreen(
                             onPress = { onRefresh() },
@@ -121,6 +130,7 @@ private fun AuthorizationContent(
                     }
                 }
             }
+
             is AuthorizationState.Loading -> {
                 LoadingScreen(
                     modifier = Modifier.fillMaxSize(),
@@ -135,22 +145,27 @@ private fun AuthorizationContent(
 @Preview(showBackground = true)
 @Composable
 private fun AccountFound(
+    viewModel: AuthorizationViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
     onAuthorizationFinish: () -> Unit = {},
     backgroundColor: Color = MaterialTheme.colorScheme.background,
     tint: Color = MaterialTheme.colorScheme.primary,
     textColor: Color = MaterialTheme.colorScheme.secondary,
     containerColor: Color = MaterialTheme.colorScheme.onBackground,
-){
-    Column(modifier = modifier
-        .fillMaxSize()
-        .background(backgroundColor), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(backgroundColor),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
         Icon(
-                painter = painterResource(R.drawable.check_circle),
-                contentDescription = "",
-                tint = tint,
-                modifier = Modifier.size(96.dp)
-            )
+            painter = painterResource(R.drawable.check_circle),
+            contentDescription = "",
+            tint = tint,
+            modifier = Modifier.size(96.dp)
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -189,17 +204,21 @@ fun vkAuthBlock(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     onAuth: (OneTapOAuth?, AccessToken) -> Unit = { _, _ -> },
-    onAuthCode: (AuthCodeData, Boolean) -> Unit = {_, _ -> },
+    onAuthCode: (AuthCodeData, Boolean) -> Unit = { _, _ -> },
     onFail: (OneTapOAuth?, VKIDAuthFail) -> Unit = { _, _ -> },
     tint: Color = colorResource(R.color.grey),
 ) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
-        OneTap(onAuth = onAuth,
+        OneTap(
+            onAuth = onAuth,
             onAuthCode = onAuthCode,
-            onFail = onFail,)
-        Text(text = context.getString(R.string.privacyPolicy), modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp), textAlign = TextAlign.Center, color = tint)
+            onFail = onFail,
+        )
+        Text(
+            text = context.getString(R.string.privacyPolicy), modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp), textAlign = TextAlign.Center, color = tint
+        )
     }
 }
 
@@ -217,24 +236,58 @@ fun Authorization(
     onAuthCode: (AuthCodeData, Boolean) -> Unit = { _, _ -> },
     onFail: (OneTapOAuth?, VKIDAuthFail) -> Unit = { _, _ -> },
     didFail: Boolean = false
-){
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(backgroundColor), horizontalAlignment = Alignment.CenterHorizontally,
-    ){
+            .background(backgroundColor),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Row(modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(painter = painterResource(R.drawable.app_icon), contentDescription = null, modifier = Modifier.size(60.dp), tint = iconTint)
-            Text(text = context.getString(R.string.app_name), modifier = Modifier.padding(5.dp), fontSize = 32.sp, color = iconTint, fontFamily = sigmarFont)
+            Icon(
+                painter = painterResource(R.drawable.app_icon),
+                contentDescription = null,
+                modifier = Modifier.size(60.dp),
+                tint = iconTint
+            )
+            Text(
+                text = context.getString(R.string.app_name),
+                modifier = Modifier.padding(5.dp),
+                fontSize = 32.sp,
+                color = iconTint,
+                fontFamily = sigmarFont
+            )
         }
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            vkAuthBlock(context = context, onAuth = onAuth, onAuthCode = onAuthCode, onFail = onFail)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            vkAuthBlock(
+                context = context,
+                onAuth = onAuth,
+                onAuthCode = onAuthCode,
+                onFail = onFail
+            )
             if (didFail) {
-                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                    Icon(painter = painterResource(R.drawable.error), contentDescription = null, modifier = Modifier.size(24.dp), tint = colorResource(R.color.red))
-                    Text(text = context.getString(R.string.somethingWentWrong), color = colorResource(id = R.color.red), modifier = Modifier.padding(10.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.error),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = colorResource(R.color.red)
+                    )
+                    Text(
+                        text = context.getString(R.string.somethingWentWrong),
+                        color = colorResource(id = R.color.red),
+                        modifier = Modifier.padding(10.dp)
+                    )
                 }
             }
         }
@@ -251,18 +304,36 @@ fun AccountNotFoundScreen(
     containerColor: Color = colorResource(id = R.color.black),
     backgroundColor: Color = colorResource(id = R.color.lighter_black),
     context: Context = LocalContext.current,
-){
-    Column(modifier = modifier
-        .fillMaxSize()
-        .background(backgroundColor), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Icon(painter = painterResource(R.drawable.no_acc), contentDescription = null, modifier = Modifier.size(60.dp), tint = iconTint)
-        Text(text = context.getString(R.string.accNotFound), color = tint, textAlign = TextAlign.Center, modifier = Modifier.padding(10.dp), fontSize = 18.sp)
-        Button(onClick = onPress, modifier = Modifier.padding(10.dp), colors = ButtonColors(
-            containerColor = containerColor,
-            disabledContainerColor = containerColor,
-            contentColor = tint,
-            disabledContentColor = tint,)){
-                Text(text = context.getString(R.string.try_again), color = tint)
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(backgroundColor),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.no_acc),
+            contentDescription = null,
+            modifier = Modifier.size(60.dp),
+            tint = iconTint
+        )
+        Text(
+            text = context.getString(R.string.accNotFound),
+            color = tint,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(10.dp),
+            fontSize = 18.sp
+        )
+        Button(
+            onClick = onPress, modifier = Modifier.padding(10.dp), colors = ButtonColors(
+                containerColor = containerColor,
+                disabledContainerColor = containerColor,
+                contentColor = tint,
+                disabledContentColor = tint,
+            )
+        ) {
+            Text(text = context.getString(R.string.try_again), color = tint)
         }
     }
 }

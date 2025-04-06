@@ -20,9 +20,9 @@ class ProfileViewModel(private val profileRepository: ProfileRepository): ViewMo
 
     fun updateFlow(){
         viewModelScope.launch {
+            val profileResponse = profileRepository.getProfileDomain()
             runCatching {
                 _stateFlow.value = ProfileState.Loading
-                val profileResponse = profileRepository.getProfileDomain()
                 if (profileResponse.isFailure) {
                     _stateFlow.value = ProfileState.Error(profileResponse.exceptionOrNull()?.message ?: "Something went wrong")
                 }

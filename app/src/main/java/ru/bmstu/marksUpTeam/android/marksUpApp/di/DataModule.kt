@@ -8,28 +8,29 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.classes.ClassesRepos
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.favourites.FavouritesRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicRetrofit
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getJwt
 
 val dataModule = module {
     single {
-        AssignmentsRepository(retrofit = get(),jwtUnformatted = "")
+        AssignmentsRepository(retrofit = get(),jwtUnformatted =  getJwt(context = get()).orEmpty())
     }
     single {
         AuthorizationRepository(retrofit = get())
     }
     single{
-        ClassesRepository(retrofit = get(), jwtUnformatted = "")
+        ClassesRepository(retrofit = get(),jwtUnformatted =  getJwt(context = get()).orEmpty())
     }
     single {
-        FavouritesRepository(retrofit = get(), jwtUnformatted = "")
+        FavouritesRepository(retrofit = get(), jwtUnformatted = getJwt(context = get()).orEmpty())
     }
     single{
-        ProfileRepository(retrofit = get(), jwtUnformatted = "")
+        ProfileRepository(retrofit = get(), jwtUnformatted = getJwt(context = get()).orEmpty())
     }
 
 }
 
 val networkModule = module{
     single {
-        getBasicRetrofit(api = BuildConfig.API_URL,context = get())
+        getBasicRetrofit(api =  BuildConfig.API_URL,context = get())
     }
 }

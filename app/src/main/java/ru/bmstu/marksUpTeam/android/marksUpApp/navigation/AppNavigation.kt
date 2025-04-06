@@ -28,7 +28,7 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.baseStudentProfileDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.BaseButton
-import ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization.Authorization
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization.AuthorizationScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.favourites.FavouritesScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.grade.GradeScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.lesson.AddLessonScreen
@@ -55,21 +55,17 @@ fun AppNavigation(viewModel: MainActivityViewModel = koinViewModel()) {
     }
 
     Scaffold(bottomBar = {
-        if (currentRoute != "login") {
+        if (currentRoute != Route.Login.name) {
             Selector(isForTeacher = isTeacher)
         }
     }) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "schedule",
+            startDestination = Route.Schedule.name,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Route.Login.name) { Authorization() }
-            composable(Route.Schedule.name) {
-                ScheduleScreen(
-                    navController = navController
-                )
-            }
+            composable(Route.Login.name) { AuthorizationScreen(navController = navController) }
+            composable(Route.Schedule.name) { ScheduleScreen(navController = navController) }
             composable(Route.AddLesson.name) { AddLessonScreen() }
             composable(Route.Lesson.name) { LessonScreen() }
             composable(Route.Favourites.name) { FavouritesScreen() }

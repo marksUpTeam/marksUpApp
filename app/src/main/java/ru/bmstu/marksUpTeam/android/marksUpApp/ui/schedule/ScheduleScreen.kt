@@ -75,6 +75,9 @@ fun ScheduleScreen(
             navController.navigate(route)
             viewModel.resetRoute()
         }
+        state.classes.let{
+            viewModel.updateFlow()
+        }
     }
 
     Column(
@@ -96,7 +99,7 @@ fun ScheduleScreen(
                 fontWeight = FontWeight.Bold,
                 color = tint
             )
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { TODO() }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_launcher_foreground),
                     contentDescription = "Profile",
