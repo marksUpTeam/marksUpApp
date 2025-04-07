@@ -8,4 +8,9 @@ interface AuthorizationApi {
 
     @GET("api")
     suspend fun testProfile(@Header("Authorization") jwt: String): Response<String>
+
+    /*
+        Тут оставляем Header@("Authorization"), так как во время вызова этого метода JWT ещё не сохранен,
+        его попросту брать неоткуда. По сути, метод testProfile - проверка подлинности JWT, только после неё его можно сохранять.
+     */
 }

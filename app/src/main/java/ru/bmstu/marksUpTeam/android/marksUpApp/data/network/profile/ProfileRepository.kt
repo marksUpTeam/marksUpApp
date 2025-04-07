@@ -5,17 +5,17 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicInterceptedRetrofit
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicRetrofit
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getJwt
 import java.io.IOException
 import kotlin.Result
 
-class ProfileRepository(api: String, context: Context, jwtUnformatted: String) {
-    private val retrofit: Retrofit = getBasicRetrofit(context, api)
+class ProfileRepository(api: String, context: Context, jwtUnformatted: String = "") {
+    private val retrofit: Retrofit = getBasicInterceptedRetrofit(context, api, if(jwtUnformatted.isNotEmpty()) jwtUnformatted else getJwt(context) ?: "")
     private val profileApi = retrofit.create(ProfileApi::class.java)
-    private val jwt = "Bearer $jwtUnformatted"
-
     private suspend fun getProfile(): Response<Profile>{
-        return profileApi.getProfile(jwt)
+        return profileApi.getProfile()
     }
 
     suspend fun getProfileDomain(): Result<ProfileDomain> {
@@ -27,7 +27,7 @@ class ProfileRepository(api: String, context: Context, jwtUnformatted: String) {
         else return Result.failure(IOException(profileResponse.errorBody()?.string() ?: "Something went wrong"))
     }
     private suspend fun modifyProfile(profile: Profile): Response<String> {
-        return profileApi.modifyProfile(jwt, profile)
+        return profileApi.modifyProfile(profile)
     }
 
     suspend fun modifyProfileDomain(profileDomain: ProfileDomain): Result<String> {
