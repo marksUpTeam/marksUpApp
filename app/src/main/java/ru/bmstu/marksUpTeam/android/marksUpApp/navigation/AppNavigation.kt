@@ -28,6 +28,7 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.baseStudentProfileDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.BaseButton
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.assignment.AssignmentScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization.AuthorizationScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.favourites.FavouritesScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.grade.GradeScreen
@@ -64,6 +65,7 @@ fun AppNavigation(viewModel: MainActivityViewModel = koinViewModel()) {
             startDestination = Route.Schedule.name,
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable(Route.Assignment.name){ AssignmentScreen() }
             composable(Route.Login.name) { AuthorizationScreen(navController = navController) }
             composable(Route.Schedule.name) { ScheduleScreen(navController = navController) }
             composable(Route.AddLesson.name) { AddLessonScreen() }
@@ -107,7 +109,7 @@ fun Selector(
         )
         BaseButton(
             onClick = {
-                viewModel.changeScreenTo(Route.Favourites.name)
+                viewModel.changeScreenTo(Route.Assignment.name)
                 setCurrentScreen(2)
                 buttonClicked = 2
             },

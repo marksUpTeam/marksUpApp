@@ -26,7 +26,6 @@ val dataModule = module {
     single{
         ProfileRepository(retrofit = get(), jwtUnformatted = getJwt(context = get()).orEmpty())
     }
-
 }
 
 val networkModule = module{

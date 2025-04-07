@@ -33,4 +33,6 @@
 
     <string name="accFound">Ваш успешно вошли в аккаунт</string>
     <string name="continueAuth">Продолжить</string>
+
+    <string name="until">до</string>
 </resources>
