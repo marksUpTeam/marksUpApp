@@ -5,10 +5,9 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
 import java.io.IOException
 
-class ProfileRepository(private val profileApi: ProfileApi, jwtUnformatted: String) {
-    private val jwt = "Bearer $jwtUnformatted"
+class ProfileRepository(private val profileApi: ProfileApi) {
     private suspend fun getProfile(): Response<Profile>{
-        return profileApi.getProfile(jwt)
+        return profileApi.getProfile()
     }
 
     suspend fun getProfileDomain(): Result<ProfileDomain> {
@@ -20,7 +19,7 @@ class ProfileRepository(private val profileApi: ProfileApi, jwtUnformatted: Stri
         else return Result.failure(IOException(profileResponse.errorBody()?.string() ?: "Something went wrong"))
     }
     private suspend fun modifyProfile(profile: Profile): Response<String> {
-        return profileApi.modifyProfile(jwt, profile)
+        return profileApi.modifyProfile(profile)
     }
 
     suspend fun modifyProfileDomain(profileDomain: ProfileDomain): Result<String> {

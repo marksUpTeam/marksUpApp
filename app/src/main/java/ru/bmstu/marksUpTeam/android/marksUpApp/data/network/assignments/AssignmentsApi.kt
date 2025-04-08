@@ -10,8 +10,8 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
 interface AssignmentsApi {
 
     @GET("api/assignments")
-    suspend fun getAllAssignments(@Header("Authorization") jwt: String): Response<List<Assignment>>
+    suspend fun getAllAssignments(): Response<List<Assignment>>
 
     @POST("api/assignments")
-    suspend fun addAssignment(@Header("Authorization") jwt: String, @Body assignment: Assignment): Response<Assignment>
+    suspend fun addAssignment(@Body assignment: Assignment): Response<Assignment>
 }

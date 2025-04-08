@@ -1,13 +1,15 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments
 
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicInterceptedRetrofit
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicRetrofit
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getJwt
 import java.io.IOException
 
 class AssignmentsRepository(private val assignmentsApi: AssignmentsApi ,jwtUnformatted: String) {
-    private val jwt = "Bearer $jwtUnformatted"
 
     suspend fun getAllAssignments(): Result<List<Assignment>>{
-        val response = assignmentsApi.getAllAssignments(jwt)
+        val response = assignmentsApi.getAllAssignments()
         if (response.isSuccessful && response.body() != null){
             return Result.success(response.body()!!)
         }
@@ -15,7 +17,7 @@ class AssignmentsRepository(private val assignmentsApi: AssignmentsApi ,jwtUnfor
     }
 
     suspend fun addAssignment(assignment: Assignment): Result<Assignment>{
-        val response = assignmentsApi.addAssignment(jwt, assignment)
+        val response = assignmentsApi.addAssignment(assignment)
         if (response.isSuccessful && response.body() != null){
             return Result.success(response.body()!!)
         }

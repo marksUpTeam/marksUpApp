@@ -9,8 +9,8 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.Class
 
 interface ClassesApi {
     @GET("api/classes")
-    suspend fun getClasses(@Header("Authorization") jwt: String): Response<List<Class>>
+    suspend fun getClasses(): Response<List<Class>>
 
     @POST("api/classes")
-    suspend fun addClass(@Header("Authorization") jwt: String, @Body clazz: Class): Response<Class>
+    suspend fun addClass(@Body clazz: Class): Response<Class>
 }

@@ -8,10 +8,10 @@ import kotlinx.coroutines.launch
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Parent
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileMapper
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileMapper
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileRepository
 
 
 class ProfileViewModel(private val profileRepository: ProfileRepository): ViewModel() {
@@ -20,9 +20,9 @@ class ProfileViewModel(private val profileRepository: ProfileRepository): ViewMo
 
     fun updateFlow(){
         viewModelScope.launch {
-            val profileResponse = profileRepository.getProfileDomain()
             runCatching {
                 _stateFlow.value = ProfileState.Loading
+                val profileResponse = profileRepository.getProfileDomain()
                 if (profileResponse.isFailure) {
                     _stateFlow.value = ProfileState.Error(profileResponse.exceptionOrNull()?.message ?: "Something went wrong")
                 }

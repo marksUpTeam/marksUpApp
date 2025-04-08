@@ -6,14 +6,13 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.domain.FavouritesItemDomain
 import java.io.IOException
 
 class FavouritesRepository(private val favouritesApi: FavouritesApi, jwtUnformatted: String) {
-    private val jwt = "Bearer $jwtUnformatted"
 
     private suspend fun getFavourites(): Response<List<FavouritesItem>> {
-        return favouritesApi.getFavourites(jwt)
+        return favouritesApi.getFavourites()
     }
 
     private suspend fun postFavourite(favouritesItem: FavouritesItem): Response<FavouritesItem>{
-        return favouritesApi.addFavourite(jwt, favouritesItem)
+        return favouritesApi.addFavourite(favouritesItem)
     }
 
     suspend fun getFavouritesDomain(): Result<List<FavouritesItemDomain>>{
