@@ -6,6 +6,7 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.authorization.Author
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.classes.ClassesRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.favourites.FavouritesRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileRepository
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.registration.RegistrationRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getJwt
 
 val dataModule = module {
@@ -23,5 +24,8 @@ val dataModule = module {
     }
     single{
         ProfileRepository(profileApi = get())
+    }
+    single{
+        RegistrationRepository(registrationApi = get())
     }
 }
