@@ -1,11 +1,9 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments
 
-import retrofit2.Retrofit
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
 import java.io.IOException
 
-class AssignmentsRepository(private val retrofit: Retrofit,jwtUnformatted: String) {
-    private val assignmentsApi: AssignmentsApi = retrofit.create(AssignmentsApi::class.java)
+class AssignmentsRepository(private val assignmentsApi: AssignmentsApi ,jwtUnformatted: String) {
     private val jwt = "Bearer $jwtUnformatted"
 
     suspend fun getAllAssignments(): Result<List<Assignment>>{

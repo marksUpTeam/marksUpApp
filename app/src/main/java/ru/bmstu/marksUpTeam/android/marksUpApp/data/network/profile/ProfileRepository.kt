@@ -1,13 +1,11 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile
 
 import retrofit2.Response
-import retrofit2.Retrofit
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
 import java.io.IOException
 
-class ProfileRepository(private val retrofit: Retrofit, jwtUnformatted: String) {
-    private val profileApi = retrofit.create(ProfileApi::class.java)
+class ProfileRepository(private val profileApi: ProfileApi, jwtUnformatted: String) {
     private val jwt = "Bearer $jwtUnformatted"
     private suspend fun getProfile(): Response<Profile>{
         return profileApi.getProfile(jwt)

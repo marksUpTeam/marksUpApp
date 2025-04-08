@@ -1,13 +1,11 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.favourites
 
 import retrofit2.Response
-import retrofit2.Retrofit
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.FavouritesItem
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.FavouritesItemDomain
 import java.io.IOException
 
-class FavouritesRepository(private val retrofit: Retrofit, jwtUnformatted: String) {
-    private val favouritesApi = retrofit.create(FavouritesApi::class.java)
+class FavouritesRepository(private val favouritesApi: FavouritesApi, jwtUnformatted: String) {
     private val jwt = "Bearer $jwtUnformatted"
 
     private suspend fun getFavourites(): Response<List<FavouritesItem>> {
