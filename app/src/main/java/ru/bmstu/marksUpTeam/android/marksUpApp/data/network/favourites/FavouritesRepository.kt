@@ -5,7 +5,7 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.FavouritesItem
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.FavouritesItemDomain
 import java.io.IOException
 
-class FavouritesRepository(private val favouritesApi: FavouritesApi, jwtUnformatted: String) {
+class FavouritesRepository(private val favouritesApi: FavouritesApi) {
 
     private suspend fun getFavourites(): Response<List<FavouritesItem>> {
         return favouritesApi.getFavourites()

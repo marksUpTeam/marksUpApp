@@ -10,18 +10,18 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getJwt
 
 val dataModule = module {
     single {
-        AssignmentsRepository(assignmentsApi = get(),jwtUnformatted =  getJwt(context = get()).orEmpty())
+        AssignmentsRepository(assignmentsApi = get())
     }
     single {
         AuthorizationRepository(authorizationApi = get())
     }
     single{
-        ClassesRepository(classesApi = get(),jwtUnformatted =  getJwt(context = get()).orEmpty())
+        ClassesRepository(classesApi = get())
     }
     single {
-        FavouritesRepository(favouritesApi = get(), jwtUnformatted = getJwt(context = get()).orEmpty())
+        FavouritesRepository(favouritesApi = get())
     }
     single{
-        ProfileRepository(profileApi = get(), jwtUnformatted = getJwt(context = get()).orEmpty())
+        ProfileRepository(profileApi = get())
     }
 }

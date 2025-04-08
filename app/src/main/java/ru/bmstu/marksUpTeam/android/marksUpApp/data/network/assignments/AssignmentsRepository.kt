@@ -1,12 +1,9 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments
 
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
-import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicInterceptedRetrofit
-import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicRetrofit
-import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getJwt
 import java.io.IOException
 
-class AssignmentsRepository(private val assignmentsApi: AssignmentsApi ,jwtUnformatted: String) {
+class AssignmentsRepository(private val assignmentsApi: AssignmentsApi) {
 
     suspend fun getAllAssignments(): Result<List<Assignment>>{
         val response = assignmentsApi.getAllAssignments()
