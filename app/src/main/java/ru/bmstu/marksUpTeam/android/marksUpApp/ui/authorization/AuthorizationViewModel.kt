@@ -1,6 +1,5 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization
 
-import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,8 +9,7 @@ import kotlinx.coroutines.launch
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.authorization.AuthorizationRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.processJWT
 
-class AuthorizationViewModel(api: String, context: Context): ViewModel() {
-    private val authorizationRepository = AuthorizationRepository(api = api, context = context)
+class AuthorizationViewModel(private val authorizationRepository: AuthorizationRepository): ViewModel() {
     private val _stateFlow: MutableStateFlow<AuthorizationState> = MutableStateFlow(AuthorizationState.Content.Idle)
     val stateFlow = _stateFlow.asStateFlow()
 
@@ -40,9 +38,6 @@ class AuthorizationViewModel(api: String, context: Context): ViewModel() {
 
     fun finishAuthorization(jwt: String, context: Context){
         processJWT(jwt, context)
-        if (context is Activity) {
-            context.finish()
-        }
     }
 
     fun retry(){

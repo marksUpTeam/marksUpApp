@@ -27,15 +27,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalTime
+import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.formatDate
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.formatTime
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.DropDownList
 
 @Composable
-fun LessonScreen(tint: Color = colorResource(id = R.color.black)) {
-    val viewModel = LessonViewModel()
+fun LessonScreen(viewModel: LessonViewModel = koinViewModel()) {
+    val tint: Color = colorResource(id = R.color.black)
     val state by viewModel.stateFlow.collectAsState()
     val textModifier = Modifier.padding(start = 24.dp, bottom = 8.dp)
     val outLineTextFieldModifier =
@@ -177,15 +178,7 @@ fun LessonScreen(tint: Color = colorResource(id = R.color.black)) {
 
 }
 
-fun formatTime(time: LocalTime): String {
-    return time.hour.toString().padStart(2, '0') + ":" + time.minute.toString().padStart(2, '0')
-}
 
-
-fun formatDate(date: LocalDate): String {
-    return date.dayOfMonth.toString().padStart(2, '0') + "." + date.monthNumber.toString()
-        .padStart(2, '0') + "." + date.year
-}
 
 
 

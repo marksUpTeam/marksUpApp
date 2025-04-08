@@ -1,6 +1,5 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.navigation
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -17,29 +16,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.baseStudentProfileDomain
-import ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization.Authorization
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.BaseButton
-import ru.bmstu.marksUpTeam.android.marksUpApp.ui.schedule.ScheduleScreen
-import ru.bmstu.marksUpTeam.android.marksUpApp.ui.schedule.ScheduleViewModel
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.assignment.AssignmentScreen
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization.AuthorizationScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.favourites.FavouritesScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.grade.GradeScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.lesson.AddLessonScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.lesson.LessonScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity.MainActivityViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity.Route
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.profile.ProfileScreen
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.schedule.ScheduleScreen
 
 @Composable
-fun AppNavigation(viewModel: MainActivityViewModel) {
+fun AppNavigation(viewModel: MainActivityViewModel = koinViewModel()) {
+
     val state by viewModel.stateFlow.collectAsState()
     val profile = baseStudentProfileDomain
     val isTeacher = profile.personType is PersonType.TeacherType
@@ -52,33 +54,33 @@ fun AppNavigation(viewModel: MainActivityViewModel) {
             viewModel.resetRoute()
         }
     }
-    //val profileViewModel = ProfileViewModel(api = BuildConfig.API_URL,jwt = getJwt(LocalContext.current).orEmpty(), context = LocalContext.current)
+
     Scaffold(bottomBar = {
-        if (currentRoute != "login") {
-            Selector(viewModel = viewModel, isForTeacher = isTeacher)
+        if (currentRoute != Route.Login.name) {
+            Selector(isForTeacher = isTeacher)
         }
     }) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "schedule",
+            startDestination = Route.Schedule.name,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Route.Login.name) { Authorization() }
-            composable(Route.Schedule.name) { ScheduleScreen(viewModel = ScheduleViewModel(), navController = navController) }
+            composable(Route.Assignment.name){ AssignmentScreen() }
+            composable(Route.Login.name) { AuthorizationScreen(navController = navController) }
+            composable(Route.Schedule.name) { ScheduleScreen(navController = navController) }
             composable(Route.AddLesson.name) { AddLessonScreen() }
             composable(Route.Lesson.name) { LessonScreen() }
             composable(Route.Favourites.name) { FavouritesScreen() }
             composable(Route.Grade.name) { GradeScreen() }
-            //composable(Route.Profile.name) { ProfileScreen(viewModel =  profileViewModel)}
+            composable(Route.Profile.name) { ProfileScreen() }
         }
     }
 }
 
 @Composable
 fun Selector(
-    viewModel: MainActivityViewModel,
     modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
+    viewModel: MainActivityViewModel = koinViewModel(),
     setCurrentScreen: (Int) -> Unit = {},
     backgroundColor: Color = colorResource(id = R.color.black),
     tint: Color = colorResource(id = R.color.white),
@@ -100,18 +102,18 @@ fun Selector(
                 setCurrentScreen(1)
                 buttonClicked = 1
             },
-            contentDescription = context.getString(R.string.classes),
+            contentDescription = stringResource(R.string.classes),
             tint = tint,
             selectedTint = selectedTint,
             isSelected = buttonClicked == 1
         )
         BaseButton(
             onClick = {
-                viewModel.changeScreenTo(Route.Favourites.name)
+                viewModel.changeScreenTo(Route.Assignment.name)
                 setCurrentScreen(2)
                 buttonClicked = 2
             },
-            contentDescription = context.getString(R.string.favourites),
+            contentDescription = stringResource(R.string.favourites),
             tint = tint,
             selectedTint = selectedTint,
             isSelected = buttonClicked == 2
@@ -123,7 +125,7 @@ fun Selector(
                     setCurrentScreen(3)
                     buttonClicked = 3
                 },
-                contentDescription = context.getString(R.string.classesManager),
+                contentDescription = stringResource(R.string.classesManager),
                 tint = tint,
                 selectedTint = selectedTint,
                 isSelected = buttonClicked == 3
@@ -136,7 +138,7 @@ fun Selector(
                     setCurrentScreen(3)
                     buttonClicked = 3
                 },
-                contentDescription = context.getString(R.string.marks),
+                contentDescription = stringResource(R.string.marks),
                 tint = tint,
                 selectedTint = selectedTint,
                 isSelected = buttonClicked == 3
@@ -145,11 +147,11 @@ fun Selector(
         BaseButton(
             painter = painterResource(R.drawable.profile),
             onClick = {
-                //viewModel.changeScreenTo(Route.Profile.name)
+                viewModel.changeScreenTo(Route.Profile.name)
                 setCurrentScreen(4)
                 buttonClicked = 4
             },
-            contentDescription = context.getString(R.string.profile),
+            contentDescription = stringResource(R.string.profile),
             tint = tint,
             selectedTint = selectedTint,
             isSelected = buttonClicked == 4
