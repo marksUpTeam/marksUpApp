@@ -1,5 +1,10 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.assignment
 
+import android.content.Intent
+import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,11 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.androidx.compose.koinViewModel
@@ -37,7 +42,16 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.tools.formatDate
 @Composable
 fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
     val state by viewModel.stateFlow.collectAsState()
-
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+        onResult = { uri ->
+            uri?.let {
+                context.contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                viewModel.pickFile(it,context.contentResolver)
+            }
+        }
+    )
     LaunchedEffect(state) {
         viewModel.updateFlow()
 
@@ -59,15 +73,15 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
     ) {
         items(state.assignments) { assignment ->
             AssignmentCard(
-                assignment
+                assignment,launcher
             )
         }
     }
 }
 
-@Preview
 @Composable
-fun AssignmentCard(assignment: Assignment = baseAssignment) {
+fun AssignmentCard(assignment: Assignment = baseAssignment, launcher:ManagedActivityResultLauncher<Array<String>, Uri?>) {
+
     Box(
         modifier = Modifier
             .fillMaxWidth(0.84f)
@@ -91,7 +105,7 @@ fun AssignmentCard(assignment: Assignment = baseAssignment) {
             )
 
             Text(assignment.description, fontSize = 24.sp, color = Color.Black)
-            IconButton(onClick = { }) {
+            IconButton(onClick = { launcher.launch(arrayOf("*/*"))}) {
                 Icon(
                     painter = painterResource(R.drawable.file_attach),
                     contentDescription = "FileAttach",
