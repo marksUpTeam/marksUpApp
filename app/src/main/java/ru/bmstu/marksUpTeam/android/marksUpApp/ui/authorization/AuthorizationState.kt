@@ -5,7 +5,7 @@ sealed class AuthorizationState {
     sealed class Error() : AuthorizationState() {
         data class DefaultError(val message: String) : Error()
         data object VKIDFailed: Error()
-        data object AccountNotFound : Error()
+        data class AccountNotFound(val jwt: String) : Error()
     }
     sealed class Content: AuthorizationState() {
         data class Authorized(val jwt: String) : Content()

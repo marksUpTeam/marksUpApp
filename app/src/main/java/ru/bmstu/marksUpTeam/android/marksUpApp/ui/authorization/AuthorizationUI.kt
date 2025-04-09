@@ -65,6 +65,7 @@ fun AuthorizationScreen(
             viewModel.finishAuthorization(it, context)
             navController.navigate(Route.Profile.name)
         },
+        onRegistrationCall = {viewModel.callRegistration(context, it)},
     )
 }
 
@@ -75,6 +76,7 @@ private fun AuthorizationContent(
     onSuccessfulAuth: (String) -> Unit,
     onFailedAuth: () -> Unit,
     onAuthorizationFinish: (String) -> Unit,
+    onRegistrationCall: (String) -> Unit,
 ) {
     MarksUpTheme {
         when (state) {
@@ -126,6 +128,8 @@ private fun AuthorizationContent(
                             tint = MaterialTheme.colorScheme.secondary,
                             containerColor = MaterialTheme.colorScheme.onBackground,
                             backgroundColor = MaterialTheme.colorScheme.background,
+                            jwt = state.jwt,
+                            onRegistrationCall = onRegistrationCall
                         )
                     }
                 }
@@ -145,7 +149,6 @@ private fun AuthorizationContent(
 @Preview(showBackground = true)
 @Composable
 private fun AccountFound(
-    viewModel: AuthorizationViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
     onAuthorizationFinish: () -> Unit = {},
     backgroundColor: Color = MaterialTheme.colorScheme.background,
@@ -299,11 +302,13 @@ fun Authorization(
 fun AccountNotFoundScreen(
     modifier: Modifier = Modifier,
     onPress: () -> Unit = {},
+    onRegistrationCall: (String) -> Unit = {},
     tint: Color = colorResource(id = R.color.white),
     iconTint: Color = colorResource(id = R.color.red),
     containerColor: Color = colorResource(id = R.color.black),
     backgroundColor: Color = colorResource(id = R.color.lighter_black),
     context: Context = LocalContext.current,
+    jwt: String = "",
 ) {
     Column(
         modifier = modifier
@@ -325,15 +330,28 @@ fun AccountNotFoundScreen(
             modifier = Modifier.padding(10.dp),
             fontSize = 18.sp
         )
-        Button(
-            onClick = onPress, modifier = Modifier.padding(10.dp), colors = ButtonColors(
-                containerColor = containerColor,
-                disabledContainerColor = containerColor,
-                contentColor = tint,
-                disabledContentColor = tint,
-            )
-        ) {
-            Text(text = context.getString(R.string.try_again), color = tint)
+        Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Button(
+                onClick = onPress, modifier = Modifier.padding(10.dp), colors = ButtonColors(
+                    containerColor = containerColor,
+                    disabledContainerColor = containerColor,
+                    contentColor = tint,
+                    disabledContentColor = tint,
+                )
+            ) {
+                Text(text = context.getString(R.string.try_again), color = tint)
+            }
+
+            Button(
+                onClick = {onRegistrationCall(jwt)}, modifier = Modifier.padding(10.dp), colors = ButtonColors(
+                    containerColor = containerColor,
+                    disabledContainerColor = containerColor,
+                    contentColor = tint,
+                    disabledContentColor = tint,
+                )
+            ) {
+                Text(text = context.getString(R.string.register), color = tint, fontSize = 10.sp)
+            }
         }
     }
 }

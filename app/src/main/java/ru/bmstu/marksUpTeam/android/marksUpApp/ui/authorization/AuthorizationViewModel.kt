@@ -24,14 +24,17 @@ class AuthorizationViewModel(private val authorizationRepository: AuthorizationR
                 if (response) {
                     _stateFlow.value = AuthorizationState.Content.Authorized(jwt)
                 } else {
-                    _stateFlow.value = AuthorizationState.Error.AccountNotFound
+                    _stateFlow.value = AuthorizationState.Error.AccountNotFound(jwt)
                 }
             }.onFailure {
                 _stateFlow.value = AuthorizationState.Error.DefaultError(it.message.toString())
             }
         }
     }
-
+    fun callRegistration(context: Context, jwt: String){
+        processJWT(jwt, context)
+        //TODO: call registration activity here
+    }
     fun vkIdFail(){
         _stateFlow.value = AuthorizationState.Error.VKIDFailed
     }

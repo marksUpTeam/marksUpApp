@@ -9,7 +9,7 @@
     <string name="errorOccurred">Произошла ошибка.</string>
     <string name="privacyPolicy">Авторизуясь через VK ID, вы соглашаетесь поделиться информацией из VK c MarksUp</string>
     <string name="somethingWentWrong">Что-то пошло не так. Попробуйте позже.</string>
-    <string name="accNotFound">Профиля связанного с данным аккаунтом VK ID не найдено. Может попробуете другой?</string>
+    <string name="accNotFound">Профиля связанного с данным аккаунтом VK ID не найдено.</string>
     <string name="try_again">Попробовать ещё раз</string>
     <string name="teacher">Учитель</string>
     <string name="student">Ученик</string>
@@ -35,4 +35,5 @@
     <string name="continueAuth">Продолжить</string>
 
     <string name="until">до</string>
+    <string name="register">Зарегистрироваться</string>
 </resources>
