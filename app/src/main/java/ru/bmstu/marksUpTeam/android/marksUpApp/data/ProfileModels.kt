@@ -38,7 +38,7 @@ data class Teacher(
     val person: Person,
     val disciplines: List<Discipline>,
     val description: String,
-    val assignedStudents: List<Student>
+    var assignedStudents: List<Student> = listOf()
 )
 
 
@@ -56,7 +56,7 @@ data class Student(
     val person: Person,
     val description: String,
     val disciplineGrades: List<DisciplineGrade>,
-    val assignedTeachers: List<Teacher>,
+    var assignedTeachers: List<Teacher> = listOf(),
 )
 
 
