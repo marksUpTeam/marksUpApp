@@ -1,9 +1,9 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments
 
+import android.net.Uri
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
 
@@ -14,4 +14,7 @@ interface AssignmentsApi {
 
     @POST("api/assignments")
     suspend fun addAssignment(@Body assignment: Assignment): Response<Assignment>
+
+    @POST("api/assignments")
+    suspend fun attachFile(@Body fileUri: Uri): Response<Uri>
 }

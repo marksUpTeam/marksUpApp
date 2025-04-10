@@ -1,8 +1,6 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.assignment
 
-import android.content.ContentResolver
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,15 +15,23 @@ class AssignmentViewModel(private val assignmentsRepository: AssignmentsReposito
             listOf(baseAssignment)
         )
     )
-    private val _fileName = MutableStateFlow<String?>(null)
     private val _fileUri = MutableStateFlow<Uri?>(null)
-
     val stateFlow = _stateFlow.asStateFlow()
     val fileUri = _fileUri.asStateFlow()
 
-    fun pickFile(uri:Uri?,contentResolver: ContentResolver){
+    fun pickFile(uri: Uri){
         _fileUri.value = uri
-        Log.d("",_fileUri.value.toString())
+        viewModelScope.launch {
+            runCatching {
+                val assignmentsResponse = assignmentsRepository.attachFile(uri)
+                /*
+                if(assignmentsResponse.isSuccess){
+                   val assignmentUri = assignmentsResponse.getOrNull()?: throw Exception("Bad response")
+                    _fileUri.value.add(_fileUri.value.size,assignmentUri)
+                }
+                */
+            }
+        }
     }
 
     fun updateFlow() {

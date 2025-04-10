@@ -2,9 +2,11 @@ package ru.bmstu.marksUpTeam.android.marksUpApp.ui.assignment
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.rememberAsyncImagePainter
 import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
@@ -43,12 +46,17 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.tools.formatDate
 fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
     val state by viewModel.stateFlow.collectAsState()
     val context = LocalContext.current
+    val fileUri by viewModel.fileUri.collectAsState()
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
         onResult = { uri ->
             uri?.let {
-                context.contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                viewModel.pickFile(it,context.contentResolver)
+                context.contentResolver.takePersistableUriPermission(
+                    it,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+                viewModel.pickFile(it)
+                Log.d("",it.toString())
             }
         }
     )
@@ -73,14 +81,18 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
     ) {
         items(state.assignments) { assignment ->
             AssignmentCard(
-                assignment,launcher
+                assignment, launcher, fileUri
             )
         }
     }
 }
 
 @Composable
-fun AssignmentCard(assignment: Assignment = baseAssignment, launcher:ManagedActivityResultLauncher<Array<String>, Uri?>) {
+fun AssignmentCard(
+    assignment: Assignment = baseAssignment,
+    launcher: ManagedActivityResultLauncher<Array<String>, Uri?>,
+    uri: Uri?
+) {
 
     Box(
         modifier = Modifier
@@ -92,7 +104,11 @@ fun AssignmentCard(assignment: Assignment = baseAssignment, launcher:ManagedActi
 
     ) {
 
-        Column(modifier = Modifier.fillMaxWidth().padding(start = 12.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 12.dp)
+        ) {
             Text(
                 "${assignment.discipline.name}, ${stringResource(R.string.until)} ${
                     formatDate(
@@ -105,7 +121,7 @@ fun AssignmentCard(assignment: Assignment = baseAssignment, launcher:ManagedActi
             )
 
             Text(assignment.description, fontSize = 24.sp, color = Color.Black)
-            IconButton(onClick = { launcher.launch(arrayOf("*/*"))}) {
+            IconButton(onClick = { launcher.launch(arrayOf("*/*")) }) {
                 Icon(
                     painter = painterResource(R.drawable.file_attach),
                     contentDescription = "FileAttach",
@@ -113,7 +129,12 @@ fun AssignmentCard(assignment: Assignment = baseAssignment, launcher:ManagedActi
                     tint = colorResource(R.color.light_red)
                 )
             }
+            Image(
+                painter = rememberAsyncImagePainter(model = uri),
+                contentDescription = "file",
+                modifier = Modifier.size(200.dp)
+            )
         }
     }
-
 }
+
