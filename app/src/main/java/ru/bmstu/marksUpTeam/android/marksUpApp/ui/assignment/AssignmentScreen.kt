@@ -1,5 +1,6 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.assignment
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -8,15 +9,19 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -28,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -56,7 +62,7 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
                 viewModel.pickFile(it)
-                Log.d("",it.toString())
+                Log.d("", fileUri.toString())
             }
         }
     )
@@ -81,7 +87,7 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
     ) {
         items(state.assignments) { assignment ->
             AssignmentCard(
-                assignment, launcher, fileUri
+                assignment, launcher, fileUri, context
             )
         }
     }
@@ -91,13 +97,12 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
 fun AssignmentCard(
     assignment: Assignment = baseAssignment,
     launcher: ManagedActivityResultLauncher<Array<String>, Uri?>,
-    uri: Uri?
+    uriList: List<Uri>,
+    context: Context
 ) {
-
     Box(
         modifier = Modifier
             .fillMaxWidth(0.84f)
-            .height(180.dp)
             .padding(bottom = 30.dp)
             .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(24.dp))
             .clip(RoundedCornerShape(24.dp)), contentAlignment = Alignment.Center
@@ -107,7 +112,7 @@ fun AssignmentCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 12.dp)
+                .padding(start = 12.dp, top = 30.dp, bottom = 30.dp)
         ) {
             Text(
                 "${assignment.discipline.name}, ${stringResource(R.string.until)} ${
@@ -129,12 +134,52 @@ fun AssignmentCard(
                     tint = colorResource(R.color.light_red)
                 )
             }
-            Image(
-                painter = rememberAsyncImagePainter(model = uri),
-                contentDescription = "file",
-                modifier = Modifier.size(200.dp)
-            )
+            LazyRow {
+                items(uriList) { uri ->
+                    val fileType = context.contentResolver.getType(uri)
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clickable {
+                                openFile(context = context, uri = uri)
+                            })
+                    {
+                        if (fileType!!.startsWith("image")) {
+                            Image(
+                                painter = rememberAsyncImagePainter(model = uri),
+                                contentDescription = "file",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop,
+
+                                )
+                        } else {
+                            Icon(
+                                Icons.Default.AddCircle,
+                                contentDescription = "file",
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
+
+fun openFile(context: Context, uri: Uri) {
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(uri, context.contentResolver.getType(uri))
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    context.startActivity(intent)
+
+    /*
+    try {
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        Toast.makeText(context, "Нет приложения для открытия файла", Toast.LENGTH_SHORT).show()
+    }
+     */
+}
+
 

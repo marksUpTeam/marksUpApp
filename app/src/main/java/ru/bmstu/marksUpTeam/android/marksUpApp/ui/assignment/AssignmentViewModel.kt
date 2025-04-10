@@ -15,12 +15,12 @@ class AssignmentViewModel(private val assignmentsRepository: AssignmentsReposito
             listOf(baseAssignment)
         )
     )
-    private val _fileUri = MutableStateFlow<Uri?>(null)
+    private val _fileUri = MutableStateFlow<List<Uri>>(emptyList())
     val stateFlow = _stateFlow.asStateFlow()
     val fileUri = _fileUri.asStateFlow()
 
     fun pickFile(uri: Uri){
-        _fileUri.value = uri
+        _fileUri.value += uri
         viewModelScope.launch {
             runCatching {
                 val assignmentsResponse = assignmentsRepository.attachFile(uri)
