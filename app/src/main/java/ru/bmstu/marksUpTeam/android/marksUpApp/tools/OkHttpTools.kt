@@ -4,6 +4,8 @@ import android.content.Context
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import org.koin.compose.koinInject
+import org.koin.java.KoinJavaComponent.inject
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
@@ -43,8 +45,8 @@ private fun getUnsafeClient(context: Context): OkHttpClient {
    return getUnsafeClientBuilder(context).build()
 }
 
-private fun getUnsafeInterceptedClient(context: Context, jwtUnformatted: String): OkHttpClient {
-    return getUnsafeClientBuilder(context).addInterceptor(AuthorizationInterceptor(jwtUnformatted ?: "")).build()
+private fun getUnsafeInterceptedClient(context: Context, authInterceptor: AuthorizationInterceptor): OkHttpClient {
+    return getUnsafeClientBuilder(context).addInterceptor(authInterceptor).build()
 }
 
 private fun getBasicRetrofitBuilder(api: String): Retrofit.Builder {
@@ -52,8 +54,8 @@ private fun getBasicRetrofitBuilder(api: String): Retrofit.Builder {
         .asConverterFactory("application/json; charset=UTF-8".toMediaType()))
 }
 
-fun getBasicInterceptedRetrofit(context: Context, api: String, jwtUnformatted: String): Retrofit {
-    return getBasicRetrofitBuilder(api).client(getUnsafeInterceptedClient(context, jwtUnformatted)).build()
+fun getBasicInterceptedRetrofit(context: Context, api: String, authInterceptor: AuthorizationInterceptor): Retrofit {
+    return getBasicRetrofitBuilder(api).client(getUnsafeInterceptedClient(context, authInterceptor = authInterceptor)).build()
 }
 
 fun getBasicRetrofit(context: Context, api: String): Retrofit {

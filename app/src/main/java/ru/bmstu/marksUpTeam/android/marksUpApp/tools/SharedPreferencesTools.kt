@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.vk.id.AccessToken
+import org.koin.java.KoinJavaComponent.inject
 
 
 fun getEncryptedSharedPreferences(context: Context): EncryptedSharedPreferences {
@@ -22,6 +23,8 @@ fun processJWT(token: String, context: Context) {
     val jwtString = token
     val prefs = getEncryptedSharedPreferences(context)
     prefs.edit().putString("jwt", jwtString).apply()
+    val tokenHolder: TokenHolder by inject(TokenHolder::class.java)
+    tokenHolder.updateToken(context)
 }
 
 fun invalidateSession(context: Context){}
