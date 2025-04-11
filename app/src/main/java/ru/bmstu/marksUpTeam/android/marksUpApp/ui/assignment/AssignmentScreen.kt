@@ -1,9 +1,11 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.assignment
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -61,7 +63,7 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
                     it,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
-                viewModel.pickFile(it)
+                viewModel.pickFile(it,context.contentResolver)
                 Log.d("", fileUri.toString())
             }
         }
@@ -171,15 +173,11 @@ fun openFile(context: Context, uri: Uri) {
         setDataAndType(uri, context.contentResolver.getType(uri))
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
-    context.startActivity(intent)
-
-    /*
     try {
         context.startActivity(intent)
     } catch (e: ActivityNotFoundException) {
         Toast.makeText(context, "Нет приложения для открытия файла", Toast.LENGTH_SHORT).show()
     }
-     */
 }
 
 
