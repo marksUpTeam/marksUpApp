@@ -95,16 +95,16 @@ private fun RegistrationContentFinished(
         Row(modifier = Modifier.fillMaxWidth().height(20.dp)) {}
         Text(
             modifier = Modifier.fillMaxWidth().padding(10.dp),
-            text = "${stringResource(R.string.welcome)}, ${person.name}!",
+            text = "${stringResource(R.string.registrationAlmostFinished)}, ${person.name}!",
             textAlign = TextAlign.Center,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.successfulRegistration),
+            text = stringResource(R.string.readyToSendRegistrationRequest),
             textAlign = TextAlign.Center,
-            fontSize = 20.sp,
+            fontSize = 16.sp,
         )
         Row(modifier = Modifier.fillMaxWidth().height(20.dp)) {}
         Button(

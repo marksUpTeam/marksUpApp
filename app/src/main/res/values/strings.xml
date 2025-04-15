@@ -36,7 +36,7 @@
 
     <string name="until">до</string>
     <string name="register">Зарегистрироваться</string>
-    <string name="welcome">Добро пожаловать</string>
-    <string name="successfulRegistration">Вы успешно зарегистрировались</string>
+    <string name="registrationAlmostFinished">Все почти готово</string>
+    <string name="readyToSendRegistrationRequest">Чтобы зарегистрироваться нажмите на кнопку</string>
 
 </resources>
