@@ -36,4 +36,7 @@
 
     <string name="until">до</string>
     <string name="register">Зарегистрироваться</string>
+    <string name="welcome">Добро пожаловать</string>
+    <string name="successfulRegistration">Вы успешно зарегистрировались</string>
+
 </resources>
