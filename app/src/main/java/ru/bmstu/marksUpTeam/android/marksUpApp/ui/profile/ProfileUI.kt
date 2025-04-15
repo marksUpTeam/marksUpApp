@@ -47,6 +47,7 @@ import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePreviewHandler
 import coil3.compose.LocalAsyncImagePreviewHandler
+import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseParentProfile
@@ -55,17 +56,15 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudent2
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudent3
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudentProfile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseTeacherProfile
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileMapper
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileMapper
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.ErrorScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.LoadingScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.theme.MarksUpTheme
 
 @Composable
-fun ProfileScreen(
-    viewModel: ProfileViewModel
-) {
+fun ProfileScreen(viewModel: ProfileViewModel = koinViewModel()) {
     val state = viewModel.stateFlow.collectAsState()
     ProfileContent(
         state.value,

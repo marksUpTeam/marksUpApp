@@ -11,4 +11,5 @@ sealed class AuthorizationState {
         data class Authorized(val jwt: String) : Content()
         data object Idle: Content()
     }
+
 }

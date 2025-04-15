@@ -22,12 +22,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.DisciplineGrade
 
 @Composable
-fun GradeScreen(tint: Color = colorResource(id = R.color.black)) {
-    val viewModel = GradeViewModel()
+fun GradeScreen(viewModel: GradeViewModel = koinViewModel()) {
     val state by viewModel.stateFlow.collectAsState()
 
     Text(
@@ -35,7 +35,7 @@ fun GradeScreen(tint: Color = colorResource(id = R.color.black)) {
         fontSize = 20.sp,
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(top = 50.dp),
-        color = tint
+        color = colorResource(id = R.color.black)
     )
 
     LazyColumn(
@@ -44,13 +44,14 @@ fun GradeScreen(tint: Color = colorResource(id = R.color.black)) {
             .fillMaxWidth()
             .padding(top = 100.dp)
     ) {
-        items(state.student.disciplineGrades) { disciplineGrade ->
+        items(state.grades) { disciplineGrade ->
             SubjectGradeCard(
                 disciplineGrade
             )
         }
     }
 }
+
 
 @Composable
 fun SubjectGradeCard(

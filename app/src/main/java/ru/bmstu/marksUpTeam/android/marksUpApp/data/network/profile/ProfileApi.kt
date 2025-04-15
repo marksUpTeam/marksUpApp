@@ -10,8 +10,8 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 interface ProfileApi {
 
     @GET("api/user")
-    suspend fun getProfile(@Header("Authorization") jwt: String): Response<Profile>
+    suspend fun getProfile(): Response<Profile>
 
     @POST("api/user")
-    suspend fun modifyProfile(@Header("Authorization") jwt: String, @Body profile: Profile): Response<String>
+    suspend fun modifyProfile(@Body profile: Profile): Response<String>
 }

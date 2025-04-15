@@ -20,5 +20,5 @@ class MainActivityViewModel: ViewModel() {
 
 
 enum class Route {
-    Login, Schedule, AddLesson, Lesson, Favourites, Grade, Profile
+    Login, Schedule, AddLesson, Lesson, Favourites, Grade, Profile, Assignment
 }
