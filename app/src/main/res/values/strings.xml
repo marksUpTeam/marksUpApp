@@ -43,4 +43,6 @@
 
     <string name="ok">Хорошо</string>
 
+    <string name = "accountAlreadyExists">Аккаунт уже существует. Свяжитесь с администратором.</string>
+
 </resources>

@@ -127,7 +127,7 @@ private fun RegistrationContentFinished(
 
 @Preview
 @Composable
-fun InvitationNotFoundError(
+fun InvitationNotFoundErrorScreen(
     modifier: Modifier = Modifier,
     onRefresh: () -> Unit = {},
 ){
@@ -165,3 +165,46 @@ fun InvitationNotFoundError(
         }
     }
 }
+
+@Preview
+@Composable
+fun AccountAlreadyExistsErrorScreen(
+    modifier: Modifier = Modifier,
+    onRefresh: () -> Unit = {},
+){
+    Column(
+        modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon (
+            painter = painterResource(R.drawable.no_acc),
+            contentDescription = "",
+            modifier = Modifier.padding(10.dp).size(80.dp),
+            tint = Color.Red
+        )
+        Text (
+            modifier = Modifier.fillMaxWidth().padding(10.dp),
+            text = stringResource(R.string.accountAlreadyExists),
+            textAlign = TextAlign.Center,
+            fontSize = 20.sp,
+        )
+        Button (
+            onClick = onRefresh,
+            colors = ButtonColors(
+                contentColor = MaterialTheme.colorScheme.secondary,
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                disabledContainerColor = MaterialTheme.colorScheme.onBackground,
+                disabledContentColor = MaterialTheme.colorScheme.secondary,
+            )
+        ){
+            Text (
+                text = stringResource(R.string.ok),
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+            )
+        }
+    }
+}
+
+
