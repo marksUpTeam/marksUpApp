@@ -39,4 +39,8 @@
     <string name="registrationAlmostFinished">Все почти готово</string>
     <string name="readyToSendRegistrationRequest">Чтобы зарегистрироваться нажмите на кнопку</string>
 
+    <string name="notInvitedError">Приглашение не было найдено. Повторите попытку позже.</string>
+
+    <string name="ok">Хорошо</string>
+
 </resources>

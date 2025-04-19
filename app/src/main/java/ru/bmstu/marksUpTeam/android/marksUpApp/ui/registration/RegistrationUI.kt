@@ -12,10 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +29,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -118,6 +121,47 @@ private fun RegistrationContentFinished(
             )
         ) {
             Text(text = stringResource(R.string.continueAuth))
+        }
+    }
+}
+
+@Preview
+@Composable
+fun InvitationNotFoundError(
+    modifier: Modifier = Modifier,
+    onRefresh: () -> Unit = {},
+){
+    Column(
+        modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon (
+            painter = painterResource(R.drawable.cancel),
+            contentDescription = "",
+            modifier = Modifier.padding(10.dp).size(80.dp),
+            tint = Color.Red
+        )
+        Text (
+            modifier = Modifier.fillMaxWidth().padding(10.dp),
+            text = stringResource(R.string.notInvitedError),
+            textAlign = TextAlign.Center,
+            fontSize = 20.sp,
+        )
+        Button (
+            onClick = onRefresh,
+            colors = ButtonColors(
+                contentColor = MaterialTheme.colorScheme.secondary,
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                disabledContainerColor = MaterialTheme.colorScheme.onBackground,
+                disabledContentColor = MaterialTheme.colorScheme.secondary,
+            )
+        ){
+            Text (
+                text = stringResource(R.string.ok),
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+            )
         }
     }
 }
