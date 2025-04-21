@@ -1,5 +1,6 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments
 
+import androidx.core.net.toUri
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
 
@@ -14,9 +15,11 @@ class AssignmentsMapper {
             deadline = assignment.deadline,
             description = assignment.description,
             status = assignment.status,
-            grade = assignment.grade ?: 0
+            grade = assignment.grade ?: 0,
+            files = listOf(assignment.files[0].toUri())
         )
     }
+    
 
     fun mapList(assignments: List<Assignment>): List<AssignmentDomain> {
         return assignments.map { map(it) }

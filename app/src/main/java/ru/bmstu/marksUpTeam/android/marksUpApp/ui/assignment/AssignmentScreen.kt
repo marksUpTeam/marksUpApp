@@ -45,11 +45,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import coil3.compose.rememberAsyncImagePainter
 import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.formatDate
 
 @Composable
@@ -104,7 +103,7 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
 
 @Composable
 fun AssignmentCard(
-    assignment: Assignment,
+    assignment: AssignmentDomain,
     onAttachRequest: (Long) -> Unit,
     context: Context,
 
@@ -149,12 +148,12 @@ fun AssignmentCard(
             }
             LazyRow {
                 items(assignment.files) { uri ->
-                    val fileType = context.contentResolver.getType(uri.toUri())
+                    val fileType = context.contentResolver.getType(uri)
                     Box(
                         modifier = Modifier
                             .size(100.dp)
                             .clickable {
-                                openFile(context = context, uri = uri.toUri())
+                                openFile(context = context, uri = uri)
                             })
                     {
                         if (fileType!!.startsWith("image")) {

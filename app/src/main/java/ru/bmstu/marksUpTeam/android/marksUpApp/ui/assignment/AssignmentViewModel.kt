@@ -9,13 +9,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseAssignment
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments.AssignmentsMapper
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments.AssignmentsRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getFileForRequest
 
 class AssignmentViewModel(private val assignmentsRepository: AssignmentsRepository) : ViewModel() {
     private val _stateFlow: MutableStateFlow<AssignmentState> = MutableStateFlow(
         AssignmentState(
-            listOf(baseAssignment)
+            listOf(AssignmentsMapper().map(baseAssignment))
         )
     )
     val stateFlow = _stateFlow.asStateFlow()
@@ -23,7 +24,7 @@ class AssignmentViewModel(private val assignmentsRepository: AssignmentsReposito
     fun pickFile(uri: Uri, assignmentId:Long, contentResolver: ContentResolver){
         val updatedAssignments = _stateFlow.value.assignments.map {
             if (it.id == assignmentId) {
-                it.copy(files = it.files + uri.toString())
+                it.copy(files = it.files + uri)
             } else it
         }
 
@@ -47,11 +48,7 @@ class AssignmentViewModel(private val assignmentsRepository: AssignmentsReposito
         viewModelScope.launch {
             runCatching {
                 val assignmentsResponse = assignmentsRepository.getAllAssignments()
-                if (assignmentsResponse.isSuccess) {
-                    val assignmentsDomain =
-                        assignmentsResponse.getOrNull() ?: throw Exception("Bad response")
-                    _stateFlow.value = _stateFlow.value.copy(assignments = assignmentsDomain)
-                }
+
             }
         }
     }

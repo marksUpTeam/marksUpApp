@@ -55,5 +55,5 @@ val baseAssignment = Assignment(
     description = "tasks 10 - 15",
     status = AssignmentStatus.Assigned,
     grade = null,
-    files = mutableListOf()
+    files = listOf("content://com.android.providers.downloads.documents/document/msf%3A31")
 )
