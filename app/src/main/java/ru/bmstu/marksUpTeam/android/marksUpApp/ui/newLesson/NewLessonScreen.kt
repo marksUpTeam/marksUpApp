@@ -1,7 +1,6 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.newLesson
 
 import android.app.DatePickerDialog
-import android.widget.DatePicker
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,21 +17,32 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -44,363 +54,176 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.koin.androidx.compose.koinViewModel
+import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.viewmodel.compose.viewModel
-import ru.bmstu.marksUpTeam.android.marksUpApp.R
-import ru.bmstu.marksUpTeam.android.marksUpApp.ui.DropDownList
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import kotlin.time.Duration
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.format
+import kotlinx.datetime.format.char
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.Discipline
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun NewLessonScreen(viewModel: NewLessonViewModel = viewModel()) {
+fun NewLessonScreen(viewModel: NewLessonViewModel = koinViewModel()) {
     val state by viewModel.stateFlow.collectAsState()
-    val mContext = LocalContext.current
-    val mYear: Int
-    val mMonth: Int
-    val mDay: Int
-    val mCalendar = Calendar.getInstance()
     val isTeacher = state.profile.teacher != null
-    val durationList = listOf("за 10 минут", "за 30 минут", "за 60 минут")
-    var showStartTimePicker by remember { mutableStateOf(false) }
-    var showEndTimePicker by remember { mutableStateOf(false) }
-    var stateFirst = rememberTimePickerState(is24Hour = true)
-    var stateSecond = rememberTimePickerState(is24Hour = true)
-    val formatter = remember { SimpleDateFormat("HH:mm", java.util.Locale.getDefault()) }
-    var startTime by remember { mutableStateOf(formatter.format(mCalendar.time)) }
-    var endTime by remember { mutableStateOf(formatter.format(mCalendar.time)) }
+    val notifications = listOf("за 10 минут", "за 30 минут", "за 60 минут")
 
 
-    mYear = mCalendar.get(Calendar.YEAR)
-    mMonth = mCalendar.get(Calendar.MONTH)
-    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+    if (state.isLoading && !LocalInspectionMode.current) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center)
+            )
+        }
+    } else if (!state.isLoading) {
+        if (isTeacher) {
 
-    mCalendar.time = Date()
-
-    val startDate = remember { mutableStateOf("") }
-    val endDate = remember { mutableStateOf("") }
-
-    val mDatePickerDialog = DatePickerDialog(
-        mContext,
-        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-            startDate.value = "$mDayOfMonth/${mMonth + 1}/$mYear"
-        }, mYear, mMonth, mDay
-    )
-
-    val _mDatePickerDialog = DatePickerDialog(
-        mContext,
-        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-            endDate.value = "$mDayOfMonth/${mMonth + 1}/$mYear"
-        }, mYear, mMonth, mDay
-    )
-
-    if (state.isLoading) {
-        CircularProgressIndicator(
-            modifier = Modifier
-                /* .align(Alignment.Center) */
-                .size(64.dp)
-        )
-    }
-
-    if (!state.isLoading) {
-
-        Box(Modifier.fillMaxSize()) {
-            Column {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    Text(
-                        text = stringResource(R.string.newLesson),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = stringResource(R.string.newLesson),
+                                style = MaterialTheme.typography.headlineSmall
+                            )
+                        }
+                    )
+                },
+                floatingActionButton = {
+                    ExtendedFloatingActionButton(
+                        onClick = { viewModel.handleEvent(NewLessonEvent.Submit) },
+                        icon = { Icon(Icons.Default.Done, null) },
+                        text = { Text(stringResource(R.string.newLesson)) }
                     )
                 }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    Text(
-                        text = stringResource(R.string.chooseDay),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 16.dp, top = 16.dp)
-                    )
-                }
-
-                DaysOfWeekGrid(
-                    selectedDay = startDate.value,
-                    onDaySelected = { startDate.value = it })
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    Text(
-                        text = stringResource(R.string.choosePeriod),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 16.dp, top = 16.dp)
-                    )
-                }
-
+            ) { padding ->
                 Column(
                     modifier = Modifier
-                        .padding(all = 4.dp)
+                        .padding(padding)
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 16.dp)
                 ) {
+                    SectionTitle(text = stringResource(R.string.chooseDay))
+                    DaysOfWeekGrid(
+                        selectedDay = state.selectedDay,
+                        onDaySelected = { viewModel.handleEvent(NewLessonEvent.DayChanged(it)) }
+                    )
 
-                    Text(stringResource(R.string.startDay), modifier = Modifier.padding(all = 2.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    SectionTitle(text = stringResource(R.string.choosePeriod))
+                    DateRangePicker(
+                        startDate = state.startDate,
+                        endDate = state.endDate,
+                        onStartDateSelected = {
+                            viewModel.handleEvent(
+                                NewLessonEvent.StartDatesChanged(
+                                    it
+                                )
+                            )
+                        },
+                        onEndDateSelected = {
+                            viewModel.handleEvent(
+                                NewLessonEvent.EndDatesChanged(
+                                    it
+                                )
+                            )
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    TimeRangePicker(
+                        startTime = state.startTime,
+                        endTime = state.endTime,
+                        onStartTimeSelected = {
+                            viewModel.handleEvent(
+                                NewLessonEvent.StartTimeChanged(
+                                    it
+                                )
+                            )
+                        },
+                        onEndTimeSelected = {
+                            viewModel.handleEvent(
+                                NewLessonEvent.EndTimeChanged(
+                                    it
+                                )
+                            )
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    )
-                    {
-                        Button(
-                            onClick = { mDatePickerDialog.show() }, Modifier
-                                .padding(2.dp),
-                            border = BorderStroke(
-                                1.dp, Color.Blue
-                            ),
-                            shape = RoundedCornerShape(8.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
-                        )
-                        {
-                            Text(
-                                text = stringResource(R.string.chooseStartDate),
-                                color = Color.White
-                            )
-                        }
-
-                        TextField(
-                            value = startDate.value, onValueChange = {}, modifier = Modifier
-                                .wrapContentHeight()
-                                .wrapContentWidth()
-                                .padding(2.dp)
-                                .align(Alignment.CenterVertically),
-                            enabled = false
-                        )
-
-                        Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-                    }
-                    Spacer(modifier = Modifier.padding(all = 4.dp))
-
-                    Text(stringResource(R.string.endDay), modifier = Modifier.padding(all = 2.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        verticalAlignment = Alignment.CenterVertically
-                    )
-                    {
-                        Button(
-                            onClick = { _mDatePickerDialog.show() },
-                            Modifier
-                                .padding(2.dp),
-                            border = BorderStroke(
-                                1.dp, Color.Blue
-                            ),
-                            shape = RoundedCornerShape(8.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.Blue),
-                        )
-                        {
-                            Text(
-                                text = stringResource(R.string.chooseEndDate),
-                                color = Color.White
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-
-                        TextField(
-                            value = endDate.value, onValueChange = {}, modifier = Modifier
-                                .wrapContentHeight()
-                                .wrapContentWidth()
-                                .padding(2.dp)
-                                .align(Alignment.CenterVertically),
-                            enabled = false
-                        )
-
-
-                    }
-                    Spacer(modifier = Modifier.padding(all = 4.dp))
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    Text(
-                        text = stringResource(R.string.chooseTime),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 16.dp, top = 16.dp)
-                    )
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
-                )
-                {
-                    Button(
-                        onClick = { showStartTimePicker = true }, Modifier
-                            .padding(2.dp),
-                        border = BorderStroke(
-                            1.dp, Color.Blue
-                        ),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
-                    )
-                    {
-                        Text(
-                            text = startTime,
-                            color = Color.White
-                        )
-                    }
-
-
-                    Text(modifier = Modifier, text = "-")
-
-                    Button(
-                        onClick = { showEndTimePicker = true }, Modifier
-                            .padding(2.dp),
-                        border = BorderStroke(
-                            1.dp, Color.Blue
-                        ),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
-                    )
-                    {
-                        Text(
-                            text = endTime,
-                            color = Color.White
-                        )
-                    }
-
-
-                    if (showStartTimePicker) {
-
-                        TimePickerDialog(
-                            onCancel = { showStartTimePicker = false },
-                            onConfirm = {
-                                mCalendar.set(Calendar.HOUR_OF_DAY, stateFirst.hour)
-                                mCalendar.set(Calendar.MINUTE, stateFirst.minute)
-                                mCalendar.isLenient = false
-                                startTime = formatter.format(mCalendar.time)
-                                showStartTimePicker = false
-                            },
-                        ) {
-                            TimePicker(state = stateFirst)
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        notifications.forEach { notification ->
+                            Button(
+                                onClick = { TODO() },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(horizontal = 4.dp)
+                            ) {
+                                Text(text = notification, fontSize = 12.sp)
+                            }
                         }
                     }
 
-                    if (showEndTimePicker) {
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                        TimePickerDialog(
-                            onCancel = { showEndTimePicker = false },
-                            onConfirm = {
-                                mCalendar.set(Calendar.HOUR_OF_DAY, stateSecond.hour)
-                                mCalendar.set(Calendar.MINUTE, stateSecond.minute)
-                                mCalendar.isLenient = false
-                                endTime = formatter.format(mCalendar.time)
-                                showEndTimePicker = false
-                            },
-                        ) {
-                            TimePicker(state = stateSecond)
+
+                    SectionTitle(text = stringResource(R.string.chooseStudent))
+                    StudentsSection(
+                        students = state.students,
+                        selectedStudent = state.selectedStudent,
+                        onStudentSelected = {
+                            viewModel.handleEvent(NewLessonEvent.StudentSelected(it))
                         }
-                    }
-                }
+                    )
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    durationList.forEach { duration ->
-                        Button(
-                            onClick = { /*  */ },
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = 4.dp)
-                        ) {
-                            Text(text = duration, fontSize = 12.sp)
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    SectionTitle(text = stringResource(R.string.chooseSubject))
+                    DisciplineSection(
+                        disciplines = state.disciplines,
+                        selectedDiscipline = state.selectedDiscipline,
+                        onDisciplineSelected = {
+                            viewModel.handleEvent(NewLessonEvent.DisciplineSelected(it))
                         }
-                    }
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    Text(
-                        text = stringResource(R.string.chooseStudent),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 16.dp, top = 16.dp)
                     )
-                }
 
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Box(modifier = Modifier.weight(1f)) {
-                        DropDownList(
-                            currentItem = "",
-                            listItems = emptyList(), /* state.students.map { "${it.person.name} ${it.person.surname}" } */
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            readonly = !isTeacher,
-                        )
-                    }
                 }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    Text(
-                        text = stringResource(R.string.chooseSubject),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 16.dp, top = 16.dp)
-                    )
-                }
-
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Box(modifier = Modifier.weight(1f)) {
-                        DropDownList(
-                            currentItem = "",
-                            listItems = emptyList() /*state.disciplines.map { "${it.name} ${it.complexity}" } */,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            readonly = !isTeacher
-                        )
-                    }
-                }
-            }
-        }
-        @Composable
-        fun ValidateDates() {
-            if (startTime > endTime) {
-                error(message = stringResource(R.string.errorTime))
             }
         }
     }
+}
+
+
+@Composable
+private fun SectionTitle(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+        modifier = Modifier.padding(vertical = 8.dp)
+    )
 }
 
 @Composable
@@ -410,7 +233,6 @@ private fun DaysOfWeekGrid(
 ) {
     val daysOfWeek =
         listOf("Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье")
-    var selectedDay: String by remember { mutableStateOf(daysOfWeek[0]) }
 
     Column {
         Text(
@@ -426,7 +248,7 @@ private fun DaysOfWeekGrid(
         ) {
             items(daysOfWeek) { day ->
                 Button(
-                    { selectedDay = day },
+                    onClick = { onDaySelected(day) },
                     Modifier
                         .padding(1.dp),
                     border = BorderStroke(
@@ -456,6 +278,178 @@ private fun DaysOfWeekGrid(
         }
     }
 }
+
+
+@Composable
+fun DateRangePicker(
+    startDate: LocalDate,
+    endDate: LocalDate,
+    onStartDateSelected: (LocalDate) -> Unit,
+    onEndDateSelected: (LocalDate) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        DatePickerButton(
+            label = stringResource(R.string.startDay),
+            selectedDate = startDate,
+            onDateSelected = onStartDateSelected,
+            modifier = Modifier.weight(1f)
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        DatePickerButton(
+            label = stringResource(R.string.endDay),
+            selectedDate = endDate,
+            onDateSelected = onEndDateSelected,
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+
+@Composable
+private fun DatePickerButton(
+    label: String,
+    selectedDate: LocalDate,
+    onDateSelected: (LocalDate) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    var showDialog by remember { mutableStateOf(false) }
+
+    val dateFormat = LocalDate.Format {
+        dayOfMonth()
+        char('/')
+        monthNumber()
+        char('/')
+        year()
+    }
+
+    val datePicker = remember {
+        DatePickerDialog(
+            context,
+            { _, year, month, day ->
+                onDateSelected(
+                    LocalDate(
+                        year = year,
+                        monthNumber = month + 1,
+                        dayOfMonth = day
+                    )
+                )
+            },
+            selectedDate.year,
+            selectedDate.monthNumber - 1,
+            selectedDate.dayOfMonth
+        )
+    }
+
+    Column(modifier = Modifier) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+
+        OutlinedButton(
+            onClick = { showDialog = true },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = selectedDate.format(dateFormat),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+
+    if (showDialog) {
+        datePicker.show()
+        showDialog = false
+    }
+}
+
+
+@Composable
+fun TimeRangePicker(
+    startTime: LocalTime,
+    endTime: LocalTime,
+    onStartTimeSelected: (LocalTime) -> Unit,
+    onEndTimeSelected: (LocalTime) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        TimePickerButton(
+            label = stringResource(R.string.chooseStartTime),
+            selectedTime = startTime,
+            onTimeSelected = onStartTimeSelected,
+            modifier = Modifier.weight(1f)
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        TimePickerButton(
+            label = stringResource(R.string.chooseEndTime),
+            selectedTime = endTime,
+            onTimeSelected = onEndTimeSelected,
+            modifier = Modifier.weight(1f)
+        )
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TimePickerButton(
+    label: String,
+    selectedTime: LocalTime,
+    onTimeSelected: (LocalTime) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var showDialog by remember { mutableStateOf(false) }
+    val timeState = rememberTimePickerState(is24Hour = true)
+    val timeFormat = LocalTime.Format {
+        hour()
+        char(':')
+        minute()
+    }
+
+    Column(modifier = Modifier) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+
+        OutlinedButton(
+            onClick = { showDialog = true },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = selectedTime.format(timeFormat),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+    if (showDialog) {
+        TimePickerDialog(
+            onCancel = { showDialog = false },
+            onConfirm = {
+                val newTime = LocalTime(timeState.hour % 24, timeState.minute % 60)
+                onTimeSelected(newTime)
+                showDialog = false
+            }
+        ) {
+            TimePicker(state = timeState)
+        }
+    }
+}
+
 
 @Composable
 fun TimePickerDialog(
@@ -500,13 +494,110 @@ fun TimePickerDialog(
                     toggle()
                     Spacer(modifier = Modifier.weight(1f))
                     TextButton(onClick = onCancel) {
-                        Text("Cancel")
+                        Text(text = stringResource(R.string.cancel))
                     }
                     TextButton(onClick = onConfirm) {
-                        Text("Ok")
+                        Text(text = stringResource(R.string.ok))
                     }
                 }
             }
         }
     }
 }
+
+
+@Composable
+private fun StudentsSection(
+    students: List<Student>,
+    selectedStudent: Student?,
+    onStudentSelected: (Student) -> Unit
+) {
+    DropdownSelector(
+        items = students,
+        selectedItem = selectedStudent,
+        itemToString = { "${it.person.name} ${it.person.surname}" },
+        onItemSelected = onStudentSelected,
+        placeholder = stringResource(R.string.chooseStudent)
+    )
+}
+
+
+@Composable
+private fun DisciplineSection(
+    disciplines: List<Discipline>,
+    selectedDiscipline: Discipline?,
+    onDisciplineSelected: (Discipline) -> Unit
+) {
+    DropdownSelector(
+        items = disciplines,
+        selectedItem = selectedDiscipline,
+        itemToString = { "${it.name} ${it.complexity}" },
+        onItemSelected = onDisciplineSelected,
+        placeholder = stringResource(R.string.chooseSubject)
+    )
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun <T> DropdownSelector(
+    items: List<T>,
+    selectedItem: T?,
+    itemToString: (T) -> String,
+    onItemSelected: (T) -> Unit,
+    placeholder: String,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    readOnly: Boolean = false
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val displayValue = selectedItem?.let { itemToString(it) } ?: placeholder
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { if (!readOnly) expanded = !expanded },
+        modifier = Modifier
+    ) {
+        TextField(
+            value = displayValue,
+            onValueChange = {},
+            readOnly = true,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            placeholder = { Text(text = placeholder) },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            modifier = Modifier
+                .fillMaxWidth(),
+            enabled = enabled && !readOnly
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            if (items.isEmpty()) {
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            "No data",
+                            modifier = Modifier.padding(8.dp),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    },
+                    onClick = {}
+                )
+            } else {
+                items.forEach { item ->
+                    DropdownMenuItem(
+                        text = { Text(text = itemToString(item)) },
+                        onClick = {
+                            onItemSelected(item)
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+

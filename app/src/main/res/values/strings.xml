@@ -44,7 +44,23 @@
     <string name="endDay">По какое число</string>
     <string name="chooseStartDate">Выбрать дату начала обучения</string>
     <string name="chooseEndDate">Выбрать дату конца обучения</string>
-    <string name="chooseStartTime">Выбрать время</string>
+    <string name="chooseStartTime">Выбрать время начала занятия</string>
+    <string name="chooseEndTime">Выбрать время конца занятия</string>
     <string name="errorTime"> Ошибка: время окончания занятия не может быть позже его начала </string>
+    <string name="ok"> Выбрать </string>
+    <string name="cancel"> Назад </string>
+
+    <string name="save">Сохранить</string>
+    <string name="newAssignment">Добавить задание</string>
+    <string name="deadDate">Дата сдачи</string>
+    <string name="deadTime">Время сдачи</string>
+    <string name="assignmentName">Название задания</string>
+    <string name="assignmentDescription">Описание задания</string>
+    <string name="noData">Нет данных</string>
+    <string name="attachments">Прикреплённые файлы</string>
+    <string name="add_attachment">Добавить файл</string>
+    <string name="remove">Удалить</string>
+
+    <string name="until">до</string>
 
 </resources>
