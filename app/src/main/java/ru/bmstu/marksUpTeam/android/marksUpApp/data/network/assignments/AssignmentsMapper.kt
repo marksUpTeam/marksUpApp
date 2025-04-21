@@ -2,7 +2,6 @@ package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments
 
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
-import kotlinx.datetime.LocalDate
 
 class AssignmentsMapper {
     fun map(assignment: Assignment): AssignmentDomain {
@@ -33,7 +32,8 @@ class AssignmentsMapper {
             deadline = assignmentDomain.deadline,
             description = assignmentDomain.description,
             status = assignmentDomain.status,
-            grade = assignmentDomain.grade
+            grade = assignmentDomain.grade,
+            files = mutableListOf()
         )
     }
 }

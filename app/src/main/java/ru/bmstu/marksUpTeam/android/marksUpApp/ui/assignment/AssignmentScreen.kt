@@ -6,7 +6,6 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -31,6 +30,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,18 +45,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import coil3.compose.rememberAsyncImagePainter
 import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseAssignment
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.formatDate
 
 @Composable
 fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
     val state by viewModel.stateFlow.collectAsState()
     val context = LocalContext.current
-    val fileUri by viewModel.fileUri.collectAsState()
+
+    var assignmentId by remember { mutableStateOf<Long>(0) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
         onResult = { uri ->
@@ -63,14 +66,13 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
                     it,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
-                viewModel.pickFile(it,context.contentResolver)
-                Log.d("", fileUri.toString())
+                viewModel.pickFile(it, assignmentId, context.contentResolver)
             }
         }
     )
+
     LaunchedEffect(state) {
         viewModel.updateFlow()
-
     }
 
     Text(
@@ -87,9 +89,14 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
             .fillMaxWidth()
             .padding(top = 100.dp)
     ) {
+        Log.d("filesColumn",state.assignments.toString())
         items(state.assignments) { assignment ->
             AssignmentCard(
-                assignment, launcher, fileUri, context
+                assignment, onAttachRequest = { id->
+                    assignmentId =  id
+                    launcher.launch(arrayOf("*/*"))
+
+                }, context
             )
         }
     }
@@ -97,11 +104,14 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
 
 @Composable
 fun AssignmentCard(
-    assignment: Assignment = baseAssignment,
-    launcher: ManagedActivityResultLauncher<Array<String>, Uri?>,
-    uriList: List<Uri>,
-    context: Context
+    assignment: Assignment,
+    onAttachRequest: (Long) -> Unit,
+    context: Context,
+
 ) {
+    Log.d("filesCard",assignment.toString())
+
+
     Box(
         modifier = Modifier
             .fillMaxWidth(0.84f)
@@ -128,7 +138,8 @@ fun AssignmentCard(
             )
 
             Text(assignment.description, fontSize = 24.sp, color = Color.Black)
-            IconButton(onClick = { launcher.launch(arrayOf("*/*")) }) {
+            IconButton(onClick = {onAttachRequest(assignment.id)
+            }) {
                 Icon(
                     painter = painterResource(R.drawable.file_attach),
                     contentDescription = "FileAttach",
@@ -137,13 +148,13 @@ fun AssignmentCard(
                 )
             }
             LazyRow {
-                items(uriList) { uri ->
-                    val fileType = context.contentResolver.getType(uri)
+                items(assignment.files) { uri ->
+                    val fileType = context.contentResolver.getType(uri.toUri())
                     Box(
                         modifier = Modifier
                             .size(100.dp)
                             .clickable {
-                                openFile(context = context, uri = uri)
+                                openFile(context = context, uri = uri.toUri())
                             })
                     {
                         if (fileType!!.startsWith("image")) {
