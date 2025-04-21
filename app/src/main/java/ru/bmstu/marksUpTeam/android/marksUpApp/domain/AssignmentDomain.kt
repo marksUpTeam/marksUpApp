@@ -17,5 +17,5 @@ data class AssignmentDomain(
     val description: String,
     val status: AssignmentStatus,
     val grade: Int,
-    val filesUri: List<Uri?>
+    val filesUri: List<Uri?>,
 )

@@ -50,7 +50,6 @@ import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.formatDate
-import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getFileUriByName
 
 @Composable
 fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
@@ -72,7 +71,6 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
     )
 
     LaunchedEffect(state) {
-        Log.d("uri",getFileUriByName(context,"png").toString())
         viewModel.updateFlow()
     }
 
@@ -110,8 +108,6 @@ fun AssignmentCard(
     context: Context,
 
     ) {
-    Log.d("filesCard", assignment.toString())
-
 
     Box(
         modifier = Modifier
@@ -160,21 +156,24 @@ fun AssignmentCard(
                                     openFile(context = context, uri = uri)
                                 })
                         {
-                            if (fileType!!.startsWith("image")) {
-                                Image(
-                                    painter = rememberAsyncImagePainter(model = uri),
-                                    contentDescription = "file",
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop,
+                            Column {
+                                if (fileType!!.startsWith("image")) {
+                                    Image(
+                                        painter = rememberAsyncImagePainter(model = uri),
+                                        contentDescription = "file",
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Crop,
 
+                                        )
+                                } else {
+                                    Icon(
+                                        Icons.Default.AddCircle,
+                                        contentDescription = "file",
+                                        modifier = Modifier.fillMaxSize()
                                     )
-                            } else {
-                                Icon(
-                                    Icons.Default.AddCircle,
-                                    contentDescription = "file",
-                                    modifier = Modifier.fillMaxSize()
-                                )
+                                }
                             }
+
                         }
                     }
                 }

@@ -2,6 +2,7 @@ package ru.bmstu.marksUpTeam.android.marksUpApp.tools
 
 import android.content.ContentResolver
 import android.content.ContentUris
+import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
@@ -10,12 +11,13 @@ import android.util.Log
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.InputStream
 
 fun getFileForRequest(fileUri: Uri, contentResolver: ContentResolver): MultipartBody.Part? {
     val inputStream = contentResolver.openInputStream(fileUri)
     if (inputStream != null) {
         val fileName = getFileName(fileUri, contentResolver) ?: "file"
-        Log.d("files",fileName)
+        Log.d("files", fileName)
         val requestBody =
             inputStream.readBytes()
                 .toRequestBody("application/octet-stream".toMediaTypeOrNull())
@@ -35,7 +37,8 @@ fun getFileName(uri: Uri, contentResolver: ContentResolver): String? {
     }
     return null
 }
-fun getFileUriByName(context: Context, fileName: String): Uri?{
+
+fun getFileUriByName(context: Context, fileName: String): Uri? {
     val downloadsUri = MediaStore.Files.getContentUri("external")
     val projection = arrayOf(MediaStore.MediaColumns._ID)
     val selection = "${MediaStore.MediaColumns.DISPLAY_NAME} = ?"
@@ -55,4 +58,31 @@ fun getFileUriByName(context: Context, fileName: String): Uri?{
     }
 
     return null
+}
+
+suspend fun saveFileToMediaStore(
+    context: Context,
+    fileName: String,
+    inputStream: InputStream
+):Uri? {
+    val contentValues = ContentValues().apply {
+        put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+        put(MediaStore.Downloads.IS_PENDING, 1)
+    }
+
+    val resolver = context.contentResolver
+    val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
+
+    if (uri != null) {
+        resolver.openOutputStream(uri)?.use { outputStream ->
+            inputStream.copyTo(outputStream)
+        }
+
+        contentValues.clear()
+        contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
+        resolver.update(uri, contentValues, null, null)
+    } else {
+        Log.e("SaveFile", "Failed to insert file into MediaStore")
+    }
+    return uri
 }

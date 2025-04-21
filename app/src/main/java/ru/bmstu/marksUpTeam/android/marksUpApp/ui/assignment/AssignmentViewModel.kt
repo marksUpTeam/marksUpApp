@@ -17,9 +17,17 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getFileForRequest
 class AssignmentViewModel(private val assignmentsRepository: AssignmentsRepository,context: Context) : ViewModel() {
     private val _stateFlow: MutableStateFlow<AssignmentState> = MutableStateFlow(
         AssignmentState(
-            listOf(AssignmentsMapper(context).map(baseAssignment))
+            listOf()
         )
     )
+    init {
+        viewModelScope.launch {
+            val assignments = AssignmentsMapper(context, assignmentsRepository).mapList(listOf(baseAssignment))
+            _stateFlow.value = _stateFlow.value.copy(assignments = assignments)
+        }
+    }
+
+
     val stateFlow = _stateFlow.asStateFlow()
 
     fun pickFile(uri: Uri, assignmentId:Long, contentResolver: ContentResolver){
@@ -35,15 +43,11 @@ class AssignmentViewModel(private val assignmentsRepository: AssignmentsReposito
             runCatching {
                 val file = getFileForRequest(fileUri = uri, contentResolver )
                 val assignmentsResponse = file?.let { assignmentsRepository.attachFile(it) }
-                /*
-                if(assignmentsResponse.isSuccess){
-                   val assignmentUri = assignmentsResponse.getOrNull()?: throw Exception("Bad response")
-                    _fileUri.value.add(_fileUri.value.size,assignmentUri)
                 }
-                */
             }
         }
-    }
+
+
 
     fun updateFlow() {
         viewModelScope.launch {
