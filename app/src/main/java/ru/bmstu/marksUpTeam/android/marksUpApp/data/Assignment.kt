@@ -28,7 +28,7 @@ data class Assignment(
     val description: String,
     val status: AssignmentStatus,
     val grade: Int?,
-    val files: List<String>
+    val filesName: List<String>
 )
 
 @Serializable
@@ -55,5 +55,5 @@ val baseAssignment = Assignment(
     description = "tasks 10 - 15",
     status = AssignmentStatus.Assigned,
     grade = null,
-    files = listOf("content://com.android.providers.downloads.documents/document/msf%3A31")
+    filesName = listOf("png")
 )

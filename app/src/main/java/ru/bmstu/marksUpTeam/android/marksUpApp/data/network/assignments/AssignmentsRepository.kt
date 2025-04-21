@@ -1,17 +1,18 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments
 
+import android.content.Context
 import android.util.Log
 import okhttp3.MultipartBody
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
 import java.io.IOException
 
-class AssignmentsRepository(private val assignmentsApi: AssignmentsApi) {
+class AssignmentsRepository(private val assignmentsApi: AssignmentsApi,private val context:Context) {
 
     suspend fun getAllAssignments(): Result<List<AssignmentDomain>> {
         val assignmentResponse = assignmentsApi.getAllAssignments()
         if (assignmentResponse.isSuccessful && assignmentResponse.body() != null) {
-            val assignmentDomain = AssignmentsMapper().mapList(assignmentResponse.body()!!)
+            val assignmentDomain = AssignmentsMapper(context).mapList(assignmentResponse.body()!!)
             return Result.success(assignmentDomain)
         }
         return Result.failure(IOException(assignmentResponse.errorBody()?.string() ?: "Something went wrong"))

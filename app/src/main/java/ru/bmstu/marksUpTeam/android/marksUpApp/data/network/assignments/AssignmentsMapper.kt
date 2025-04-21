@@ -1,10 +1,12 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments
 
-import androidx.core.net.toUri
+import android.content.Context
+import android.net.Uri
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getFileUriByName
 
-class AssignmentsMapper {
+class AssignmentsMapper(private val context: Context){
     fun map(assignment: Assignment): AssignmentDomain {
         return AssignmentDomain(
             id = assignment.id,
@@ -16,10 +18,12 @@ class AssignmentsMapper {
             description = assignment.description,
             status = assignment.status,
             grade = assignment.grade ?: 0,
-            files = listOf(assignment.files[0].toUri())
+            filesUri = mapFiles(assignment.filesName)
         )
     }
-    
+    fun mapFiles(filesNames:List<String>):List<Uri?>{
+        return filesNames.map { getFileUriByName(context,it) }
+    }
 
     fun mapList(assignments: List<Assignment>): List<AssignmentDomain> {
         return assignments.map { map(it) }
@@ -36,7 +40,7 @@ class AssignmentsMapper {
             description = assignmentDomain.description,
             status = assignmentDomain.status,
             grade = assignmentDomain.grade,
-            files = mutableListOf()
+            filesName = mutableListOf()
         )
     }
 }

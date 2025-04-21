@@ -50,6 +50,7 @@ import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.formatDate
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getFileUriByName
 
 @Composable
 fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
@@ -71,6 +72,7 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
     )
 
     LaunchedEffect(state) {
+        Log.d("uri",getFileUriByName(context,"png").toString())
         viewModel.updateFlow()
     }
 
@@ -88,11 +90,11 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
             .fillMaxWidth()
             .padding(top = 100.dp)
     ) {
-        Log.d("filesColumn",state.assignments.toString())
+        Log.d("filesColumn", state.assignments.toString())
         items(state.assignments) { assignment ->
             AssignmentCard(
-                assignment, onAttachRequest = { id->
-                    assignmentId =  id
+                assignment, onAttachRequest = { id ->
+                    assignmentId = id
                     launcher.launch(arrayOf("*/*"))
 
                 }, context
@@ -107,8 +109,8 @@ fun AssignmentCard(
     onAttachRequest: (Long) -> Unit,
     context: Context,
 
-) {
-    Log.d("filesCard",assignment.toString())
+    ) {
+    Log.d("filesCard", assignment.toString())
 
 
     Box(
@@ -137,7 +139,8 @@ fun AssignmentCard(
             )
 
             Text(assignment.description, fontSize = 24.sp, color = Color.Black)
-            IconButton(onClick = {onAttachRequest(assignment.id)
+            IconButton(onClick = {
+                onAttachRequest(assignment.id)
             }) {
                 Icon(
                     painter = painterResource(R.drawable.file_attach),
@@ -147,29 +150,31 @@ fun AssignmentCard(
                 )
             }
             LazyRow {
-                items(assignment.files) { uri ->
-                    val fileType = context.contentResolver.getType(uri)
-                    Box(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .clickable {
-                                openFile(context = context, uri = uri)
-                            })
-                    {
-                        if (fileType!!.startsWith("image")) {
-                            Image(
-                                painter = rememberAsyncImagePainter(model = uri),
-                                contentDescription = "file",
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop,
+                items(assignment.filesUri) { uri ->
+                    if (uri != null) {
+                        val fileType = context.contentResolver.getType(uri)
+                        Box(
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clickable {
+                                    openFile(context = context, uri = uri)
+                                })
+                        {
+                            if (fileType!!.startsWith("image")) {
+                                Image(
+                                    painter = rememberAsyncImagePainter(model = uri),
+                                    contentDescription = "file",
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop,
 
+                                    )
+                            } else {
+                                Icon(
+                                    Icons.Default.AddCircle,
+                                    contentDescription = "file",
+                                    modifier = Modifier.fillMaxSize()
                                 )
-                        } else {
-                            Icon(
-                                Icons.Default.AddCircle,
-                                contentDescription = "file",
-                                modifier = Modifier.fillMaxSize()
-                            )
+                            }
                         }
                     }
                 }

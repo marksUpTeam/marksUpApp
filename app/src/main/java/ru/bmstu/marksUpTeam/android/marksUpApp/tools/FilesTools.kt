@@ -1,7 +1,10 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.tools
 
 import android.content.ContentResolver
+import android.content.ContentUris
+import android.content.Context
 import android.net.Uri
+import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -12,6 +15,7 @@ fun getFileForRequest(fileUri: Uri, contentResolver: ContentResolver): Multipart
     val inputStream = contentResolver.openInputStream(fileUri)
     if (inputStream != null) {
         val fileName = getFileName(fileUri, contentResolver) ?: "file"
+        Log.d("files",fileName)
         val requestBody =
             inputStream.readBytes()
                 .toRequestBody("application/octet-stream".toMediaTypeOrNull())
@@ -29,5 +33,26 @@ fun getFileName(uri: Uri, contentResolver: ContentResolver): String? {
         it.moveToFirst()
         return it.getString(nameIndex)
     }
+    return null
+}
+fun getFileUriByName(context: Context, fileName: String): Uri?{
+    val downloadsUri = MediaStore.Files.getContentUri("external")
+    val projection = arrayOf(MediaStore.MediaColumns._ID)
+    val selection = "${MediaStore.MediaColumns.DISPLAY_NAME} = ?"
+    val selectionArgs = arrayOf(fileName)
+
+    context.contentResolver.query(
+        downloadsUri,
+        projection,
+        selection,
+        selectionArgs,
+        null
+    )?.use { cursor ->
+        if (cursor.moveToFirst()) {
+            val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID))
+            return ContentUris.withAppendedId(downloadsUri, id)
+        }
+    }
+
     return null
 }
