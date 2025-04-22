@@ -245,7 +245,7 @@ fun Authorization(
     ) {
         Row(modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                painter = painterResource(R.drawable.app_icon),
+                painter = painterResource(R.drawable.icon),
                 contentDescription = null,
                 modifier = Modifier.size(60.dp),
                 tint = iconTint

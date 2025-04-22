@@ -12,13 +12,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -38,10 +38,13 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity.MainActivityViewM
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity.Route
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.profile.ProfileScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.schedule.ScheduleScreen
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.runtime.setValue
 
 @Composable
 fun AppNavigation(viewModel: MainActivityViewModel = koinViewModel()) {
-
     val state by viewModel.stateFlow.collectAsState()
     val profile = baseStudentProfileDomain
     val isTeacher = profile.personType is PersonType.TeacherType
@@ -55,17 +58,20 @@ fun AppNavigation(viewModel: MainActivityViewModel = koinViewModel()) {
         }
     }
 
-    Scaffold(bottomBar = {
-        if (currentRoute != Route.Login.name) {
-            Selector(isForTeacher = isTeacher)
-        }
-    }) { innerPadding ->
+    Scaffold(
+        bottomBar = {
+            if (currentRoute != Route.Login.name) {
+                Selector(isForTeacher = isTeacher)
+            }
+        },
+        contentWindowInsets = WindowInsets.systemBars
+    ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = Route.Schedule.name,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Route.Assignment.name){ AssignmentScreen() }
+            composable(Route.Assignment.name) { AssignmentScreen() }
             composable(Route.Login.name) { AuthorizationScreen(navController = navController) }
             composable(Route.Schedule.name) { ScheduleScreen(navController = navController) }
             composable(Route.AddLesson.name) { AddLessonScreen() }
@@ -82,68 +88,75 @@ fun Selector(
     modifier: Modifier = Modifier,
     viewModel: MainActivityViewModel = koinViewModel(),
     setCurrentScreen: (Int) -> Unit = {},
-    backgroundColor: Color = colorResource(id = R.color.black),
-    tint: Color = colorResource(id = R.color.white),
-    selectedTint: Color = colorResource(id = R.color.purple_500),
+    backgroundColor: Color = colorResource(id = R.color.white),
+    tint: Color = colorResource(id = R.color.grey),
+    selectedTint: Color = colorResource(id = R.color.blue),
     isForTeacher: Boolean = false,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(backgroundColor),
+            .background(backgroundColor)
+            .padding(
+                bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+                start = 8.dp,
+                end = 8.dp
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         var buttonClicked by rememberSaveable { mutableIntStateOf(1) }
+
         BaseButton(
-            painter = painterResource(R.drawable.timetable),
+            painter = painterResource(R.drawable.calendar),
             onClick = {
                 viewModel.changeScreenTo(Route.Schedule.name)
                 setCurrentScreen(1)
                 buttonClicked = 1
             },
             contentDescription = stringResource(R.string.classes),
-            tint = tint,
-            selectedTint = selectedTint,
+            tint = if (buttonClicked == 1) selectedTint else tint,
             isSelected = buttonClicked == 1
         )
+
         BaseButton(
+            painter = painterResource(R.drawable.favorite),
             onClick = {
-                viewModel.changeScreenTo(Route.Assignment.name)
+                viewModel.changeScreenTo(Route.Favourites.name)
                 setCurrentScreen(2)
                 buttonClicked = 2
             },
             contentDescription = stringResource(R.string.favourites),
-            tint = tint,
-            selectedTint = selectedTint,
+            tint = if (buttonClicked == 2) selectedTint else tint,
             isSelected = buttonClicked == 2
         )
+
         if (isForTeacher) {
             BaseButton(
                 painter = painterResource(R.drawable.manager),
                 onClick = {
+                    viewModel.changeScreenTo(Route.AddLesson.name)
                     setCurrentScreen(3)
                     buttonClicked = 3
                 },
                 contentDescription = stringResource(R.string.classesManager),
-                tint = tint,
-                selectedTint = selectedTint,
+                tint = if (buttonClicked == 3) selectedTint else tint,
                 isSelected = buttonClicked == 3
             )
         } else {
             BaseButton(
-                painter = painterResource(R.drawable.five),
+                painter = painterResource(R.drawable.mark),
                 onClick = {
                     viewModel.changeScreenTo(Route.Grade.name)
                     setCurrentScreen(3)
                     buttonClicked = 3
                 },
                 contentDescription = stringResource(R.string.marks),
-                tint = tint,
-                selectedTint = selectedTint,
+                tint = if (buttonClicked == 3) selectedTint else tint,
                 isSelected = buttonClicked == 3
             )
         }
+
         BaseButton(
             painter = painterResource(R.drawable.profile),
             onClick = {
@@ -152,13 +165,8 @@ fun Selector(
                 buttonClicked = 4
             },
             contentDescription = stringResource(R.string.profile),
-            tint = tint,
-            selectedTint = selectedTint,
+            tint = if (buttonClicked == 4) selectedTint else tint,
             isSelected = buttonClicked == 4
         )
-
     }
 }
-
-
-

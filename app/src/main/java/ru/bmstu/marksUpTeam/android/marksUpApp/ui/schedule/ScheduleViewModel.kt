@@ -12,13 +12,13 @@ class ScheduleViewModel(private val classesRepository: ClassesRepository) : View
     private val _stateFlow: MutableStateFlow<ScheduleState> = MutableStateFlow(baseSchedule)
     val stateFlow = _stateFlow.asStateFlow()
 
-    fun updateFlow(){
+    fun updateFlow() {
         viewModelScope.launch {
-                runCatching {
+            runCatching {
                 val classesResponse = classesRepository.getClasses()
-                if(classesResponse.isSuccess){
+                if (classesResponse.isSuccess) {
                     val classesDomain = classesResponse.getOrNull() ?: throw Exception("Bad response")
-                    _stateFlow.value =  _stateFlow.value.copy(classes = classesDomain)
+                    _stateFlow.value = _stateFlow.value.copy(classes = classesDomain)
                 }
             }
         }
@@ -31,4 +31,5 @@ class ScheduleViewModel(private val classesRepository: ClassesRepository) : View
     fun resetRoute() {
         _stateFlow.value = _stateFlow.value.copy(route = null)
     }
+
 }
