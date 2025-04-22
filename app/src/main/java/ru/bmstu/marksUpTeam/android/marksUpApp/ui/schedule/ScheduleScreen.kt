@@ -1,5 +1,10 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.schedule
 
+import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,17 +50,21 @@ import androidx.navigation.NavController
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import org.koin.androidx.compose.koinViewModel
+import ru.bmstu.marksUpTeam.android.marksUpApp.NotificationReceiver
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity.Route
 import java.time.format.TextStyle
 import java.util.Locale
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.Class as LessonClass
 
 @Composable
 fun ScheduleScreen(
@@ -64,19 +74,27 @@ fun ScheduleScreen(
     tint: Color = colorResource(id = R.color.black),
     backgroundColor: Color = colorResource(id = R.color.white)
 ) {
+    val context = LocalContext.current
     val state by viewModel.stateFlow.collectAsState()
     val isTeacher = state.profile.personType is PersonType.TeacherType
     val currentDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     val pagerState = rememberPagerState(initialPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE }
     var selectedDate by remember { mutableStateOf(currentDate) }
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     LaunchedEffect(state) {
         state.route?.let { route ->
             navController.navigate(route)
             viewModel.resetRoute()
         }
-        state.classes.let{
+        state.classes.let {
             viewModel.updateFlow()
+        }
+    }
+
+    LaunchedEffect(state.classes) {
+        state.classes.forEach { classItem ->
+            scheduleClassNotification(context, classItem)
         }
     }
 
@@ -142,11 +160,52 @@ fun ScheduleScreen(
             modifier = Modifier.fillMaxHeight(0.8f)
         )
     }
-
-
 }
 
-fun calculateStartOfWeek(page: Int): LocalDate {
+private fun scheduleClassNotification(context: Context, classItem: LessonClass) {
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    val startInstant = classItem.datetimeStart.toInstant(TimeZone.currentSystemDefault())
+    val timeBeforeClass = startInstant.minus(30, DateTimeUnit.MINUTE, TimeZone.currentSystemDefault())
+    val now = Clock.System.now()
+
+    if (timeBeforeClass > now) {
+        createNotification(context, alarmManager, classItem, timeBeforeClass,
+            "Через 30 минут: ${classItem.discipline.name}")
+    }
+    if (startInstant > now) {
+        createNotification(context, alarmManager, classItem, startInstant,
+            "Сейчас: ${classItem.discipline.name}")
+    }
+}
+
+@SuppressLint("ScheduleExactAlarm")
+private fun createNotification(
+    context: Context,
+    alarmManager: AlarmManager,
+    classItem: LessonClass,
+    triggerTime: Instant,
+    message: String
+) {
+    val intent = Intent(context, NotificationReceiver::class.java).apply {
+        putExtra("subject", classItem.discipline.name)
+        putExtra("time", message)
+    }
+
+    val pendingIntent = PendingIntent.getBroadcast(
+        context,
+        classItem.id.hashCode(),
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+
+    alarmManager.setExact(
+        AlarmManager.RTC_WAKEUP,
+        triggerTime.toEpochMilliseconds(),
+        pendingIntent
+    )
+}
+
+private fun calculateStartOfWeek(page: Int): LocalDate {
     val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     var monday = today
     while (monday.dayOfWeek != DayOfWeek.MONDAY) {
@@ -157,7 +216,7 @@ fun calculateStartOfWeek(page: Int): LocalDate {
 }
 
 @Composable
-fun WeekTable(
+private fun WeekTable(
     tint: Color,
     startOfWeek: LocalDate,
     currentDate: LocalDate,
@@ -184,27 +243,11 @@ fun WeekTable(
                 )
             }
         }
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            for (i in 7 until 14) {
-                val currentDay = startOfWeek.plus(i, DateTimeUnit.DAY)
-                DayItem(
-                    currentDay = currentDay,
-                    currentDate = currentDate,
-                    selectedDate = selectedDate,
-                    onDayClick = onDayClick,
-                    tint = tint
-                )
-            }
-        }
     }
 }
 
 @Composable
-fun DayItem(
+private fun DayItem(
     currentDay: LocalDate,
     currentDate: LocalDate,
     selectedDate: LocalDate,
@@ -254,7 +297,7 @@ fun DayItem(
 }
 
 @Composable
-fun ScheduleForSelectedDay(
+private fun ScheduleForSelectedDay(
     viewModel: ScheduleViewModel,
     selectedDate: LocalDate,
     isTeacher: Boolean,
@@ -301,7 +344,12 @@ fun ScheduleForSelectedDay(
 }
 
 @Composable
-fun HourRow(viewModel: ScheduleViewModel, hour: Int, isTeacher: Boolean, tint: Color) {
+private fun HourRow(
+    viewModel: ScheduleViewModel,
+    hour: Int,
+    isTeacher: Boolean,
+    tint: Color
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -310,7 +358,6 @@ fun HourRow(viewModel: ScheduleViewModel, hour: Int, isTeacher: Boolean, tint: C
                 if (isTeacher) {
                     viewModel.changeScreenTo(Route.Lesson.name)
                 }
-                // Реализовать добавление занятия по клику
             },
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -330,7 +377,7 @@ fun HourRow(viewModel: ScheduleViewModel, hour: Int, isTeacher: Boolean, tint: C
     }
 }
 
-fun getMonthName(date: LocalDate): String {
+private fun getMonthName(date: LocalDate): String {
     val monthNames = arrayOf(
         "января", "февраля", "марта", "апреля", "мая", "июня",
         "июля", "августа", "сентября", "октября", "ноября", "декабря"
