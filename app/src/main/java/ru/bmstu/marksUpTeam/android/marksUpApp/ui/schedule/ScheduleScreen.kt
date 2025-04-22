@@ -157,7 +157,7 @@ fun ScheduleScreen(
             selectedDate = selectedDate,
             isTeacher = isTeacher,
             tint = tint,
-            modifier = Modifier.fillMaxHeight(0.8f)
+            modifier = Modifier.fillMaxSize()
         )
     }
 }
@@ -243,8 +243,23 @@ private fun WeekTable(
                 )
             }
         }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            for (i in 7 until 14) {
+                val currentDay = startOfWeek.plus(i, DateTimeUnit.DAY)
+                DayItem(
+                    currentDay = currentDay,
+                    currentDate = currentDate,
+                    selectedDate = selectedDate,
+                    onDayClick = onDayClick,
+                    tint = tint
+                )
+            }
+        }
     }
-}
+    }
 
 @Composable
 private fun DayItem(
