@@ -15,7 +15,7 @@ val viewModelModule = module {
         MainActivityViewModel()
     }
     viewModel{
-        AssignmentViewModel(assignmentsRepository = get(), context = get())
+        AssignmentViewModel(assignmentsRepository = get())
     }
     viewModel{
         AuthorizationViewModel(authorizationRepository = get())
