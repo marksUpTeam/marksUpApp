@@ -27,7 +27,7 @@ val networkModule = module{
     single{
         get<Retrofit>().create(FavouritesApi::class.java)
     }
-    single{
+    single {
         get<Retrofit>().create(ProfileApi::class.java)
     }
 }

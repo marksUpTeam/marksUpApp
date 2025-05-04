@@ -1,25 +1,43 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments
 
+import android.content.Context
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
-import kotlinx.datetime.LocalDate
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getFileUriByName
 
-class AssignmentsMapper {
-    fun map(assignment: Assignment): AssignmentDomain {
-        return AssignmentDomain(
-            id = assignment.id,
-            student = assignment.student,
-            teacher = assignment.teacher,
-            discipline = assignment.discipline,
-            issuedOn = assignment.issuedOn,
-            deadline = assignment.deadline,
-            description = assignment.description,
-            status = assignment.status,
-            grade = assignment.grade ?: 0
-        )
+class AssignmentsMapper(private val context: Context, private val assignmentsRepository: AssignmentsRepository) {
+    private suspend fun map(assignment: Assignment): AssignmentDomain {
+        return coroutineScope {
+            val filesUri = assignment.filesName.map { fileName ->
+                async {
+                    val uri = getFileUriByName(context, fileName)
+                    if (uri == null) {
+                        assignmentsRepository.downloadFile(fileName)
+                    }
+                    uri
+                }
+            }.awaitAll()
+
+            AssignmentDomain(
+                id = assignment.id,
+                student = assignment.student,
+                teacher = assignment.teacher,
+                discipline = assignment.discipline,
+                issuedOn = assignment.issuedOn,
+                deadline = assignment.deadline,
+                description = assignment.description,
+                status = assignment.status,
+                grade = assignment.grade ?: 0,
+                filesUri = filesUri
+            )
+        }
     }
 
-    fun mapList(assignments: List<Assignment>): List<AssignmentDomain> {
+
+    suspend fun mapList(assignments: List<Assignment>): List<AssignmentDomain> {
         return assignments.map { map(it) }
     }
 
@@ -33,7 +51,8 @@ class AssignmentsMapper {
             deadline = assignmentDomain.deadline,
             description = assignmentDomain.description,
             status = assignmentDomain.status,
-            grade = assignmentDomain.grade
+            grade = assignmentDomain.grade,
+            filesName = mutableListOf()
         )
     }
 }

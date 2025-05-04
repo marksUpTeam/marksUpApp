@@ -6,11 +6,10 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.authorization.Author
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.classes.ClassesRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.favourites.FavouritesRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileRepository
-import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getJwt
 
 val dataModule = module {
     single {
-        AssignmentsRepository(assignmentsApi = get())
+        AssignmentsRepository(assignmentsApi = get(),context = get())
     }
     single {
         AuthorizationRepository(authorizationApi = get())
