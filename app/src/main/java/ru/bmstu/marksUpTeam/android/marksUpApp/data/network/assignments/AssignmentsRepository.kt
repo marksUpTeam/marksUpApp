@@ -15,7 +15,7 @@ class AssignmentsRepository(private val assignmentsApi: AssignmentsApi,private v
         val assignmentResponse = assignmentsApi.getAllAssignments()
         if (assignmentResponse.isSuccessful && assignmentResponse.body() != null) {
             val assignmentDomain = AssignmentsMapper(context,this).mapList(assignmentResponse.body()!!)
-                return Result.success(assignmentDomain)
+            return Result.success(assignmentDomain)
         }
         return Result.failure(IOException(assignmentResponse.errorBody()?.string() ?: "Something went wrong"))
     }

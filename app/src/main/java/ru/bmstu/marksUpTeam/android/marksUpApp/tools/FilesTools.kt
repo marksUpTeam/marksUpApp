@@ -1,13 +1,16 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.tools
 
+import android.content.ActivityNotFoundException
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
+import android.widget.Toast
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -60,7 +63,7 @@ fun getFileUriByName(context: Context, fileName: String): Uri? {
     return null
 }
 
-suspend fun saveFileToMediaStore(
+fun saveFileToMediaStore(
     context: Context,
     fileName: String,
     inputStream: InputStream
@@ -85,4 +88,16 @@ suspend fun saveFileToMediaStore(
         Log.e("SaveFile", "Failed to insert file into MediaStore")
     }
     return uri
+}
+
+fun openFile(context: Context, uri: Uri) {
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(uri, context.contentResolver.getType(uri))
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    try {
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        Toast.makeText(context, "Нет приложения для открытия файла", Toast.LENGTH_SHORT).show()
+    }
 }

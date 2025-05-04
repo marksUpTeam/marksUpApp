@@ -1,7 +1,5 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.di
 
-import android.app.Application
-import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import ru.bmstu.marksUpTeam.android.marksUpApp.BuildConfig
@@ -29,8 +27,7 @@ val networkModule = module{
     single{
         get<Retrofit>().create(FavouritesApi::class.java)
     }
-    single{
+    single {
         get<Retrofit>().create(ProfileApi::class.java)
     }
-    single<Application> { androidContext().applicationContext as Application}
 }

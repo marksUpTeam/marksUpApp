@@ -1,11 +1,8 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.assignment
 
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -15,14 +12,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -37,12 +34,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.rememberAsyncImagePainter
@@ -50,6 +50,8 @@ import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.formatDate
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getFileName
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.openFile
 
 @Composable
 fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
@@ -151,27 +153,37 @@ fun AssignmentCard(
                         val fileType = context.contentResolver.getType(uri)
                         Box(
                             modifier = Modifier
-                                .size(100.dp)
+                                .width(100.dp)
+                                .height(120.dp)
                                 .clickable {
                                     openFile(context = context, uri = uri)
                                 })
                         {
                             Column {
+
                                 if (fileType!!.startsWith("image")) {
                                     Image(
                                         painter = rememberAsyncImagePainter(model = uri),
                                         contentDescription = "file",
-                                        modifier = Modifier.fillMaxSize(),
+                                        modifier = Modifier.size(100.dp),
                                         contentScale = ContentScale.Crop,
 
                                         )
                                 } else {
                                     Icon(
-                                        Icons.Default.AddCircle,
+                                        ImageVector.vectorResource(R.drawable.document),
                                         contentDescription = "file",
-                                        modifier = Modifier.fillMaxSize()
+                                        modifier = Modifier.size(100.dp),
                                     )
                                 }
+                                Text(
+                                    getFileName(uri, context.contentResolver).orEmpty(),
+                                    modifier = Modifier.fillMaxSize(),
+                                    textAlign = TextAlign.Center,
+                                    color = Color.Black,
+                                    fontSize = 14.sp
+                                )
+
                             }
 
                         }
@@ -182,16 +194,6 @@ fun AssignmentCard(
     }
 }
 
-fun openFile(context: Context, uri: Uri) {
-    val intent = Intent(Intent.ACTION_VIEW).apply {
-        setDataAndType(uri, context.contentResolver.getType(uri))
-        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-    }
-    try {
-        context.startActivity(intent)
-    } catch (e: ActivityNotFoundException) {
-        Toast.makeText(context, "Нет приложения для открытия файла", Toast.LENGTH_SHORT).show()
-    }
-}
+
 
 
