@@ -50,8 +50,6 @@ import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.formatDate
-import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getFileName
-import ru.bmstu.marksUpTeam.android.marksUpApp.tools.openFile
 
 @Composable
 fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
@@ -67,7 +65,7 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
                     it,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
-                viewModel.pickFile(it, assignmentId, context.contentResolver)
+                viewModel.pickFile(it, assignmentId)
             }
         }
     )
@@ -97,7 +95,7 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
                     assignmentId = id
                     launcher.launch(arrayOf("*/*"))
 
-                }, context
+                }, viewModel, context
             )
         }
     }
@@ -107,9 +105,10 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
 fun AssignmentCard(
     assignment: AssignmentDomain,
     onAttachRequest: (Long) -> Unit,
-    context: Context,
+    viewModel: AssignmentViewModel,
+    context: Context
 
-    ) {
+) {
 
     Box(
         modifier = Modifier
@@ -156,7 +155,7 @@ fun AssignmentCard(
                                 .width(100.dp)
                                 .height(120.dp)
                                 .clickable {
-                                    openFile(context = context, uri = uri)
+                                    viewModel.fileManger.openFile(uri = uri)
                                 })
                         {
                             Column {
@@ -177,7 +176,7 @@ fun AssignmentCard(
                                     )
                                 }
                                 Text(
-                                    getFileName(uri, context.contentResolver).orEmpty(),
+                                    viewModel.fileManger.getFileName(uri).orEmpty(),
                                     modifier = Modifier.fillMaxSize(),
                                     textAlign = TextAlign.Center,
                                     color = Color.Black,

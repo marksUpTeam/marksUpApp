@@ -26,7 +26,7 @@ interface AssignmentsApi {
         @Part file: MultipartBody.Part,
     ): Response<Unit>
 
-    @GET("api/files{filename}")
+    @GET("api/files/{filename}")
     @Streaming
     suspend fun downloadFile(@Path("filename") filename: String): Response<ResponseBody>
 

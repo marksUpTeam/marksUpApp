@@ -9,7 +9,7 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileRepos
 
 val dataModule = module {
     single {
-        AssignmentsRepository(assignmentsApi = get(),context = get())
+        AssignmentsRepository(assignmentsApi = get(), fileManager = get())
     }
     single {
         AuthorizationRepository(authorizationApi = get())

@@ -1,20 +1,19 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments
 
-import android.content.Context
 import android.net.Uri
 import android.util.Log
 import okhttp3.MultipartBody
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
-import ru.bmstu.marksUpTeam.android.marksUpApp.tools.saveFileToMediaStore
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.FileManager
 import java.io.IOException
 
-class AssignmentsRepository(private val assignmentsApi: AssignmentsApi,private val context:Context) {
+class AssignmentsRepository(private val assignmentsApi: AssignmentsApi,public val fileManager: FileManager) {
 
     suspend fun getAllAssignments(): Result<List<AssignmentDomain>> {
         val assignmentResponse = assignmentsApi.getAllAssignments()
         if (assignmentResponse.isSuccessful && assignmentResponse.body() != null) {
-            val assignmentDomain = AssignmentsMapper(context,this).mapList(assignmentResponse.body()!!)
+            val assignmentDomain = AssignmentsMapper(this).mapList(assignmentResponse.body()!!)
             return Result.success(assignmentDomain)
         }
         return Result.failure(IOException(assignmentResponse.errorBody()?.string() ?: "Something went wrong"))
@@ -26,9 +25,8 @@ class AssignmentsRepository(private val assignmentsApi: AssignmentsApi,private v
         val response = assignmentsApi.downloadFile(fileName)
         if (response.isSuccessful && response.body() != null) {
             val uri = response.body()?.byteStream()?.let { inputStream ->
-                saveFileToMediaStore(
-                    context = context,
-                    fileName = "example.pdf",
+                fileManager.saveFileToMediaStore(
+                    fileName = fileName,
                     inputStream = inputStream
                 )
             }

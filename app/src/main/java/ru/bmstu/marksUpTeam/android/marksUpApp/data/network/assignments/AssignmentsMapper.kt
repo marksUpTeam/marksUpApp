@@ -1,19 +1,16 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments
-
-import android.content.Context
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
-import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getFileUriByName
 
-class AssignmentsMapper(private val context: Context, private val assignmentsRepository: AssignmentsRepository) {
+class AssignmentsMapper(private val assignmentsRepository: AssignmentsRepository) {
     private suspend fun map(assignment: Assignment): AssignmentDomain {
         return coroutineScope {
             val filesUri = assignment.filesName.map { fileName ->
                 async {
-                    val uri = getFileUriByName(context, fileName)
+                    val uri = assignmentsRepository.fileManager.getFileUriByName(fileName)
                     if (uri == null) {
                         assignmentsRepository.downloadFile(fileName)
                     }
