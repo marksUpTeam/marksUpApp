@@ -2,21 +2,43 @@ package ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments
 
 import android.net.Uri
 import android.util.Log
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import okhttp3.MultipartBody
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.FileManager
 import java.io.IOException
 
-class AssignmentsRepository(private val assignmentsApi: AssignmentsApi,public val fileManager: FileManager) {
+class AssignmentsRepository(private val assignmentsApi: AssignmentsApi,private val fileManager: FileManager) {
 
     suspend fun getAllAssignments(): Result<List<AssignmentDomain>> {
         val assignmentResponse = assignmentsApi.getAllAssignments()
         if (assignmentResponse.isSuccessful && assignmentResponse.body() != null) {
-            val assignmentDomain = AssignmentsMapper(this).mapList(assignmentResponse.body()!!)
+
+            val assignmentDomain = assignmentResponse.body()!!.map {
+                assignment ->  AssignmentsMapper().map(assignment,getAssignmentFileUris(assignment))
+            }
+
             return Result.success(assignmentDomain)
         }
         return Result.failure(IOException(assignmentResponse.errorBody()?.string() ?: "Something went wrong"))
+    }
+
+    suspend fun getAssignmentFileUris(assignment: Assignment):List<Uri?> {
+        return coroutineScope {
+            val filesUri = assignment.filesName.map { fileName ->
+                async {
+                    val uri = fileManager.getFileUriByName(fileName)
+                    if (uri == null) {
+                        downloadFile(fileName)
+                    }
+                    uri
+                }
+            }.awaitAll()
+            filesUri
+        }
     }
 
 
