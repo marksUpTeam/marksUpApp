@@ -19,7 +19,6 @@ if (localPropertiesFile.exists()) {
 val apiUrl: String = localProperties.getProperty("apiUrl")
 
 
-
 android {
     namespace = "ru.bmstu.marksUpTeam.android.marksUpApp"
     compileSdk = 35
@@ -75,7 +74,6 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-
 
     //coil
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")

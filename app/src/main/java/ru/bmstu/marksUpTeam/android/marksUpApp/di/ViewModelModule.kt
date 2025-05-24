@@ -7,6 +7,8 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.ui.authorization.AuthorizationVie
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.grade.GradeViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.lesson.LessonViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity.MainActivityViewModel
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.newAssignment.NewAssignmentViewModel
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.newLesson.NewLessonViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.profile.ProfileViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.schedule.ScheduleViewModel
 
@@ -31,6 +33,14 @@ val viewModelModule = module {
     }
     viewModel{
         ScheduleViewModel(classesRepository = get())
+    }
+
+    viewModel{
+        NewLessonViewModel(repository = get())
+    }
+
+    viewModel{
+        NewAssignmentViewModel(lessonRepository = get(), assignmentRepository = get())
     }
 
 }
