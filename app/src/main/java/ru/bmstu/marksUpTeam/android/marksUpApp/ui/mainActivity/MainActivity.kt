@@ -14,8 +14,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MarksUpTheme {
-                    AppNavigation()
-                }
+                AppNavigation()
+            }
         }
     }
 }

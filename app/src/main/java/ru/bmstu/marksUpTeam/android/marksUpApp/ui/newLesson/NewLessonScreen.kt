@@ -70,13 +70,13 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.char
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Discipline
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun NewLessonScreen(viewModel: NewLessonViewModel = koinViewModel()) {
     val state by viewModel.stateFlow.collectAsState()
-    val isTeacher = state.profile.teacher != null
     val notifications = listOf("за 10 минут", "за 30 минут", "за 60 минут")
 
 
@@ -91,127 +91,131 @@ fun NewLessonScreen(viewModel: NewLessonViewModel = koinViewModel()) {
                     .align(Alignment.Center)
             )
         }
-    } else if (!state.isLoading) {
-        if (isTeacher) {
+    } else if (state.error != null) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = state.error ?: "Неизвестная ошибка", color = Color.Red)
+        }
+    } //else if (state.profile.personType is PersonType.TeacherType) {
 
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = stringResource(R.string.newLesson),
-                                style = MaterialTheme.typography.headlineSmall
-                            )
-                        }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(R.string.newLesson),
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                }
+            )
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = { viewModel.handleEvent(NewLessonEvent.Submit) },
+                icon = { Icon(Icons.Default.Done, null) },
+                text = { Text(stringResource(R.string.newLesson)) }
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp)
+        ) {
+            SectionTitle(text = stringResource(R.string.chooseDay))
+            DaysOfWeekGrid(
+                selectedDay = state.selectedDay,
+                onDaySelected = { viewModel.handleEvent(NewLessonEvent.DayChanged(it)) }
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            SectionTitle(text = stringResource(R.string.choosePeriod))
+            DateRangePicker(
+                startDate = state.startDate,
+                endDate = state.endDate,
+                onStartDateSelected = {
+                    viewModel.handleEvent(
+                        NewLessonEvent.StartDatesChanged(
+                            it
+                        )
                     )
                 },
-                floatingActionButton = {
-                    ExtendedFloatingActionButton(
-                        onClick = { viewModel.handleEvent(NewLessonEvent.Submit) },
-                        icon = { Icon(Icons.Default.Done, null) },
-                        text = { Text(stringResource(R.string.newLesson)) }
+                onEndDateSelected = {
+                    viewModel.handleEvent(
+                        NewLessonEvent.EndDatesChanged(
+                            it
+                        )
                     )
                 }
-            ) { padding ->
-                Column(
-                    modifier = Modifier
-                        .padding(padding)
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 16.dp)
-                ) {
-                    SectionTitle(text = stringResource(R.string.chooseDay))
-                    DaysOfWeekGrid(
-                        selectedDay = state.selectedDay,
-                        onDaySelected = { viewModel.handleEvent(NewLessonEvent.DayChanged(it)) }
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            TimeRangePicker(
+                startTime = state.startTime,
+                endTime = state.endTime,
+                onStartTimeSelected = {
+                    viewModel.handleEvent(
+                        NewLessonEvent.StartTimeChanged(
+                            it
+                        )
                     )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    SectionTitle(text = stringResource(R.string.choosePeriod))
-                    DateRangePicker(
-                        startDate = state.startDate,
-                        endDate = state.endDate,
-                        onStartDateSelected = {
-                            viewModel.handleEvent(
-                                NewLessonEvent.StartDatesChanged(
-                                    it
-                                )
-                            )
-                        },
-                        onEndDateSelected = {
-                            viewModel.handleEvent(
-                                NewLessonEvent.EndDatesChanged(
-                                    it
-                                )
-                            )
-                        }
+                },
+                onEndTimeSelected = {
+                    viewModel.handleEvent(
+                        NewLessonEvent.EndTimeChanged(
+                            it
+                        )
                     )
+                }
+            )
 
-                    Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-                    TimeRangePicker(
-                        startTime = state.startTime,
-                        endTime = state.endTime,
-                        onStartTimeSelected = {
-                            viewModel.handleEvent(
-                                NewLessonEvent.StartTimeChanged(
-                                    it
-                                )
-                            )
-                        },
-                        onEndTimeSelected = {
-                            viewModel.handleEvent(
-                                NewLessonEvent.EndTimeChanged(
-                                    it
-                                )
-                            )
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                notifications.forEach { notification ->
+                    Button(
+                        onClick = { TODO() },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 4.dp)
                     ) {
-                        notifications.forEach { notification ->
-                            Button(
-                                onClick = { TODO() },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(horizontal = 4.dp)
-                            ) {
-                                Text(text = notification, fontSize = 12.sp)
-                            }
-                        }
+                        Text(text = notification, fontSize = 12.sp)
                     }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-
-                    SectionTitle(text = stringResource(R.string.chooseStudent))
-                    StudentsSection(
-                        students = state.students,
-                        selectedStudent = state.selectedStudent,
-                        onStudentSelected = {
-                            viewModel.handleEvent(NewLessonEvent.StudentSelected(it))
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    SectionTitle(text = stringResource(R.string.chooseSubject))
-                    DisciplineSection(
-                        disciplines = state.disciplines,
-                        selectedDiscipline = state.selectedDiscipline,
-                        onDisciplineSelected = {
-                            viewModel.handleEvent(NewLessonEvent.DisciplineSelected(it))
-                        }
-                    )
-
                 }
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+
+            SectionTitle(text = stringResource(R.string.chooseStudent))
+            StudentsSection(
+                students = state.students,
+                selectedStudent = state.selectedStudent,
+                onStudentSelected = {
+                    viewModel.handleEvent(NewLessonEvent.StudentSelected(it))
+                }
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            SectionTitle(text = stringResource(R.string.chooseSubject))
+            DisciplineSection(
+                disciplines = state.disciplines,
+                selectedDiscipline = state.selectedDiscipline,
+                onDisciplineSelected = {
+                    viewModel.handleEvent(NewLessonEvent.DisciplineSelected(it))
+                }
+            )
+
         }
     }
 }
@@ -336,13 +340,13 @@ private fun DatePickerButton(
                 onDateSelected(
                     LocalDate(
                         year = year,
-                        monthNumber = month + 1,
+                        monthNumber = month,
                         dayOfMonth = day
                     )
                 )
             },
             selectedDate.year,
-            selectedDate.monthNumber - 1,
+            selectedDate.monthNumber,
             selectedDate.dayOfMonth
         )
     }
@@ -512,13 +516,17 @@ private fun StudentsSection(
     selectedStudent: Student?,
     onStudentSelected: (Student) -> Unit
 ) {
-    DropdownSelector(
-        items = students,
-        selectedItem = selectedStudent,
-        itemToString = { "${it.person.name} ${it.person.surname}" },
-        onItemSelected = onStudentSelected,
-        placeholder = stringResource(R.string.chooseStudent)
-    )
+    if (students.isEmpty()) {
+        Text("Нет студентов")
+    } else {
+        DropdownSelector(
+            items = students,
+            selectedItem = selectedStudent,
+            itemToString = { "${it.person.name} ${it.person.surname}" },
+            onItemSelected = onStudentSelected,
+            placeholder = stringResource(R.string.chooseStudent)
+        )
+    }
 }
 
 
@@ -528,13 +536,17 @@ private fun DisciplineSection(
     selectedDiscipline: Discipline?,
     onDisciplineSelected: (Discipline) -> Unit
 ) {
-    DropdownSelector(
-        items = disciplines,
-        selectedItem = selectedDiscipline,
-        itemToString = { "${it.name} ${it.complexity}" },
-        onItemSelected = onDisciplineSelected,
-        placeholder = stringResource(R.string.chooseSubject)
-    )
+    if (disciplines.isEmpty()) {
+        Text("No disciplines")
+    } else {
+        DropdownSelector(
+            items = disciplines,
+            selectedItem = selectedDiscipline,
+            itemToString = { "${it.name} ${it.complexity}" },
+            onItemSelected = onDisciplineSelected,
+            placeholder = stringResource(R.string.chooseSubject)
+        )
+    }
 }
 
 

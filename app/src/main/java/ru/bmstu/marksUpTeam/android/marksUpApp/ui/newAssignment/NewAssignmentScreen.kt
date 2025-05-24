@@ -57,6 +57,7 @@ import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Discipline
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
 
 
 @Preview
@@ -66,10 +67,9 @@ fun NewAssignmentScreen(
     viewModel: NewAssignmentViewModel = koinViewModel()
 ) {
     val state by viewModel.stateFlow.collectAsState()
-    val isTeacher = state.profile.teacher != null
 
 
-    if (isTeacher) {
+    if (state.profile.personType is PersonType.TeacherType) {
         Scaffold(
             topBar = {
                 TopAppBar(

@@ -17,6 +17,7 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseAssignment
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseTeacherProfile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments.AssignmentsRepository
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.baseTeacherProfileDomain
 import kotlin.uuid.ExperimentalUuidApi
 
 class NewAssignmentViewModel(
@@ -29,7 +30,7 @@ class NewAssignmentViewModel(
         NewAssignmentState(
             emptyList(),
             emptyList(),
-            profile = baseTeacherProfile,
+            profile = baseTeacherProfileDomain,
             selectedStudent = null,
             selectedDiscipline = null,
             dueDate = currentDateTime.date,

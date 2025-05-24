@@ -11,11 +11,15 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import okhttp3.Response
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Discipline
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Lesson
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.LessonRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseTeacherProfile
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudent
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudent2
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseStudent3
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.baseTeacherProfileDomain
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -26,7 +30,7 @@ class NewLessonViewModel(private val repository: LessonRepository) : ViewModel()
         NewLessonState(
             emptyList(),
             emptyList(),
-            profile = baseTeacherProfile,
+            profile = baseTeacherProfileDomain,
             isLoading = false,
             error = null,
             isFormValid = false,

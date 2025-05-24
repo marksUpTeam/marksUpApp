@@ -1,36 +1,32 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.newLesson
 
 import androidx.compose.runtime.Immutable
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Discipline
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Student
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
+
+
+private val currentDateTime =
+    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
 @Immutable
 data class NewLessonState(
     val students: List<Student>,
     val disciplines: List<Discipline>,
-    val profile: Profile,
+    val profile: ProfileDomain,
     val isLoading: Boolean = false,
     val error: String? = null,
     val isFormValid: Boolean = false,
-    val selectedDay: String,
+    val selectedDay: String = "",
     val selectedStudent: Student? = null,
     val selectedDiscipline: Discipline? = null,
-    val startTime: LocalTime,
-    val endTime: LocalTime,
-    val startDate: LocalDate,
-    val endDate: LocalDate,
+    val startTime: LocalTime = currentDateTime.time,
+    val endTime: LocalTime = currentDateTime.time,
+    val startDate: LocalDate = currentDateTime.date,
+    val endDate: LocalDate = currentDateTime.date,
 )
-
-sealed interface NewLessonEvent {
-    data class StartDatesChanged(val startDate: LocalDate) : NewLessonEvent
-    data class EndDatesChanged(val endDate: LocalDate) : NewLessonEvent
-    data class StartTimeChanged(val start: LocalTime) : NewLessonEvent
-    data class EndTimeChanged(val end: LocalTime) : NewLessonEvent
-    data class StudentSelected(val student: Student) : NewLessonEvent
-    data class DisciplineSelected(val discipline: Discipline) : NewLessonEvent
-    data class DayChanged(val day: String) : NewLessonEvent
-    object Submit : NewLessonEvent
-}
