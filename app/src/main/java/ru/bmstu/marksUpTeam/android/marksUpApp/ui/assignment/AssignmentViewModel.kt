@@ -59,5 +59,11 @@ class AssignmentViewModel(
         }
     }
 
+    fun changeScreenTo(route: String) {
+        _stateFlow.value = _stateFlow.value.copy(route = route)
+    }
 
+    fun resetRoute() {
+        _stateFlow.value = _stateFlow.value.copy(route = null)
+    }
 }

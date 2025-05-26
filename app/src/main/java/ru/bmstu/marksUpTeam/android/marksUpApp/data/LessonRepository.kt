@@ -24,10 +24,6 @@ class LessonRepository(private val lessonApi: LessonApi) {
         )
     }
 
-    suspend fun getProfile(): ProfileDomain {
-        return lessonApi.getProfile().body() ?: baseTeacherProfileDomain
-    }
-
     suspend fun sendLesson(lesson: Lesson) = runCatching {
         lessonApi.postLesson(lesson)
     }

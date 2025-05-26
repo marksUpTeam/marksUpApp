@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -78,6 +80,7 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
 fun NewLessonScreen(viewModel: NewLessonViewModel = koinViewModel()) {
     val state by viewModel.stateFlow.collectAsState()
     val notifications = listOf("за 10 минут", "за 30 минут", "за 60 минут")
+    val scrollState = rememberScrollState()
 
 
     if (state.isLoading && !LocalInspectionMode.current) {
@@ -98,124 +101,131 @@ fun NewLessonScreen(viewModel: NewLessonViewModel = koinViewModel()) {
         ) {
             Text(text = state.error ?: "Неизвестная ошибка", color = Color.Red)
         }
-    } //else if (state.profile.personType is PersonType.TeacherType) {
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.newLesson),
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                }
-            )
-        },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { viewModel.handleEvent(NewLessonEvent.Submit) },
-                icon = { Icon(Icons.Default.Done, null) },
-                text = { Text(stringResource(R.string.newLesson)) }
-            )
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
-        ) {
-            SectionTitle(text = stringResource(R.string.chooseDay))
-            DaysOfWeekGrid(
-                selectedDay = state.selectedDay,
-                onDaySelected = { viewModel.handleEvent(NewLessonEvent.DayChanged(it)) }
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            SectionTitle(text = stringResource(R.string.choosePeriod))
-            DateRangePicker(
-                startDate = state.startDate,
-                endDate = state.endDate,
-                onStartDateSelected = {
-                    viewModel.handleEvent(
-                        NewLessonEvent.StartDatesChanged(
-                            it
+    } else {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(R.string.newLesson),
+                            style = MaterialTheme.typography.headlineSmall
                         )
-                    )
-                },
-                onEndDateSelected = {
-                    viewModel.handleEvent(
-                        NewLessonEvent.EndDatesChanged(
-                            it
-                        )
-                    )
-                }
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            TimeRangePicker(
-                startTime = state.startTime,
-                endTime = state.endTime,
-                onStartTimeSelected = {
-                    viewModel.handleEvent(
-                        NewLessonEvent.StartTimeChanged(
-                            it
-                        )
-                    )
-                },
-                onEndTimeSelected = {
-                    viewModel.handleEvent(
-                        NewLessonEvent.EndTimeChanged(
-                            it
-                        )
-                    )
-                }
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    }
+                )
+            },
+            floatingActionButton = {
+                ExtendedFloatingActionButton(
+                    onClick = { viewModel.handleEvent(NewLessonEvent.Submit) },
+                    icon = { Icon(Icons.Default.Done, null) },
+                    text = { Text(stringResource(R.string.newLesson)) }
+                )
+            }
+        ) { padding ->
+            Column(
+                modifier = Modifier
+                    .padding(padding)
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(horizontal = 16.dp)
             ) {
-                notifications.forEach { notification ->
-                    Button(
-                        onClick = { TODO() },
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(horizontal = 4.dp)
-                    ) {
-                        Text(text = notification, fontSize = 12.sp)
+
+                SectionTitle(text = stringResource(R.string.chooseDay))
+                DaysOfWeekGrid(
+                    selectedDay = state.selectedDay,
+                    onDaySelected = { viewModel.handleEvent(NewLessonEvent.DayChanged(it)) }
+                )
+
+
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                SectionTitle(text = stringResource(R.string.choosePeriod))
+                DateRangePicker(
+                    startDate = state.startDate,
+                    endDate = state.endDate,
+                    onStartDateSelected = {
+                        viewModel.handleEvent(
+                            NewLessonEvent.StartDatesChanged(
+                                it
+                            )
+                        )
+                    },
+                    onEndDateSelected = {
+                        viewModel.handleEvent(
+                            NewLessonEvent.EndDatesChanged(
+                                it
+                            )
+                        )
+                    }
+                )
+
+
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                SectionTitle(text = stringResource(R.string.chooseTime))
+                TimeRangePicker(
+                    startTime = state.startTime,
+                    endTime = state.endTime,
+                    onStartTimeSelected = {
+                        viewModel.handleEvent(
+                            NewLessonEvent.StartTimeChanged(
+                                it
+                            )
+                        )
+                    },
+                    onEndTimeSelected = {
+                        viewModel.handleEvent(
+                            NewLessonEvent.EndTimeChanged(
+                                it
+                            )
+                        )
+                    }
+                )
+
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    notifications.forEach { notification ->
+                        Button(
+                            onClick = { TODO() },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 4.dp)
+                        ) {
+                            Text(text = notification, fontSize = 12.sp)
+                        }
                     }
                 }
+
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+
+                SectionTitle(text = stringResource(R.string.chooseStudent))
+                StudentsSection(
+                    students = state.students,
+                    selectedStudent = state.selectedStudent,
+                    onStudentSelected = {
+                        viewModel.handleEvent(NewLessonEvent.StudentSelected(it))
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                SectionTitle(text = stringResource(R.string.chooseSubject))
+                DisciplineSection(
+                    disciplines = state.disciplines,
+                    selectedDiscipline = state.selectedDiscipline,
+                    onDisciplineSelected = {
+                        viewModel.handleEvent(NewLessonEvent.DisciplineSelected(it))
+                    }
+                )
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-
-            SectionTitle(text = stringResource(R.string.chooseStudent))
-            StudentsSection(
-                students = state.students,
-                selectedStudent = state.selectedStudent,
-                onStudentSelected = {
-                    viewModel.handleEvent(NewLessonEvent.StudentSelected(it))
-                }
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            SectionTitle(text = stringResource(R.string.chooseSubject))
-            DisciplineSection(
-                disciplines = state.disciplines,
-                selectedDiscipline = state.selectedDiscipline,
-                onDisciplineSelected = {
-                    viewModel.handleEvent(NewLessonEvent.DisciplineSelected(it))
-                }
-            )
-
         }
     }
 }
@@ -225,7 +235,8 @@ fun NewLessonScreen(viewModel: NewLessonViewModel = koinViewModel()) {
 private fun SectionTitle(text: String) {
     Text(
         text = text,
-        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black),
+        color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier.padding(vertical = 8.dp)
     )
 }
@@ -238,16 +249,11 @@ private fun DaysOfWeekGrid(
     val daysOfWeek =
         listOf("Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье")
 
-    Column {
-        Text(
-            text = stringResource(R.string.chooseDay),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
+    Box(modifier = Modifier.height(160.dp)) {
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 128.dp),
-            modifier = Modifier.fillMaxWidth(),
+            columns = GridCells.Fixed(3),
+            modifier = Modifier
+                .fillMaxSize(),
             contentPadding = PaddingValues(4.dp),
         ) {
             items(daysOfWeek) { day ->
@@ -273,7 +279,7 @@ private fun DaysOfWeekGrid(
                     {
                         Text(
                             text = day,
-                            fontSize = 12.sp,
+                            fontSize = 11.sp,
                             color = if (selectedDay == day) Color.White else Color.Black
                         )
                     }
@@ -282,7 +288,6 @@ private fun DaysOfWeekGrid(
         }
     }
 }
-
 
 @Composable
 fun DateRangePicker(
@@ -293,8 +298,10 @@ fun DateRangePicker(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        horizontalArrangement = Arrangement.SpaceAround
     ) {
         DatePickerButton(
             label = stringResource(R.string.startDay),
@@ -355,12 +362,13 @@ private fun DatePickerButton(
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(bottom = 4.dp)
         )
 
         OutlinedButton(
             onClick = { showDialog = true },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.wrapContentWidth()
         ) {
             Text(
                 text = selectedDate.format(dateFormat),
@@ -386,7 +394,7 @@ fun TimeRangePicker(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceAround
     ) {
         TimePickerButton(
             label = stringResource(R.string.chooseStartTime),
@@ -395,7 +403,7 @@ fun TimeRangePicker(
             modifier = Modifier.weight(1f)
         )
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(2.dp))
 
         TimePickerButton(
             label = stringResource(R.string.chooseEndTime),
@@ -427,12 +435,13 @@ private fun TimePickerButton(
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(bottom = 4.dp)
         )
 
         OutlinedButton(
             onClick = { showDialog = true },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.wrapContentWidth()
         ) {
             Text(
                 text = selectedTime.format(timeFormat),
@@ -517,7 +526,7 @@ private fun StudentsSection(
     onStudentSelected: (Student) -> Unit
 ) {
     if (students.isEmpty()) {
-        Text("Нет студентов")
+        Text("No students")
     } else {
         DropdownSelector(
             items = students,
@@ -558,7 +567,6 @@ fun <T> DropdownSelector(
     itemToString: (T) -> String,
     onItemSelected: (T) -> Unit,
     placeholder: String,
-    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false
 ) {
@@ -567,7 +575,11 @@ fun <T> DropdownSelector(
 
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { if (!readOnly) expanded = !expanded },
+        onExpandedChange = {
+            if (enabled && !readOnly) {
+                expanded = !expanded
+            }
+        },
         modifier = Modifier
     ) {
         TextField(
@@ -578,8 +590,9 @@ fun <T> DropdownSelector(
             placeholder = { Text(text = placeholder) },
             colors = ExposedDropdownMenuDefaults.textFieldColors(),
             modifier = Modifier
-                .fillMaxWidth(),
-            enabled = enabled && !readOnly
+                .fillMaxWidth()
+                .menuAnchor(),
+            enabled = enabled
         )
 
         ExposedDropdownMenu(
@@ -590,7 +603,7 @@ fun <T> DropdownSelector(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            "No data",
+                            stringResource(R.string.noData),
                             modifier = Modifier.padding(8.dp),
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         )

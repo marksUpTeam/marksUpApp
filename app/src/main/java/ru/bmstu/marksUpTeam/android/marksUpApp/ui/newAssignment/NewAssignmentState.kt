@@ -11,7 +11,6 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
 data class NewAssignmentState(
     val disciplines: List<Discipline>,
     val students: List<Student>,
-    val profile: ProfileDomain,
     val selectedStudent: Student? = null,
     val selectedDiscipline: Discipline? = null,
     val dueDate: LocalDate,

@@ -28,7 +28,7 @@ data class Assignment(
     val description: String,
     val status: AssignmentStatus,
     val grade: Int?,
-    val filesName: List<String>
+    val filesName: List<String>,
 )
 
 @Serializable

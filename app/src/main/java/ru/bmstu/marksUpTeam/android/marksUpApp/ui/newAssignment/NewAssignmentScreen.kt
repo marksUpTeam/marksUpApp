@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -47,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import kotlinx.datetime.LocalDate
@@ -69,131 +71,129 @@ fun NewAssignmentScreen(
     val state by viewModel.stateFlow.collectAsState()
 
 
-    if (state.profile.personType is PersonType.TeacherType) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(stringResource(R.string.newAssignment)) }
-                )
-            },
-            floatingActionButton = {
-                ExtendedFloatingActionButton(
-                    onClick = { viewModel.handleEvent(NewAssignmentEvent.Submit) },
-                    icon = { Icon(Icons.Default.Done, stringResource(R.string.save)) },
-                    text = { Text(stringResource(R.string.save)) },
-                )
-            }
-        ) { padding ->
-            Box(
-                modifier = Modifier
-                    .padding(padding)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-            ) {
-                if (state.isLoading) {
-                    CircularProgressIndicator(Modifier.align(Alignment.Center))
-                } else {
-                    Column(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.newAssignment)) }
+            )
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = { viewModel.handleEvent(NewAssignmentEvent.Submit) },
+                icon = { Icon(Icons.Default.Done, stringResource(R.string.save)) },
+                text = { Text(stringResource(R.string.save)) },
+            )
+        }
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            if (state.isLoading) {
+                CircularProgressIndicator(Modifier.align(Alignment.Center))
+            } else {
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                ) {
+
+                    DisciplineSection(
+                        disciplines = state.disciplines,
+                        selectedDiscipline = state.selectedDiscipline,
+                        onDisciplineSelected = {
+                            viewModel.handleEvent(NewAssignmentEvent.DisciplineSelected(it))
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+
+                    StudentsSection(
+                        students = state.students,
+                        selectedStudent = state.selectedStudent,
+                        onStudentSelected = {
+                            viewModel.handleEvent(NewAssignmentEvent.StudentSelected(it))
+                        }
+                    )
+
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
-
-                        DisciplineSection(
-                            disciplines = state.disciplines,
-                            selectedDiscipline = state.selectedDiscipline,
-                            onDisciplineSelected = {
-                                viewModel.handleEvent(NewAssignmentEvent.DisciplineSelected(it))
-                            }
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-
-                        Box(modifier = Modifier.weight(1f)) {
-                            StudentsSection(
-                                students = state.students,
-                                selectedStudent = state.selectedStudent,
-                                onStudentSelected = {
-                                    viewModel.handleEvent(NewAssignmentEvent.StudentSelected(it))
-                                }
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            DatePickerButton(
-                                label = stringResource(R.string.deadDate),
-                                selectedDate = state.dueDate,
-                                onDateSelected = {
-                                    viewModel.handleEvent(
-                                        NewAssignmentEvent.DateSelected(
-                                            it
-                                        )
-                                    )
-                                },
-                                modifier = Modifier.weight(1f)
-                            )
-
-                            TimePickerButton(
-                                label = stringResource(R.string.deadTime),
-                                selectedTime = state.dueTime,
-                                onTimeSelected = {
-                                    viewModel.handleEvent(
-                                        NewAssignmentEvent.TimeSelected(
-                                            it
-                                        )
-                                    )
-                                },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        TextField(
-                            value = state.title,
-                            onValueChange = {
+                        DatePickerButton(
+                            label = stringResource(R.string.deadDate),
+                            selectedDate = state.dueDate,
+                            onDateSelected = {
                                 viewModel.handleEvent(
-                                    NewAssignmentEvent.TitleChanged(
+                                    NewAssignmentEvent.DateSelected(
                                         it
                                     )
                                 )
                             },
-                            label = { Text(stringResource(R.string.assignmentName)) },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.weight(1f)
                         )
 
-                        Spacer(modifier = Modifier.height(16.dp))
-
-
-                        TextField(
-                            value = state.description,
-                            onValueChange = {
+                        TimePickerButton(
+                            label = stringResource(R.string.deadTime),
+                            selectedTime = state.dueTime,
+                            onTimeSelected = {
                                 viewModel.handleEvent(
-                                    NewAssignmentEvent.DescriptionChanged(
+                                    NewAssignmentEvent.TimeSelected(
                                         it
                                     )
                                 )
                             },
-                            label = { Text(stringResource(R.string.assignmentDescription)) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(150.dp),
-                            maxLines = 5
+                            modifier = Modifier.weight(1f)
                         )
+                    }
 
-                        state.error?.let {
-                            Text(
-                                text = it,
-                                color = MaterialTheme.colorScheme.error,
-                                modifier = Modifier.padding(8.dp)
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    TextField(
+                        value = state.title,
+                        onValueChange = {
+                            viewModel.handleEvent(
+                                NewAssignmentEvent.TitleChanged(
+                                    it
+                                )
                             )
-                        }
+                        },
+                        label = { Text(stringResource(R.string.assignmentName)) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+
+                    TextField(
+                        value = state.description,
+                        onValueChange = {
+                            viewModel.handleEvent(
+                                NewAssignmentEvent.DescriptionChanged(
+                                    it
+                                )
+                            )
+                        },
+                        label = { Text(stringResource(R.string.assignmentDescription)) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp),
+                        maxLines = 5
+                    )
+
+                    state.error?.let {
+                        Text(
+                            text = it,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(8.dp)
+                        )
                     }
                 }
             }
@@ -251,7 +251,11 @@ fun <T> DropdownSelector(
 
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { if (!readOnly) expanded = !expanded },
+        onExpandedChange = {
+            if (enabled && !readOnly) {
+                expanded = !expanded
+            }
+        },
         modifier = Modifier
     ) {
         TextField(
@@ -262,8 +266,9 @@ fun <T> DropdownSelector(
             placeholder = { Text(text = placeholder) },
             colors = ExposedDropdownMenuDefaults.textFieldColors(),
             modifier = Modifier
-                .fillMaxWidth(),
-            enabled = enabled && !readOnly
+                .fillMaxWidth()
+                .menuAnchor(),
+            enabled = enabled
         )
 
         ExposedDropdownMenu(
@@ -337,12 +342,14 @@ private fun DatePickerButton(
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
+            fontSize = 20.sp,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(bottom = 4.dp)
         )
 
         OutlinedButton(
             onClick = { showDialog = true },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.wrapContentSize()
         ) {
             Text(
                 text = selectedDate.format(dateFormat),
@@ -377,12 +384,14 @@ private fun TimePickerButton(
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
+            fontSize = 20.sp,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(bottom = 4.dp)
         )
 
         OutlinedButton(
             onClick = { showDialog = true },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.wrapContentSize()
         ) {
             Text(
                 text = selectedTime.format(timeFormat),

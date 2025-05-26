@@ -16,9 +16,8 @@ private val currentDateTime =
 
 @Immutable
 data class NewLessonState(
-    val students: List<Student>,
-    val disciplines: List<Discipline>,
-    val profile: ProfileDomain,
+    val students: List<Student> = emptyList(),
+    val disciplines: List<Discipline> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
     val isFormValid: Boolean = false,

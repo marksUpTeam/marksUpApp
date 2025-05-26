@@ -30,7 +30,6 @@ class NewAssignmentViewModel(
         NewAssignmentState(
             emptyList(),
             emptyList(),
-            profile = baseTeacherProfileDomain,
             selectedStudent = null,
             selectedDiscipline = null,
             dueDate = currentDateTime.date,
@@ -54,10 +53,6 @@ class NewAssignmentViewModel(
         viewModelScope.launch {
             val disciplineList = lessonRepository.getDisciplines()
             _stateFlow.value = _stateFlow.value.copy(disciplines = disciplineList)
-        }
-        viewModelScope.launch {
-            val profile = lessonRepository.getProfile()
-            _stateFlow.value = _stateFlow.value.copy(profile = profile)
         }
     }
 

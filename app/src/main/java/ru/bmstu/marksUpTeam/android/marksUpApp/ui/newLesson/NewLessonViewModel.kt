@@ -30,7 +30,6 @@ class NewLessonViewModel(private val repository: LessonRepository) : ViewModel()
         NewLessonState(
             emptyList(),
             emptyList(),
-            profile = baseTeacherProfileDomain,
             isLoading = false,
             error = null,
             isFormValid = false,
@@ -53,10 +52,6 @@ class NewLessonViewModel(private val repository: LessonRepository) : ViewModel()
         viewModelScope.launch {
             val disciplineList = repository.getDisciplines()
             _stateFlow.value = _stateFlow.value.copy(disciplines = disciplineList)
-        }
-        viewModelScope.launch {
-            val profile = repository.getProfile()
-            _stateFlow.value = _stateFlow.value.copy(profile = profile)
         }
     }
 

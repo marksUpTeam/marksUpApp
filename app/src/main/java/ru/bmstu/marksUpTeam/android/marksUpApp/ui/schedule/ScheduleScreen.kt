@@ -308,9 +308,8 @@ fun HourRow(viewModel: ScheduleViewModel, hour: Int, isTeacher: Boolean, tint: C
             .padding(vertical = 8.dp)
             .clickable {
                 if (isTeacher) {
-                    viewModel.changeScreenTo(Route.Lesson.name)
+                    viewModel.changeScreenTo(Route.NewLesson.name)
                 }
-                // Реализовать добавление занятия по клику
             },
         verticalAlignment = Alignment.CenterVertically
     ) {
