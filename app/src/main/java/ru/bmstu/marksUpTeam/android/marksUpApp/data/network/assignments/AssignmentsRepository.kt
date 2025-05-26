@@ -11,14 +11,14 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.FileManager
 import java.io.IOException
 
-class AssignmentsRepository(private val assignmentsApi: AssignmentsApi,private val fileManager: FileManager) {
+class AssignmentsRepository(private val assignmentsApi: AssignmentsApi,private val assignmentsMapper: AssignmentsMapper,private val fileManager: FileManager) {
 
     suspend fun getAllAssignments(): Result<List<AssignmentDomain>> {
         val assignmentResponse = assignmentsApi.getAllAssignments()
         if (assignmentResponse.isSuccessful && assignmentResponse.body() != null) {
 
             val assignmentDomain = assignmentResponse.body()!!.map {
-                assignment ->  AssignmentsMapper().map(assignment,getAssignmentFileUris(assignment))
+                assignment ->  assignmentsMapper.map(assignment,getAssignmentFileUris(assignment))
             }
 
             return Result.success(assignmentDomain)
