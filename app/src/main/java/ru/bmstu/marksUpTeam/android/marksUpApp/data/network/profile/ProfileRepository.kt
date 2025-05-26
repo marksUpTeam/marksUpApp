@@ -5,7 +5,7 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.ProfileDomain
 import java.io.IOException
 
-class ProfileRepository(private val profileApi: ProfileApi) {
+class ProfileRepository(private val profileApi: ProfileApi,private val profileMapper: ProfileMapper) {
     private suspend fun getProfile(): Response<Profile>{
         return profileApi.getProfile()
     }
@@ -13,7 +13,7 @@ class ProfileRepository(private val profileApi: ProfileApi) {
     suspend fun getProfileDomain(): Result<ProfileDomain> {
         val profileResponse = getProfile()
         if (profileResponse.isSuccessful && profileResponse.body() != null) {
-            val profileDomain = ProfileMapper().map(profileResponse.body()!!)
+            val profileDomain = profileMapper.map(profileResponse.body()!!)
             return Result.success(profileDomain)
         }
         else return Result.failure(IOException(profileResponse.errorBody()?.string() ?: "Something went wrong"))
@@ -23,7 +23,7 @@ class ProfileRepository(private val profileApi: ProfileApi) {
     }
 
     suspend fun modifyProfileDomain(profileDomain: ProfileDomain): Result<String> {
-        val profileToPost = ProfileMapper().toDto(profileDomain)
+        val profileToPost = profileMapper.toDto(profileDomain)
         val postResult = modifyProfile(profileToPost)
         return if (postResult.isSuccessful && postResult.body() != null) {
             Result.success(postResult.body()!!)

@@ -1,5 +1,6 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.domain
 
+import android.net.Uri
 import kotlinx.datetime.LocalDate
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.AssignmentStatus
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.Discipline
@@ -16,4 +17,5 @@ data class AssignmentDomain(
     val description: String,
     val status: AssignmentStatus,
     val grade: Int,
+    val filesUri: List<Uri?>,
 )
