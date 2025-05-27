@@ -3,8 +3,11 @@ package ru.bmstu.marksUpTeam.android.marksUpApp.navigation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -55,11 +59,14 @@ fun AppNavigation(viewModel: MainActivityViewModel = koinViewModel()) {
         }
     }
 
-    Scaffold(bottomBar = {
-        if (currentRoute != Route.Login.name) {
-            Selector(isForTeacher = isTeacher)
-        }
-    }) { innerPadding ->
+    Scaffold(
+        bottomBar = {
+            if (currentRoute != Route.Login.name) {
+                Selector(isForTeacher = isTeacher)
+            }
+        },
+        contentWindowInsets = WindowInsets.systemBars
+    ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = Route.Schedule.name,
@@ -82,65 +89,68 @@ fun Selector(
     modifier: Modifier = Modifier,
     viewModel: MainActivityViewModel = koinViewModel(),
     setCurrentScreen: (Int) -> Unit = {},
-    backgroundColor: Color = colorResource(id = R.color.black),
-    tint: Color = colorResource(id = R.color.white),
-    selectedTint: Color = colorResource(id = R.color.purple_500),
+    backgroundColor: Color = colorResource(id = R.color.white),
+    tint: Color = colorResource(id = R.color.grey),
+    selectedTint: Color = colorResource(id = R.color.blue),
     isForTeacher: Boolean = false,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(backgroundColor),
+            .background(backgroundColor)
+            .padding(
+                bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+                start = 8.dp,
+                end = 8.dp
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         var buttonClicked by rememberSaveable { mutableIntStateOf(1) }
         BaseButton(
-            painter = painterResource(R.drawable.timetable),
+            painter = painterResource(R.drawable.calendar),
             onClick = {
                 viewModel.changeScreenTo(Route.Schedule.name)
                 setCurrentScreen(1)
                 buttonClicked = 1
             },
             contentDescription = stringResource(R.string.classes),
-            tint = tint,
-            selectedTint = selectedTint,
+            tint = if (buttonClicked == 1) selectedTint else tint,
             isSelected = buttonClicked == 1
         )
         BaseButton(
+            painter = painterResource(R.drawable.favorite),
             onClick = {
-                viewModel.changeScreenTo(Route.Assignment.name)
+                viewModel.changeScreenTo(Route.Favourites.name)
                 setCurrentScreen(2)
                 buttonClicked = 2
             },
             contentDescription = stringResource(R.string.favourites),
-            tint = tint,
-            selectedTint = selectedTint,
+            tint = if (buttonClicked == 2) selectedTint else tint,
             isSelected = buttonClicked == 2
         )
         if (isForTeacher) {
             BaseButton(
                 painter = painterResource(R.drawable.manager),
                 onClick = {
+                    viewModel.changeScreenTo(Route.AddLesson.name)
                     setCurrentScreen(3)
                     buttonClicked = 3
                 },
                 contentDescription = stringResource(R.string.classesManager),
-                tint = tint,
-                selectedTint = selectedTint,
+                tint = if (buttonClicked == 3) selectedTint else tint,
                 isSelected = buttonClicked == 3
             )
         } else {
             BaseButton(
-                painter = painterResource(R.drawable.five),
+                painter = painterResource(R.drawable.mark),
                 onClick = {
                     viewModel.changeScreenTo(Route.Grade.name)
                     setCurrentScreen(3)
                     buttonClicked = 3
                 },
                 contentDescription = stringResource(R.string.marks),
-                tint = tint,
-                selectedTint = selectedTint,
+                tint = if (buttonClicked == 3) selectedTint else tint,
                 isSelected = buttonClicked == 3
             )
         }
@@ -152,8 +162,7 @@ fun Selector(
                 buttonClicked = 4
             },
             contentDescription = stringResource(R.string.profile),
-            tint = tint,
-            selectedTint = selectedTint,
+            tint = if (buttonClicked == 4) selectedTint else tint,
             isSelected = buttonClicked == 4
         )
 

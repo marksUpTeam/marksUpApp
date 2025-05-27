@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -35,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,8 +50,8 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import org.koin.androidx.compose.koinViewModel
+import ru.bmstu.marksUpTeam.android.marksUpApp.NotificationManager
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
-import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity.Route
 import java.time.format.TextStyle
 import java.util.Locale
@@ -64,19 +64,16 @@ fun ScheduleScreen(
     tint: Color = colorResource(id = R.color.black),
     backgroundColor: Color = colorResource(id = R.color.white)
 ) {
+    val context = LocalContext.current
     val state by viewModel.stateFlow.collectAsState()
-    val isTeacher = state.profile.personType is PersonType.TeacherType
+    val isTeacher = state.profile.teacher != null
     val currentDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     val pagerState = rememberPagerState(initialPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE }
     var selectedDate by remember { mutableStateOf(currentDate) }
 
-    LaunchedEffect(state) {
-        state.route?.let { route ->
-            navController.navigate(route)
-            viewModel.resetRoute()
-        }
-        state.classes.let{
-            viewModel.updateFlow()
+    LaunchedEffect(state.classes) {
+        state.classes.forEach { classItem ->
+            NotificationManager.scheduleClassNotification(context, classItem)
         }
     }
 
@@ -99,7 +96,7 @@ fun ScheduleScreen(
                 fontWeight = FontWeight.Bold,
                 color = tint
             )
-            IconButton(onClick = { TODO() }) {
+            IconButton(onClick = { navController.navigate(Route.Profile.name) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_launcher_foreground),
                     contentDescription = "Profile",
@@ -139,14 +136,13 @@ fun ScheduleScreen(
             selectedDate = selectedDate,
             isTeacher = isTeacher,
             tint = tint,
-            modifier = Modifier.fillMaxHeight(0.8f)
+            navController = navController,
+            modifier = Modifier.fillMaxSize()
         )
     }
-
-
 }
 
-fun calculateStartOfWeek(page: Int): LocalDate {
+private fun calculateStartOfWeek(page: Int): LocalDate {
     val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     var monday = today
     while (monday.dayOfWeek != DayOfWeek.MONDAY) {
@@ -157,7 +153,7 @@ fun calculateStartOfWeek(page: Int): LocalDate {
 }
 
 @Composable
-fun WeekTable(
+private fun WeekTable(
     tint: Color,
     startOfWeek: LocalDate,
     currentDate: LocalDate,
@@ -204,7 +200,7 @@ fun WeekTable(
 }
 
 @Composable
-fun DayItem(
+private fun DayItem(
     currentDay: LocalDate,
     currentDate: LocalDate,
     selectedDate: LocalDate,
@@ -254,11 +250,12 @@ fun DayItem(
 }
 
 @Composable
-fun ScheduleForSelectedDay(
+private fun ScheduleForSelectedDay(
     viewModel: ScheduleViewModel,
     selectedDate: LocalDate,
     isTeacher: Boolean,
     tint: Color,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     val hours = (0..23).toList()
@@ -285,7 +282,8 @@ fun ScheduleForSelectedDay(
                     viewModel = viewModel,
                     hour = hour,
                     tint = tint,
-                    isTeacher = isTeacher
+                    isTeacher = isTeacher,
+                    navController = navController
                 )
                 if (hour < 23) {
                     HorizontalDivider(thickness = 1.dp, color = colorResource(id = R.color.coral))
@@ -301,16 +299,21 @@ fun ScheduleForSelectedDay(
 }
 
 @Composable
-fun HourRow(viewModel: ScheduleViewModel, hour: Int, isTeacher: Boolean, tint: Color) {
+private fun HourRow(
+    viewModel: ScheduleViewModel,
+    hour: Int,
+    isTeacher: Boolean,
+    tint: Color,
+    navController: NavController
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clickable {
                 if (isTeacher) {
-                    viewModel.changeScreenTo(Route.Lesson.name)
+                    navController.navigate(Route.Lesson.name)
                 }
-                // Реализовать добавление занятия по клику
             },
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -330,7 +333,7 @@ fun HourRow(viewModel: ScheduleViewModel, hour: Int, isTeacher: Boolean, tint: C
     }
 }
 
-fun getMonthName(date: LocalDate): String {
+private fun getMonthName(date: LocalDate): String {
     val monthNames = arrayOf(
         "января", "февраля", "марта", "апреля", "мая", "июня",
         "июля", "августа", "сентября", "октября", "ноября", "декабря"
