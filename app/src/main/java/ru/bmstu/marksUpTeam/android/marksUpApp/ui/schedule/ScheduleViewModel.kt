@@ -5,30 +5,37 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.Class as LessonClass
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.Profile
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.baseTeacherProfile
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.classes.ClassesRepository
+
+data class ScheduleState(
+    val profile: Profile,
+    val classes: List<LessonClass>
+)
+
+val baseSchedule = ScheduleState(
+    profile = baseTeacherProfile,
+    classes = emptyList()
+)
 
 class ScheduleViewModel(private val classesRepository: ClassesRepository) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<ScheduleState> = MutableStateFlow(baseSchedule)
     val stateFlow = _stateFlow.asStateFlow()
 
-    fun updateFlow(){
+    init {
+        getClasses()
+    }
+
+    private fun getClasses() {
         viewModelScope.launch {
-                runCatching {
-                val classesResponse = classesRepository.getClasses()
-                if(classesResponse.isSuccess){
-                    val classesDomain = classesResponse.getOrNull() ?: throw Exception("Bad response")
-                    _stateFlow.value =  _stateFlow.value.copy(classes = classesDomain)
-                }
+            runCatching {
+                classesRepository.getClasses()
+            }.onSuccess { classes ->
+                _stateFlow.value = _stateFlow.value.copy(classes = classes.getOrNull() ?: emptyList())
             }
         }
-    }
-
-    fun changeScreenTo(route: String) {
-        _stateFlow.value = _stateFlow.value.copy(route = route)
-    }
-
-    fun resetRoute() {
-        _stateFlow.value = _stateFlow.value.copy(route = null)
     }
 }
