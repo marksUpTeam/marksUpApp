@@ -46,7 +46,7 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.R
 @Composable
 fun BaseButton(
     modifier: Modifier = Modifier,
-    painter: Painter = painterResource(id = R.drawable.star),
+    painter: Painter = painterResource(id = R.drawable.favorite),
     contentDescription: String = "Favourites",
     isSelected: Boolean = false,
     tint: Color = colorResource(id = R.color.grey),

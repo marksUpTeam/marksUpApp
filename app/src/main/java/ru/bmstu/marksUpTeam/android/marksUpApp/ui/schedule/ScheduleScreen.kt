@@ -1,10 +1,5 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.schedule
 
-import android.annotation.SuppressLint
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -50,21 +44,17 @@ import androidx.navigation.NavController
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
-import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import org.koin.androidx.compose.koinViewModel
-import ru.bmstu.marksUpTeam.android.marksUpApp.NotificationReceiver
+import ru.bmstu.marksUpTeam.android.marksUpApp.NotificationManager
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
-import ru.bmstu.marksUpTeam.android.marksUpApp.domain.PersonType
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity.Route
 import java.time.format.TextStyle
 import java.util.Locale
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.Class as LessonClass
 
 @Composable
 fun ScheduleScreen(
@@ -76,25 +66,14 @@ fun ScheduleScreen(
 ) {
     val context = LocalContext.current
     val state by viewModel.stateFlow.collectAsState()
-    val isTeacher = state.profile.personType is PersonType.TeacherType
+    val isTeacher = state.profile.teacher != null
     val currentDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     val pagerState = rememberPagerState(initialPage = Int.MAX_VALUE / 2) { Int.MAX_VALUE }
     var selectedDate by remember { mutableStateOf(currentDate) }
-    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-    LaunchedEffect(state) {
-        state.route?.let { route ->
-            navController.navigate(route)
-            viewModel.resetRoute()
-        }
-        state.classes.let {
-            viewModel.updateFlow()
-        }
-    }
 
     LaunchedEffect(state.classes) {
         state.classes.forEach { classItem ->
-            scheduleClassNotification(context, classItem)
+            NotificationManager.scheduleClassNotification(context, classItem)
         }
     }
 
@@ -117,7 +96,7 @@ fun ScheduleScreen(
                 fontWeight = FontWeight.Bold,
                 color = tint
             )
-            IconButton(onClick = { TODO() }) {
+            IconButton(onClick = { navController.navigate(Route.Profile.name) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_launcher_foreground),
                     contentDescription = "Profile",
@@ -157,52 +136,10 @@ fun ScheduleScreen(
             selectedDate = selectedDate,
             isTeacher = isTeacher,
             tint = tint,
+            navController = navController,
             modifier = Modifier.fillMaxSize()
         )
     }
-}
-
-private fun scheduleClassNotification(context: Context, classItem: LessonClass) {
-    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val startInstant = classItem.datetimeStart.toInstant(TimeZone.currentSystemDefault())
-    val timeBeforeClass = startInstant.minus(30, DateTimeUnit.MINUTE, TimeZone.currentSystemDefault())
-    val now = Clock.System.now()
-
-    if (timeBeforeClass > now) {
-        createNotification(context, alarmManager, classItem, timeBeforeClass,
-            "Через 30 минут: ${classItem.discipline.name}")
-    }
-    if (startInstant > now) {
-        createNotification(context, alarmManager, classItem, startInstant,
-            "Сейчас: ${classItem.discipline.name}")
-    }
-}
-
-@SuppressLint("ScheduleExactAlarm")
-private fun createNotification(
-    context: Context,
-    alarmManager: AlarmManager,
-    classItem: LessonClass,
-    triggerTime: Instant,
-    message: String
-) {
-    val intent = Intent(context, NotificationReceiver::class.java).apply {
-        putExtra("subject", classItem.discipline.name)
-        putExtra("time", message)
-    }
-
-    val pendingIntent = PendingIntent.getBroadcast(
-        context,
-        classItem.id.hashCode(),
-        intent,
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-    )
-
-    alarmManager.setExact(
-        AlarmManager.RTC_WAKEUP,
-        triggerTime.toEpochMilliseconds(),
-        pendingIntent
-    )
 }
 
 private fun calculateStartOfWeek(page: Int): LocalDate {
@@ -243,6 +180,7 @@ private fun WeekTable(
                 )
             }
         }
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -259,7 +197,7 @@ private fun WeekTable(
             }
         }
     }
-    }
+}
 
 @Composable
 private fun DayItem(
@@ -317,6 +255,7 @@ private fun ScheduleForSelectedDay(
     selectedDate: LocalDate,
     isTeacher: Boolean,
     tint: Color,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     val hours = (0..23).toList()
@@ -343,7 +282,8 @@ private fun ScheduleForSelectedDay(
                     viewModel = viewModel,
                     hour = hour,
                     tint = tint,
-                    isTeacher = isTeacher
+                    isTeacher = isTeacher,
+                    navController = navController
                 )
                 if (hour < 23) {
                     HorizontalDivider(thickness = 1.dp, color = colorResource(id = R.color.coral))
@@ -363,7 +303,8 @@ private fun HourRow(
     viewModel: ScheduleViewModel,
     hour: Int,
     isTeacher: Boolean,
-    tint: Color
+    tint: Color,
+    navController: NavController
 ) {
     Row(
         modifier = Modifier
@@ -371,7 +312,7 @@ private fun HourRow(
             .padding(vertical = 8.dp)
             .clickable {
                 if (isTeacher) {
-                    viewModel.changeScreenTo(Route.Lesson.name)
+                    navController.navigate(Route.Lesson.name)
                 }
             },
         verticalAlignment = Alignment.CenterVertically
