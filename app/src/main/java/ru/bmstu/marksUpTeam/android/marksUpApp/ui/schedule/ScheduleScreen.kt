@@ -75,9 +75,6 @@ fun ScheduleScreen(
             navController.navigate(route)
             viewModel.resetRoute()
         }
-        state.classes.let{
-            viewModel.updateFlow()
-        }
     }
 
     Column(
