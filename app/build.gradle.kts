@@ -19,7 +19,6 @@ if (localPropertiesFile.exists()) {
 val apiUrl: String = localProperties.getProperty("apiUrl")
 
 
-
 android {
     namespace = "ru.bmstu.marksUpTeam.android.marksUpApp"
     compileSdk = 35

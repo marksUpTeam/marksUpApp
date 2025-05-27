@@ -1,6 +1,11 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data
 
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 // PROFILE MODELS
 
@@ -77,6 +82,20 @@ data class Profile(
 }
 
 
+@Serializable
+data class Lesson @OptIn(ExperimentalUuidApi::class) constructor(
+    @Contextual
+    val id: Uuid,
+    val startDate: LocalDate,
+    val endDate: LocalDate,
+    val startTime: LocalTime,
+    val endTime: LocalTime,
+    val student: Student? = null,
+    val discipline: Discipline,
+)
+
+
+
 val basePersonTeacher = Person(
     id = 1,
     name = "Elvira",
@@ -106,10 +125,11 @@ val basePersonParent = Person(
 )
 
 val baseDiscipline = Discipline(id = 1, name = "Calculus", complexity = 10)
-val baseDisciplineGrade = DisciplineGrade(baseDiscipline,4.53f)
+val baseDisciplineGrade = DisciplineGrade(baseDiscipline, 4.53f)
 
 val baseStudent = Student(
-    id = 1, person = basePersonStudent, description = "I'm smart!", disciplineGrades = listOf(
+    id = 1, person = basePersonStudent, description = "I'm smart!",
+    disciplineGrades = listOf(
         baseDisciplineGrade, baseDisciplineGrade
     ),
     assignedTeachers = listOf(),

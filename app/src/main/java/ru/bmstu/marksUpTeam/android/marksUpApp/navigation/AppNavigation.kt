@@ -39,6 +39,8 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.ui.lesson.AddLessonScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.lesson.LessonScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity.MainActivityViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity.Route
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.newAssignment.NewAssignmentScreen
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.newLesson.NewLessonScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.profile.ProfileScreen
 import ru.bmstu.marksUpTeam.android.marksUpApp.ui.schedule.ScheduleScreen
 import androidx.compose.foundation.layout.WindowInsets
@@ -74,7 +76,7 @@ fun AppNavigation(viewModel: MainActivityViewModel = koinViewModel()) {
             startDestination = Route.Schedule.name,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Route.Assignment.name) { AssignmentScreen() }
+            composable(Route.Assignment.name) { AssignmentScreen(navController = navController) }
             composable(Route.Login.name) { AuthorizationScreen(navController = navController) }
             composable(Route.Schedule.name) { ScheduleScreen(navController = navController) }
             composable(Route.AddLesson.name) { AddLessonScreen() }
@@ -82,6 +84,8 @@ fun AppNavigation(viewModel: MainActivityViewModel = koinViewModel()) {
             composable(Route.Favourites.name) { FavouritesScreen() }
             composable(Route.Grade.name) { GradeScreen() }
             composable(Route.Profile.name) { ProfileScreen() }
+            composable(Route.NewLesson.name) { NewLessonScreen() }
+            composable(Route.NewAssignment.name) { NewAssignmentScreen() }
         }
     }
 }

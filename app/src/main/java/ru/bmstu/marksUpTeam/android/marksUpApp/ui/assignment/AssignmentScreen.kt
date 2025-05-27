@@ -10,18 +10,23 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,17 +50,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import org.koin.androidx.compose.koinViewModel
 import ru.bmstu.marksUpTeam.android.marksUpApp.R
 import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.formatDate
+import ru.bmstu.marksUpTeam.android.marksUpApp.ui.mainActivity.Route
 
 @Composable
-fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
+fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel(), navController: NavController) {
     val state by viewModel.stateFlow.collectAsState()
     val context = LocalContext.current
-
     var assignmentId by remember { mutableStateOf<Long>(0) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
@@ -72,8 +78,12 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
 
     LaunchedEffect(state) {
         viewModel.updateFlow()
+        state.route?.let { route ->
+            navController.navigate(route)
+            viewModel.resetRoute()
+        }
     }
-
+Column(modifier = Modifier.wrapContentSize()) {
     Text(
         text = stringResource(R.string.homework),
         fontSize = 20.sp,
@@ -82,6 +92,23 @@ fun AssignmentScreen(viewModel: AssignmentViewModel = koinViewModel()) {
         color = colorResource(id = R.color.black)
     )
 
+    Button(
+        onClick = {
+            viewModel.changeScreenTo(Route.NewAssignment.name)
+        }, modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        )
+    )
+    {
+        Text(
+            text = stringResource(R.string.newAssignment),
+            style = MaterialTheme.typography.titleMedium
+        )
+    }
+}
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier

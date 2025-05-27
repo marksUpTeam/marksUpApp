@@ -1,6 +1,7 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.di
 
 import org.koin.dsl.module
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.LessonRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments.AssignmentsMapper
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments.AssignmentsRepository
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.authorization.AuthorizationRepository
@@ -34,5 +35,8 @@ val dataModule = module {
     }
     single {
         ProfileMapper()
+    }
+    single {
+        LessonRepository(lessonApi = get())
     }
 }
