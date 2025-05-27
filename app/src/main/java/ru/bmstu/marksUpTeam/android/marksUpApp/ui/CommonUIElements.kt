@@ -58,6 +58,7 @@ fun BaseButton(
             .height(48.dp)
             .width(80.dp),
         horizontalAlignment = Alignment.CenterHorizontally
+
     ) {
         IconButton(
             onClick = { onClick() },
