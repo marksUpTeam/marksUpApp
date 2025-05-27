@@ -3,6 +3,7 @@ package ru.bmstu.marksUpTeam.android.marksUpApp.di
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import ru.bmstu.marksUpTeam.android.marksUpApp.BuildConfig
+import ru.bmstu.marksUpTeam.android.marksUpApp.data.LessonApi
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.assignments.AssignmentsApi
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.authorization.AuthorizationApi
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.classes.ClassesApi
@@ -30,6 +31,9 @@ val networkModule = module{
     }
     single {
         get<Retrofit>().create(ProfileApi::class.java)
+    }
+    single {
+        get<Retrofit>().create(LessonApi::class.java)
     }
     single {
         FileManager(context = get())
