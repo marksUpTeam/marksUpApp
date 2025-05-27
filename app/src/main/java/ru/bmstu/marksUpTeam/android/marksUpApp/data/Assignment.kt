@@ -1,11 +1,10 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.data
 
 import kotlinx.datetime.Clock
-import kotlinx.serialization.Serializable
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayIn
+import kotlinx.serialization.Serializable
 
 
 @Serializable
@@ -29,6 +28,7 @@ data class Assignment(
     val description: String,
     val status: AssignmentStatus,
     val grade: Int?,
+    val filesName: List<String>
 )
 
 @Serializable
@@ -55,4 +55,5 @@ val baseAssignment = Assignment(
     description = "tasks 10 - 15",
     status = AssignmentStatus.Assigned,
     grade = null,
+    filesName = listOf("png")
 )

@@ -8,6 +8,7 @@ import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.authorization.Author
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.classes.ClassesApi
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.favourites.FavouritesApi
 import ru.bmstu.marksUpTeam.android.marksUpApp.data.network.profile.ProfileApi
+import ru.bmstu.marksUpTeam.android.marksUpApp.tools.FileManager
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getBasicInterceptedRetrofit
 import ru.bmstu.marksUpTeam.android.marksUpApp.tools.getJwt
 
@@ -27,7 +28,10 @@ val networkModule = module{
     single{
         get<Retrofit>().create(FavouritesApi::class.java)
     }
-    single{
+    single {
         get<Retrofit>().create(ProfileApi::class.java)
+    }
+    single {
+        FileManager(context = get())
     }
 }

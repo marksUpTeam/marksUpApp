@@ -1,7 +1,7 @@
 package ru.bmstu.marksUpTeam.android.marksUpApp.ui.assignment
 
-import ru.bmstu.marksUpTeam.android.marksUpApp.data.Assignment
+import ru.bmstu.marksUpTeam.android.marksUpApp.domain.AssignmentDomain
 
 data class AssignmentState(
-    val assignments: List<Assignment>
+    val assignments: List<AssignmentDomain>
 )
